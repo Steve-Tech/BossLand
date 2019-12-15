@@ -20,10 +20,12 @@ import org.bukkit.DyeColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Banner;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
@@ -96,7 +98,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.inventory.meta.SkullMeta;
-import org.bukkit.material.MaterialData;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
@@ -108,7 +109,7 @@ import org.bukkit.util.Vector;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 
-@SuppressWarnings("deprecation")
+
 public class BossLand extends JavaPlugin implements Listener{
 		File saveYML = new File(getDataFolder(), "save.yml");
 		YamlConfiguration saveFile = YamlConfiguration.loadConfiguration(saveYML); 
@@ -172,17 +173,17 @@ public class BossLand extends JavaPlugin implements Listener{
 	    					if(p.getInventory().getLeggings().getItemMeta().getDisplayName().equals("§lPanda Pants")) {
 	    						p.removePotionEffect(PotionEffectType.SPEED);
 	    						p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED,20*5,3));
-	    						p.getInventory().getLeggings().setDurability((short) 0);
+	    						repairItem(p.getInventory().getLeggings());
 	    					}else if(p.getInventory().getLeggings().getItemMeta().getDisplayName().equals("§7&lBunny Pants")) {
 	    						p.removePotionEffect(PotionEffectType.JUMP);
 	    						p.addPotionEffect(new PotionEffect(PotionEffectType.JUMP,20*5,3));
-	    						p.getInventory().getLeggings().setDurability((short) 0);
+	    						repairItem(p.getInventory().getLeggings());
 	    					}else if(p.getInventory().getLeggings().getItemMeta().getDisplayName().equals("§c§lDevil's Greaves")) {
 	    						p.removePotionEffect(PotionEffectType.FIRE_RESISTANCE);
 	    						p.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE,20*5,3));
 	    						//p.removePotionEffect(PotionEffectType.ABSORPTION);
 	    						p.addPotionEffect(new PotionEffect(PotionEffectType.ABSORPTION,20*10,1));
-	    						p.getInventory().getLeggings().setDurability((short) 0);
+	    						repairItem(p.getInventory().getLeggings());
 	    					}
 	    				}catch(Exception x2){}
 	    				try {
@@ -193,7 +194,7 @@ public class BossLand extends JavaPlugin implements Listener{
 //	    						p.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE,20*5,2));
 	    						p.removePotionEffect(PotionEffectType.INCREASE_DAMAGE);
 	    						p.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE,20*5,1));
-	    						p.getInventory().getChestplate().setDurability((short) 0);
+	    						repairItem(p.getInventory().getChestplate());
 	    					}
 	    				}catch(Exception x2){}
 	    				try {
@@ -204,7 +205,7 @@ public class BossLand extends JavaPlugin implements Listener{
 	    						p.addPotionEffect(new PotionEffect(PotionEffectType.JUMP,20*5,2));
 	    						p.removePotionEffect(PotionEffectType.SPEED);
 	    						p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED,20*5,2));
-	    						p.getInventory().getBoots().setDurability((short) 0);
+	    						repairItem(p.getInventory().getBoots());
 	    					}
 	    				}catch(Exception x2){}
 	    				try {
@@ -215,7 +216,7 @@ public class BossLand extends JavaPlugin implements Listener{
 	    						p.addPotionEffect(new PotionEffect(PotionEffectType.DOLPHINS_GRACE,20*5,0));
 	    						p.removePotionEffect(PotionEffectType.NIGHT_VISION);
 	    						p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION,20*15,0));
-	    						p.getInventory().getHelmet().setDurability((short) 0);
+	    						repairItem(p.getInventory().getHelmet());
 	    					}
 	    				}catch(Exception x2){}
 	    				//Bar Add
@@ -242,6 +243,10 @@ public class BossLand extends JavaPlugin implements Listener{
 					timer();
 				}
 			}, (20*1));
+	    }
+	    
+	    private void repairItem(ItemStack s) {
+	    	((org.bukkit.inventory.meta.Damageable)s).setDamage(0);
 	    }
 	    
 	    private void save() {
@@ -448,6 +453,7 @@ public class BossLand extends JavaPlugin implements Listener{
 				//Do Boss Stuff
 	    		int c = getConfig().getInt("bosses."+bossType+".specialChance");
 	    		int mc = getConfig().getInt("bosses."+bossType+".minionChance");
+				double maxHealth = ((LivingEntity) ent).getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
 				if(bossType.equals("GhastLord")) {
 					//Stop Instant Death
 					if(e.getDamager() != null && (e.getDamager().getType().equals(EntityType.FIREBALL))) {
@@ -462,7 +468,7 @@ public class BossLand extends JavaPlugin implements Listener{
 						//Phase 1
 						spawnMinions(ent,bossType,5,false);
 					}
-					if((rand(1,100) <= c) && (dmgr instanceof Player) && (ent.getHealth() <= (ent.getMaxHealth()/2))){
+					if((rand(1,100) <= c) && (dmgr instanceof Player) && (ent.getHealth() <= (maxHealth/2))){
 						//System.out.println("Phase 2 power");
 						if(dmgr != null) {
 							//Phase 2
@@ -488,7 +494,7 @@ public class BossLand extends JavaPlugin implements Listener{
 						//Phase 1
 						spawnMinions(ent,bossType,2,false);
 					}
-					if((rand(1,100) <= c) && (dmgr instanceof Player) && (ent.getHealth() <= (ent.getMaxHealth()/2))){
+					if((rand(1,100) <= c) && (dmgr instanceof Player) && (ent.getHealth() <= (maxHealth/2))){
 						//Phase 2
 						if(dmgr != null)
 							dmgr.setVelocity(new Vector(rand(-1,1),rand(1,2),rand(-1,1)));
@@ -499,7 +505,7 @@ public class BossLand extends JavaPlugin implements Listener{
 						//Phase 1
 						spawnMinions(ent,bossType,0,false);
 					}
-					if((rand(1,100) <= c) && (dmgr instanceof Player) && (ent.getHealth() <= (ent.getMaxHealth()/2))){
+					if((rand(1,100) <= c) && (dmgr instanceof Player) && (ent.getHealth() <= (maxHealth/2))){
 							//Phase 2
 							Player p = (Player) dmgr;
 							int s = rand(1,4);
@@ -525,7 +531,7 @@ public class BossLand extends JavaPlugin implements Listener{
 						//Phase 1
 						spawnMinions(ent,bossType,1,false);
 					}
-					if((rand(1,100) <= c) && (dmgr instanceof Player) && (ent.getHealth() <= (ent.getMaxHealth()/2))){
+					if((rand(1,100) <= c) && (dmgr instanceof Player) && (ent.getHealth() <= (maxHealth/2))){
 						//Phase 2
 						Location l = dmgr.getLocation();
 						//Land Check
@@ -548,13 +554,13 @@ public class BossLand extends JavaPlugin implements Listener{
 						//Phase 1
 						spawnMinions(ent,bossType,1,false);
 					}
-					if((rand(1,100) <= c) && (dmgr instanceof Player) && (ent.getHealth() <= (ent.getMaxHealth()/2))){
+					if((rand(1,100) <= c) && (dmgr instanceof Player) && (ent.getHealth() <= (maxHealth/2))){
 						//Phase 2
 //						if(getMount(ent) == null) {
 //							SkeletonHorse mount = (SkeletonHorse) ent.getWorld().spawnEntity(ent.getLocation(), EntityType.SKELETON_HORSE);
 //							mount.setInvulnerable(true);
 //							mount.getInventory().setSaddle(new ItemStack(Material.SADDLE));
-//							mount.setPassenger(ent);
+//							mount.addPassenger(ent);
 //						}
 						//Other Effects
 						int balls = getConfig().getInt("bosses."+bossType+".amountSpecial2");
@@ -576,18 +582,18 @@ public class BossLand extends JavaPlugin implements Listener{
 		    		//Special Attack
 					if(rand(1,100) <= c) {
 						//Phase 1
-						if(ent.getHealth() <= (ent.getMaxHealth()/2)) {
+						if(ent.getHealth() <= (maxHealth/2)) {
 							spawnMinions(ent,bossType,1,true);
 						}else
 							spawnMinions(ent,bossType,1,false);
 					}
-					if((rand(1,100) <= c) && (dmgr instanceof Player) && (ent.getHealth() <= (ent.getMaxHealth()/2))){
+					if((rand(1,100) <= c) && (dmgr instanceof Player) && (ent.getHealth() <= (maxHealth/2))){
 						//Phase 2
 //						if(getMount(ent) == null) {
 //							ZombieHorse mount = (ZombieHorse) ent.getWorld().spawnEntity(ent.getLocation(), EntityType.ZOMBIE_HORSE);
 //							mount.setInvulnerable(true);
 //							mount.getInventory().setSaddle(new ItemStack(Material.SADDLE));
-//							mount.setPassenger(ent);
+//							mount.addPassenger(ent);
 //						}
 						//Other Effects
 						TNTPrimed tnt = (TNTPrimed) ent.getWorld().spawnEntity(ent.getEyeLocation(), EntityType.PRIMED_TNT);
@@ -599,7 +605,7 @@ public class BossLand extends JavaPlugin implements Listener{
 						//Phase 1
 						spawnMinions(ent,bossType,1,false);
 					}
-					if((rand(1,100) <= c) && (dmgr instanceof Player) && (ent.getHealth() <= ((ent.getMaxHealth()/3)*2))){
+					if((rand(1,100) <= c) && (dmgr instanceof Player) && (ent.getHealth() <= ((maxHealth/3)*2))){
 						//Phase 2
 						ItemStack item = new ItemStack(Material.SPLASH_POTION);
 						PotionMeta meta = (PotionMeta) item.getItemMeta();
@@ -614,7 +620,7 @@ public class BossLand extends JavaPlugin implements Listener{
 						boomTimer(thrownPotion, 4);
 						makeTrail(thrownPotion,getConfig().getString("bosses."+bossType+".attackParticle"));
 					}
-					if((rand(1,100) <= c) && (dmgr instanceof Player) && (ent.getHealth() <= (ent.getMaxHealth()/3))){
+					if((rand(1,100) <= c) && (dmgr instanceof Player) && (ent.getHealth() <= (maxHealth/3))){
 						//Phase 3
 						dmgr.getWorld().strikeLightning(dmgr.getLocation());
 					}
@@ -624,7 +630,7 @@ public class BossLand extends JavaPlugin implements Listener{
 						//Phase 1
 						spawnMinions(ent,bossType,1,false);
 					}
-					if((rand(1,100) <= c) && (dmgr instanceof Player) && (ent.getHealth() <= ((ent.getMaxHealth()/3)*2))){
+					if((rand(1,100) <= c) && (dmgr instanceof Player) && (ent.getHealth() <= ((maxHealth/3)*2))){
 						//Phase 2
 						ItemStack item = new ItemStack(Material.LINGERING_POTION);
 						PotionMeta meta = (PotionMeta) item.getItemMeta();
@@ -636,7 +642,7 @@ public class BossLand extends JavaPlugin implements Listener{
 						ThrownPotion thrownPotion = (ThrownPotion) ent.getWorld().spawnEntity(dmgr.getLocation(), EntityType.SPLASH_POTION);
 						thrownPotion.setItem(item);
 					}
-					if((rand(1,100) <= c) && (dmgr instanceof Player) && (ent.getHealth() <= (ent.getMaxHealth()/3))){
+					if((rand(1,100) <= c) && (dmgr instanceof Player) && (ent.getHealth() <= (maxHealth/3))){
 						//Phase 3
 						Location l1 = dmgr.getLocation().clone();
 						Location l2 = dmgr.getLocation().clone();
@@ -660,7 +666,7 @@ public class BossLand extends JavaPlugin implements Listener{
 						l9.setY(l9.getY()+20); l9.setX(l9.getX()-1);
 						l10.setY(l10.getY()+20); l10.setX(l10.getX()-1); l10.setZ(l10.getZ()-1);
 						for(Location bl : Arrays.asList(l1,l2,l3,l4,l5,l6,l7,l8,l9,l10))
-							ent.getWorld().spawnFallingBlock(bl, new MaterialData(Material.COBBLESTONE));
+							ent.getWorld().spawnFallingBlock(bl, Bukkit.createBlockData(Material.COBBLESTONE));
 					}
 				}else if(bossType.equals("Giant")) {
 		    		//Special Attack
@@ -668,7 +674,7 @@ public class BossLand extends JavaPlugin implements Listener{
 						//Phase 1
 						spawnMinions(ent,bossType,1,false);
 					}
-					if((rand(1,100) <= c) && (dmgr instanceof Player) && (ent.getHealth() <= ((ent.getMaxHealth()/3)*2))){
+					if((rand(1,100) <= c) && (dmgr instanceof Player) && (ent.getHealth() <= ((maxHealth/3)*2))){
 						//Phase 2
 				    	Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable(){
 				    		public void run(){
@@ -706,7 +712,7 @@ public class BossLand extends JavaPlugin implements Listener{
 					        length += space;
 					    }					 
 					}
-					if((rand(1,100) <= c) && (dmgr instanceof Player) && (ent.getHealth() <= (ent.getMaxHealth()/3))){
+					if((rand(1,100) <= c) && (dmgr instanceof Player) && (ent.getHealth() <= (maxHealth/3))){
 						//Phase 3
 						dmgr.getWorld().playSound(dmgr.getLocation(), Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 1, 1);
 						displayParticle(Particle.CLOUD.toString(), dmgr.getEyeLocation(), 0, 1, 10);
@@ -736,13 +742,13 @@ public class BossLand extends JavaPlugin implements Listener{
 						//Phase 1
 						spawnGodMinions(ent,ent.getLocation(),bossType,rand(1,6));
 					}
-					if((rand(1,100) <= c) && (dmgr instanceof LivingEntity) && (ent.getHealth() <= ((ent.getMaxHealth()/4)*3))){
+					if((rand(1,100) <= c) && (dmgr instanceof LivingEntity) && (ent.getHealth() <= ((maxHealth/4)*3))){
 						//Phase 2
 						Projectile p = ent.launchProjectile(Trident.class);
 						lightningList.add(p);
 						moveToward(p, dmgr.getLocation(), 0.7);
 					}
-					if((rand(1,100) <= c) && (dmgr instanceof Player) && (ent.getHealth() <= ((ent.getMaxHealth()/4)*2))){
+					if((rand(1,100) <= c) && (dmgr instanceof Player) && (ent.getHealth() <= ((maxHealth/4)*2))){
 						//Phase 3
 						moveToward(ent, dmgr.getLocation(), 0.5);
 						//Other Effects
@@ -758,7 +764,7 @@ public class BossLand extends JavaPlugin implements Listener{
 								  }
 							  }, 5*i);
 					}
-					if((rand(1,100) <= c) && (dmgr instanceof Player) && (ent.getHealth() <= (ent.getMaxHealth()/4))){
+					if((rand(1,100) <= c) && (dmgr instanceof Player) && (ent.getHealth() <= (maxHealth/4))){
 						//Phase 4
 						spawnGodMinions(ent,dmgr.getLocation(),bossType,rand(1,6));
 					}
@@ -771,11 +777,11 @@ public class BossLand extends JavaPlugin implements Listener{
 					if((rand(1,100) <= c) && (dmgr instanceof LivingEntity)) {
 						doFireBalls(ent, dmgr, bossType);
 					}
-					if((rand(1,100) <= getConfig().getInt("bosses."+bossType+".special3Chance")) && (dmgr instanceof Player) && (ent.getHealth() <= ((ent.getMaxHealth()/4)*2))){
+					if((rand(1,100) <= getConfig().getInt("bosses."+bossType+".special3Chance")) && (dmgr instanceof Player) && (ent.getHealth() <= ((maxHealth/4)*2))){
 						//Phase 3
 						spawnTornado(ent.getEyeLocation(), dmgr, getConfig().getInt("bosses."+bossType+".specialDamage3"), "dark");
 					}
-					if((rand(1,100) <= c) && (dmgr instanceof Player) && (ent.getHealth() <= (ent.getMaxHealth()/4))){
+					if((rand(1,100) <= c) && (dmgr instanceof Player) && (ent.getHealth() <= (maxHealth/4))){
 						//Phase 4
 						Location l1 = dmgr.getLocation(); l1.setY(l1.getY()-1);
 						Location l2 = dmgr.getLocation(); l2.setY(l2.getY()-2);
@@ -786,7 +792,7 @@ public class BossLand extends JavaPlugin implements Listener{
 						Location l5 = dmgr.getLocation(); l5.setY(l5.getY()+2);
 						Location l6 = dmgr.getLocation(); l6.setY(l6.getY()+3);
 						for(Location l : Arrays.asList(l1,l2,l3))
-							l.getWorld().spawnFallingBlock(l, Material.SAND, (byte) 0);
+							l.getWorld().spawnFallingBlock(l, Bukkit.createBlockData(Material.SAND));
 					}
 				}else if(bossType.equals("AetherGod")) {
 		    		//Special Attack
@@ -809,7 +815,7 @@ public class BossLand extends JavaPlugin implements Listener{
 								  }
 							  }, 7*i);
 					}
-					if(ent.getHealth() <= ((ent.getMaxHealth()/4)*3) && (dmgr instanceof Player)) {
+					if(ent.getHealth() <= ((maxHealth/4)*3) && (dmgr instanceof Player)) {
 						//Phase 2
 						if(rand(1,100) <= c){
 							dmgr.setVelocity(new Vector(rand(-0.5,0.5),rand(0.2,0.5),rand(-0.5,0.5)));
@@ -821,11 +827,11 @@ public class BossLand extends JavaPlugin implements Listener{
 							makeTrail(a,getConfig().getString("bosses."+bossType+".attackParticle2"));
 						}
 					}
-					if((rand(1,100) <= c) && (dmgr instanceof Player) && (ent.getHealth() <= ((ent.getMaxHealth()/4)*2))){
+					if((rand(1,100) <= c) && (dmgr instanceof Player) && (ent.getHealth() <= ((maxHealth/4)*2))){
 						//Phase 3
 						spawnTornado(ent.getEyeLocation(), dmgr, getConfig().getInt("bosses."+bossType+".specialDamage3"), "wind");
 					}
-					if((rand(1,100) <= c) && (dmgr instanceof Player) && (ent.getHealth() <= (ent.getMaxHealth()/4))){
+					if((rand(1,100) <= c) && (dmgr instanceof Player) && (ent.getHealth() <= (maxHealth/4))){
 						//Phase 4
 						int strikes = getConfig().getInt("bosses."+bossType+".amountSpecial4");
 						for(int i = 0; i< strikes; i++)
@@ -856,18 +862,18 @@ public class BossLand extends JavaPlugin implements Listener{
 								  }
 							  }, 10*i);
 					}
-					if((rand(1,100) <= c) && (dmgr instanceof Player) && (ent.getHealth() <= ((ent.getMaxHealth()/4)*3))) {
+					if((rand(1,100) <= c) && (dmgr instanceof Player) && (ent.getHealth() <= ((maxHealth/4)*3))) {
 						//Phase 2
 						int s = 2;
 						for(Block b : getArea(new Location(ent.getWorld(),ent.getLocation().getX()-s,ent.getLocation().getY()-s,ent.getLocation().getZ()-s),new Location(ent.getWorld(),ent.getLocation().getX()+s,ent.getLocation().getY()+s,ent.getLocation().getZ()+s),false))
 							if(Arrays.asList(Material.AIR, Material.GRASS, Material.TALL_GRASS, Material.WATER).contains(b.getType()))
 								b.setType(Material.FIRE);
 					}
-					if((rand(1,100) <= c) && (dmgr instanceof Player) && (ent.getHealth() <= ((ent.getMaxHealth()/4)*2))){
+					if((rand(1,100) <= c) && (dmgr instanceof Player) && (ent.getHealth() <= ((maxHealth/4)*2))){
 						//Phase 3
 						ent.getWorld().createExplosion(dmgr.getLocation(), 2);
 					}
-					if((rand(1,100) <= c) && (dmgr instanceof Player) && (ent.getHealth() <= (ent.getMaxHealth()/4))){
+					if((rand(1,100) <= c) && (dmgr instanceof Player) && (ent.getHealth() <= (maxHealth/4))){
 						//Phase 4
 						displayParticle(getConfig().getString("bosses."+bossType+".tpParticle"),ent.getLocation());
 						ent.teleport(dmgr);
@@ -889,7 +895,7 @@ public class BossLand extends JavaPlugin implements Listener{
 						moveToward(b, dmgr, 0.3);
 						suicideTimer(b, 3);
 					}
-					if((rand(1,100) <= c) && ent.getHealth() <= ((ent.getMaxHealth()/5)*4) && (dmgr instanceof LivingEntity)) {
+					if((rand(1,100) <= c) && ent.getHealth() <= ((maxHealth/5)*4) && (dmgr instanceof LivingEntity)) {
 						//Phase 2
 						//Shoot Beam
 						Location point1 = ent.getLocation();
@@ -911,11 +917,11 @@ public class BossLand extends JavaPlugin implements Listener{
 					    //Damage
 					    dmgr.damage(getConfig().getInt("bosses."+bossType+".specialDamage2"), ent);
 					}
-					if((rand(1,100) <= c) && ent.getHealth() <= ((ent.getMaxHealth()/5)*3)) {
+					if((rand(1,100) <= c) && ent.getHealth() <= ((maxHealth/5)*3)) {
 						//Phase 3
 						spawnTornado(ent.getEyeLocation(), dmgr, getConfig().getInt("bosses."+bossType+".specialDamage3"),"fire");
 					}
-					if((rand(1,100) <= c) && ent.getHealth() <= ((ent.getMaxHealth()/5)*2)) {
+					if((rand(1,100) <= c) && ent.getHealth() <= ((maxHealth/5)*2)) {
 						//Phase 4
 						Location l1 = dmgr.getLocation(); l1.setX(l1.getX()+1); l1.setY(l1.getY()+1); l1.setZ(l1.getZ()+1);
 						Location l2 = dmgr.getLocation(); l2.setX(l2.getX()-1); l2.setY(l2.getY()-25); l2.setZ(l2.getZ()-1);
@@ -924,7 +930,7 @@ public class BossLand extends JavaPlugin implements Listener{
 								b.setType(Material.AIR);
 							}
 					}
-					if((rand(1,100) <= c) && ent.getHealth() <= ((ent.getMaxHealth()/5))) {
+					if((rand(1,100) <= c) && ent.getHealth() <= ((maxHealth/5))) {
 						//Phase 5
 						moveTowardTemp(dmgr, ent, 0.4, 20*3);
 					}
@@ -956,7 +962,7 @@ public class BossLand extends JavaPlugin implements Listener{
 						l.getBlock().setType(Material.END_STONE);
 						dmgr.getLocation().getBlock().setType(Material.WITHER_ROSE);
 					}
-					if((rand(1,100) <= c) && ent.getHealth() <= ((ent.getMaxHealth()/5)*4) && (dmgr instanceof LivingEntity)) {
+					if((rand(1,100) <= c) && ent.getHealth() <= ((maxHealth/5)*4) && (dmgr instanceof LivingEntity)) {
 						//Phase 2
 						Location l1 = dmgr.getLocation().clone();
 						Location l2 = ent.getLocation().clone();
@@ -974,11 +980,11 @@ public class BossLand extends JavaPlugin implements Listener{
 						if(kill)
 							dmgr.damage(999,ent);
 					}
-					if((rand(1,100) <= c) && ent.getHealth() <= ((ent.getMaxHealth()/5)*3)) {
+					if((rand(1,100) <= c) && ent.getHealth() <= ((maxHealth/5)*3)) {
 						//Phase 3
 						spawnTornado(ent.getEyeLocation(), dmgr, getConfig().getInt("bosses."+bossType+".specialDamage3"),"magic");
 					}
-					if((rand(1,100) <= c) && ent.getHealth() <= ((ent.getMaxHealth()/5)*2)) {
+					if((rand(1,100) <= c) && ent.getHealth() <= ((maxHealth/5)*2)) {
 						//Phase 4
 						HashMap<Block,Material> oldBlocks = new HashMap<Block,Material>();
 						int radious = 2;
@@ -999,7 +1005,7 @@ public class BossLand extends JavaPlugin implements Listener{
 							}
 						}, 30*20);
 					}
-					if((rand(1,100) <= c) && ent.getHealth() <= ((ent.getMaxHealth()/5))) {
+					if((rand(1,100) <= c) && ent.getHealth() <= ((maxHealth/5))) {
 						//Phase 5
 						int dis = rand(5,10);
 						int mult = -1;
@@ -1024,11 +1030,11 @@ public class BossLand extends JavaPlugin implements Listener{
 						}, 15*20);
 					}
 				}
-			}else if(e.getDamager() != null && e.getEntity().getPassenger() != null) {
+			}else if(e.getDamager() != null && e.getEntity().getPassengers().isEmpty() == false) {
 				//Mount Damage Stop
-				final String bossType2 = saveFile.getString("bosses."+e.getEntity().getPassenger().getUniqueId().toString());
+				final String bossType2 = saveFile.getString("bosses."+e.getEntity().getPassengers().get(0).getUniqueId().toString());
 				if(bossType2 != null){
-					LivingEntity boss = (LivingEntity) e.getEntity().getPassenger();
+					LivingEntity boss = (LivingEntity) e.getEntity().getPassengers().get(0);
 					if(!boss.isDead()) {
 						boss.damage(e.getDamage(), e.getDamager());
 						e.setDamage(0);
@@ -1087,7 +1093,8 @@ public class BossLand extends JavaPlugin implements Listener{
 			if((p.getHealth() - fd) <= 0) {
 				//System.out.println("D3");
 				p.sendMessage("§6§lYour curse may not be so easily lifted...");
-				p.setHealth(p.getMaxHealth());
+				double maxHealth = ((LivingEntity) p).getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
+				p.setHealth(maxHealth);
 				p.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION,10*40,1));
 				final GameMode gm = p.getGameMode();
 				p.setGameMode(GameMode.SPECTATOR);
@@ -1150,16 +1157,17 @@ public class BossLand extends JavaPlugin implements Listener{
 			int balls = 1;
 			//EntityType bt = EntityType.FIREBALL;
 			Class c = Fireball.class;
-			if(ent.getHealth() <= ((ent.getMaxHealth()/4)*3)){
+			double maxHealth = ((LivingEntity) ent).getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
+			if(ent.getHealth() <= ((maxHealth/4)*3)){
 				//Phase 2
 				balls = getConfig().getInt("bosses."+bossType+".amountSpecial2");
 				//bt = EntityType.SMALL_FIREBALL;
-			}else if(ent.getHealth() <= ((ent.getMaxHealth()/4)*2)){
+			}else if(ent.getHealth() <= ((maxHealth/4)*2)){
 				//Phase 3
 				balls = getConfig().getInt("bosses."+bossType+".amountSpecial3");
 				//bt = EntityType.FIREBALL;
 				c = LargeFireball.class;
-			}else if((ent.getHealth() <= (ent.getMaxHealth()/4))) {
+			}else if((ent.getHealth() <= (maxHealth/4))) {
 				//Phase 4
 				balls = getConfig().getInt("bosses."+bossType+".amountSpecial4");
 				//bt = EntityType.DRAGON_FIREBALL;
@@ -1185,7 +1193,7 @@ public class BossLand extends JavaPlugin implements Listener{
 		private void spawnTornado(Location l, LivingEntity target, int dmg, String type) {
 			LivingEntity bat = (LivingEntity) l.getWorld().spawnEntity(l, EntityType.BAT);
 			bat.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 999*999, 1));
-			bat.setMaxHealth(2000); bat.setHealth(2000);
+			bat.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(2000); bat.setHealth(2000);
 			moveTowardConstant(bat,target,0.2);
 			boomTimer(bat,30);
 			tornadoEffect(bat,target,dmg, type);
@@ -1194,7 +1202,7 @@ public class BossLand extends JavaPlugin implements Listener{
 //		private void spawnBlackTornado(Location l, LivingEntity target, int dmg) {
 //			LivingEntity bat = (LivingEntity) l.getWorld().spawnEntity(l, EntityType.BAT);
 //			bat.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 999*999, 1));
-//			bat.setMaxHealth(2000); bat.setHealth(2000);
+//			bat.Attribute.GENERIC_MAX_HEALTH).setBaseValue(2000); bat.setHealth(2000);
 //			moveTowardConstant(bat,target,0.2);
 //			boomTimer(bat,30);
 //			tornadoEffect(bat,target,dmg, "dark");
@@ -1203,7 +1211,7 @@ public class BossLand extends JavaPlugin implements Listener{
 //		private void spawnWhiteTornado(Location l, LivingEntity target, int dmg) {
 //			LivingEntity bat = (LivingEntity) l.getWorld().spawnEntity(l, EntityType.BAT);
 //			bat.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 999*999, 1));
-//			bat.setMaxHealth(2000); bat.setHealth(2000);
+//			bat.Attribute.GENERIC_MAX_HEALTH).setBaseValue(2000); bat.setHealth(2000);
 //			moveTowardConstant(bat,target,0.2);
 //			boomTimer(bat,30);
 //			tornadoEffect(bat,target,dmg, "wind");
@@ -1212,7 +1220,7 @@ public class BossLand extends JavaPlugin implements Listener{
 //		private void spawnRedTornado(Location l, LivingEntity target, int dmg) {
 //			LivingEntity bat = (LivingEntity) l.getWorld().spawnEntity(l, EntityType.BAT);
 //			bat.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 999*999, 1));
-//			bat.setMaxHealth(2000); bat.setHealth(2000);
+//			bat.Attribute.GENERIC_MAX_HEALTH).setBaseValue(2000); bat.setHealth(2000);
 //			moveTowardConstant(bat,target,0.2);
 //			boomTimer(bat,30);
 //			tornadoEffect(bat,target,dmg, "fire");
@@ -1285,7 +1293,7 @@ public class BossLand extends JavaPlugin implements Listener{
 		
 		private Entity getMount(Entity boss) {
 			for(Entity m : boss.getNearbyEntities(4, 4, 4))
-				if(m.getPassenger() != null && m.getPassenger().equals(boss))
+				if(m.getPassengers().isEmpty() == false && m.getPassengers().get(0).equals(boss))
 					return m;
 			return null;
 		}
@@ -1399,35 +1407,36 @@ public class BossLand extends JavaPlugin implements Listener{
 	    
 		private void spawnGodMinions(LivingEntity ent, Location sl, String bossType, int distance) {
 			//System.out.println("1: " + getConfig().getString("bosses."+bossType+".minion"));
-			//System.out.println("2: " + EntityType.fromName(getConfig().getString("bosses."+bossType+".minion")));
-			EntityType minType = EntityType.fromName(getConfig().getString("bosses."+bossType+".minion"));
+			//System.out.println("2: " + EntityType.valueOf(getConfig().getString("bosses."+bossType+".minion")));
+			EntityType minType = EntityType.valueOf(getConfig().getString("bosses."+bossType+".minion"));
 			EntityType mountType = null;
 			int phase = 1;
-			if(ent.getHealth() <= (ent.getMaxHealth()/4)) {
+			double maxHealth = ((LivingEntity) ent).getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
+			if(ent.getHealth() <= (maxHealth/4)) {
 				//Phase 4
 				if(getConfig().getString("bosses."+bossType+".minion4") != null)
-					minType = EntityType.fromName(getConfig().getString("bosses."+bossType+".minion4"));
+					minType = EntityType.valueOf(getConfig().getString("bosses."+bossType+".minion4"));
 				if(getConfig().getString("bosses."+bossType+".minion4Mount") != null)
-					mountType = EntityType.fromName(getConfig().getString("bosses."+bossType+".minion4Mount"));
+					mountType = EntityType.valueOf(getConfig().getString("bosses."+bossType+".minion4Mount"));
 				phase = 4;
-			}else if(ent.getHealth() <= ((ent.getMaxHealth()/4)*2)) {
+			}else if(ent.getHealth() <= ((maxHealth/4)*2)) {
 				//Phase 3
 				if(getConfig().getString("bosses."+bossType+".minion3") != null)
-					minType = EntityType.fromName(getConfig().getString("bosses."+bossType+".minion3"));
+					minType = EntityType.valueOf(getConfig().getString("bosses."+bossType+".minion3"));
 				if(getConfig().getString("bosses."+bossType+".minion3Mount") != null)
-					mountType = EntityType.fromName(getConfig().getString("bosses."+bossType+".minion3Mount"));
+					mountType = EntityType.valueOf(getConfig().getString("bosses."+bossType+".minion3Mount"));
 				phase = 3;
-			}else if(ent.getHealth() <= ((ent.getMaxHealth()/4)*3)) {
+			}else if(ent.getHealth() <= ((maxHealth/4)*3)) {
 				//Phase 2
 				if(getConfig().getString("bosses."+bossType+".minion2") != null)
-					minType = EntityType.fromName(getConfig().getString("bosses."+bossType+".minion2"));
+					minType = EntityType.valueOf(getConfig().getString("bosses."+bossType+".minion2"));
 				if(getConfig().getString("bosses."+bossType+".minion2Mount") != null)
-					mountType = EntityType.fromName(getConfig().getString("bosses."+bossType+".minion2Mount"));
+					mountType = EntityType.valueOf(getConfig().getString("bosses."+bossType+".minion2Mount"));
 				phase = 2;
 			}else {
 				//Phase 1
 				if(getConfig().getString("bosses."+bossType+".minionMount") != null)
-					mountType = EntityType.fromName(getConfig().getString("bosses."+bossType+".minionMount"));
+					mountType = EntityType.valueOf(getConfig().getString("bosses."+bossType+".minionMount"));
 			}
 			//Get Amount
 			int count = 0;
@@ -1465,7 +1474,7 @@ public class BossLand extends JavaPlugin implements Listener{
 				            ee.setLeggings(pants);
 				            boots.addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 2);
 				            ee.setBoots(boots);
-				            ee.setItemInHand(hand);
+				            ee.setItemInMainHand(hand);
 						}else if(phase == 4) {
 							ItemStack head = getHead("ELF_PUNSHER","Cthulhu Man Head");
 				            ee.setHelmet(head);
@@ -1475,7 +1484,7 @@ public class BossLand extends JavaPlugin implements Listener{
 				            ee.setLeggings(pants);
 				            boots.addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 4);
 				            ee.setBoots(boots);
-				            ee.setItemInHand(hand);
+				            ee.setItemInMainHand(hand);
 						}
 					}else if(bossType.equals("PharaohGod")) {
 				        EntityEquipment ee = ((LivingEntity) minion).getEquipment();
@@ -1502,7 +1511,7 @@ public class BossLand extends JavaPlugin implements Listener{
 				            boots.addUnsafeEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 5);
 				            ee.setBoots(boots);
 							ItemStack hand = new ItemStack(Material.STONE_SWORD);
-							ee.setItemInHand(hand);
+							ee.setItemInMainHand(hand);
 						}else if(phase == 4) {
 							ItemStack head = getSkull("http://textures.minecraft.net/texture/463a23a813b3d57d8964a859a7fb97ed5818279b708572d178e98252bd2b7f3d");
 							minion.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE,999*999,6));
@@ -1514,7 +1523,7 @@ public class BossLand extends JavaPlugin implements Listener{
 				            boots.addUnsafeEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 7);
 				            ee.setBoots(boots);
 							ItemStack hand = new ItemStack(Material.GOLDEN_SWORD);
-							ee.setItemInHand(hand);
+							ee.setItemInMainHand(hand);
 						}else {
 							ItemStack head = getSkull("http://textures.minecraft.net/texture/3e91e95822fe98cc5a5658e824b1b8cf14d4de92f0e1af24815372435c9eab6");
 				            ee.setHelmet(head);
@@ -1541,7 +1550,7 @@ public class BossLand extends JavaPlugin implements Listener{
 				            boots.addUnsafeEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 5);
 				            ee.setBoots(boots);
 				            hand.addUnsafeEnchantment(Enchantment.ARROW_DAMAGE, 5);
-							ee.setItemInHand(hand);
+							ee.setItemInMainHand(hand);
 							makeTrail(minion,getConfig().getString("bosses."+bossType+".minionAuraParticle"));
 							levitate(minion, true);
 							target(minion, 0.2);
@@ -1556,7 +1565,7 @@ public class BossLand extends JavaPlugin implements Listener{
 				            boots.addUnsafeEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 7);
 				            ee.setBoots(boots);
 				            hand.addUnsafeEnchantment(Enchantment.ARROW_DAMAGE, 7);
-							ee.setItemInHand(hand);
+							ee.setItemInMainHand(hand);
 							makeTrail(minion,getConfig().getString("bosses."+bossType+".minionAuraParticle"));
 						}else {
 							minion.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE,999*999,4));
@@ -1581,7 +1590,7 @@ public class BossLand extends JavaPlugin implements Listener{
 							ItemStack hand = new ItemStack(Material.IRON_AXE);
 							hand.addUnsafeEnchantment(Enchantment.FIRE_ASPECT, 5);
 							hand.addUnsafeEnchantment(Enchantment.DAMAGE_ALL, 5);
-							ee.setItemInHand(hand);
+							ee.setItemInMainHand(hand);
 						}else if(phase == 3) {
 							ItemStack head = getSkull("http://textures.minecraft.net/texture/74fe948a6f7f81d9b7df6c7a7dcf66da6133f184b64f5c7068d0189a212a8b61");
 							minion.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE,999*999,3));
@@ -1590,7 +1599,7 @@ public class BossLand extends JavaPlugin implements Listener{
 							ItemStack hand = new ItemStack(Material.BOW);
 							hand.addUnsafeEnchantment(Enchantment.ARROW_FIRE, 5);
 							hand.addUnsafeEnchantment(Enchantment.ARROW_DAMAGE, 5);
-							ee.setItemInHand(hand);
+							ee.setItemInMainHand(hand);
 				            ee.setChestplate(chest);
 				            ee.setLeggings(pants);
 				            ee.setBoots(boots);
@@ -1603,7 +1612,7 @@ public class BossLand extends JavaPlugin implements Listener{
 							ItemStack hand = new ItemStack(Material.BOW);
 							hand.addUnsafeEnchantment(Enchantment.ARROW_FIRE, 8);
 							hand.addUnsafeEnchantment(Enchantment.ARROW_DAMAGE, 8);
-							ee.setItemInHand(hand);
+							ee.setItemInMainHand(hand);
 				            ee.setChestplate(chest);
 				            ee.setLeggings(pants);
 				            ee.setBoots(boots);
@@ -1628,7 +1637,7 @@ public class BossLand extends JavaPlugin implements Listener{
 							ItemStack hand = new ItemStack(Material.IRON_SWORD);
 							hand.addUnsafeEnchantment(Enchantment.FIRE_ASPECT, 6);
 							hand.addUnsafeEnchantment(Enchantment.DAMAGE_ALL, 6);
-							ee.setItemInHand(hand);
+							ee.setItemInMainHand(hand);
 						}else if(phase == 3) {
 							ItemStack head = getSkull("http://textures.minecraft.net/texture/ccb94263f712d902dd136251fd4d8d005890c657ab5ee490ccc9bf6ec09b8f57");
 							minion.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE,999*999,3));
@@ -1637,7 +1646,7 @@ public class BossLand extends JavaPlugin implements Listener{
 				            ee.setHelmet(head);
 					        dye(chest,Color.MAROON);
 				            ee.setChestplate(chest);
-				            ee.setItemInHand(null);
+				            ee.setItemInMainHand(null);
 				            autoBalls(minion,"Devil");
 						}else if(phase == 4) {
 					        for(ItemStack s : Arrays.asList(chest,pants,boots))
@@ -1654,7 +1663,7 @@ public class BossLand extends JavaPlugin implements Listener{
 					        ee.setItemInMainHand(hand);
 					        ((LivingEntity) minion).addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE,999*999,1));
 					        ((LivingEntity) minion).addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE,999*999,5));
-					        ((LivingEntity) minion).setMaxHealth(200);
+					        ((LivingEntity) minion).getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(200);
 					        ((LivingEntity) minion).setHealth(200);
 					        makeTrail(minion,getConfig().getString("bosses."+bossType+".minionAuraParticle"));
 					        autoBalls(minion,"Devil");
@@ -1666,7 +1675,7 @@ public class BossLand extends JavaPlugin implements Listener{
 				            ee.setChestplate(chest);
 				            ee.setLeggings(pants);
 				            ee.setBoots(boots);
-				            ee.setItemInHand(null);
+				            ee.setItemInMainHand(null);
 						}
 					}else if(bossType.equals("Death")) {
 				        EntityEquipment ee = ((LivingEntity) minion).getEquipment();
@@ -1711,7 +1720,7 @@ public class BossLand extends JavaPlugin implements Listener{
 					//Mount
 					if(mountType != null) {
 						LivingEntity m = (LivingEntity) ent.getWorld().spawnEntity(l, mountType);
-						m.setPassenger(minion);
+						m.addPassenger(minion);
 						if(m.getType().equals(EntityType.BAT)) {
 							m.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY,999*999,1));
 							m.setInvulnerable(true);
@@ -1749,18 +1758,19 @@ public class BossLand extends JavaPlugin implements Listener{
 			//Get Type
 			EntityType mt;
 			EntityType mountType = null;
-			if(getConfig().getString("bosses."+bossType+".minion3") != null && (ent.getHealth() <= ((ent.getMaxHealth()/3)))) {
-				mt = EntityType.fromName(getConfig().getString("bosses."+bossType+".minion3"));
+			double maxHealth = ((LivingEntity) ent).getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
+			if(getConfig().getString("bosses."+bossType+".minion3") != null && (ent.getHealth() <= ((maxHealth/3)))) {
+				mt = EntityType.valueOf(getConfig().getString("bosses."+bossType+".minion3"));
 				if(getConfig().getString("bosses."+bossType+".minion3Mount") != null)
-					mountType = EntityType.fromName(getConfig().getString("bosses."+bossType+".minion3Mount"));
-			}else if(getConfig().getString("bosses."+bossType+".minion2") != null && (ent.getHealth() <= ((ent.getMaxHealth()/3)*2))) {
-				mt = EntityType.fromName(getConfig().getString("bosses."+bossType+".minion2"));
+					mountType = EntityType.valueOf(getConfig().getString("bosses."+bossType+".minion3Mount"));
+			}else if(getConfig().getString("bosses."+bossType+".minion2") != null && (ent.getHealth() <= ((maxHealth/3)*2))) {
+				mt = EntityType.valueOf(getConfig().getString("bosses."+bossType+".minion2"));
 				if(getConfig().getString("bosses."+bossType+".minion2Mount") != null)
-					mountType = EntityType.fromName(getConfig().getString("bosses."+bossType+".minion2Mount"));
+					mountType = EntityType.valueOf(getConfig().getString("bosses."+bossType+".minion2Mount"));
 			}else {
-				mt = EntityType.fromName(getConfig().getString("bosses."+bossType+".minion"));
+				mt = EntityType.valueOf(getConfig().getString("bosses."+bossType+".minion"));
 				if(getConfig().getString("bosses."+bossType+".minionMount") != null)
-					mountType = EntityType.fromName(getConfig().getString("bosses."+bossType+".minionMount"));
+					mountType = EntityType.valueOf(getConfig().getString("bosses."+bossType+".minionMount"));
 			}
 			//Get Amount
 			int count = 0;
@@ -1789,10 +1799,10 @@ public class BossLand extends JavaPlugin implements Listener{
 				        EntityEquipment ee = ((LivingEntity) minion).getEquipment();
 			            ee.setHelmetDropChance(0.0F);
 			            ee.setChestplateDropChance(0.0F);
-			            ee.setItemInHandDropChance(0.0F);
+			            ee.setItemInMainHandDropChance(0.0F);
 			            ee.setHelmet(helm);
 			            ee.setChestplate(chest);
-			            ee.setItemInHand(sword);
+			            ee.setItemInMainHand(sword);
 					}else if(bossType.equals("PapaPanda")) {
 						((Panda)minion).setBaby();
 						((Panda)minion).setMainGene(Gene.AGGRESSIVE);
@@ -1806,24 +1816,24 @@ public class BossLand extends JavaPlugin implements Listener{
 				        EntityEquipment ee = ((LivingEntity) minion).getEquipment();
 			            ee.setHelmetDropChance(0.0F);
 			            ee.setChestplateDropChance(0.0F);
-			            ee.setItemInHandDropChance(0.0F);
-			            if(ent.getHealth() <= ((ent.getMaxHealth()/3))) {
+			            ee.setItemInMainHandDropChance(0.0F);
+			            if(ent.getHealth() <= ((maxHealth/3))) {
 				            ee.setHelmet(helm);
 				            ee.setChestplate(chest);
 				            ee.setLeggings(leggings);
 				            ee.setBoots(boots);
-			            }else if(ent.getHealth() <= ((ent.getMaxHealth()/3)*2)){
+			            }else if(ent.getHealth() <= ((maxHealth/3)*2)){
 				            ee.setHelmet(helm);
 				            ee.setChestplate(chest);
 				            ee.setLeggings(leggings);
 				            ee.setBoots(boots);
-				            ee.setItemInHand(sword);
+				            ee.setItemInMainHand(sword);
 						}
 					}
 					//Mount
 					if(mount && mountType != null) {
 						Entity m = ent.getWorld().spawnEntity(l, mountType);
-						m.setPassenger(minion);
+						m.addPassenger(minion);
 					}
 				}
 			}
@@ -1948,7 +1958,7 @@ public class BossLand extends JavaPlugin implements Listener{
 			try {
 				Location l = e.getClickedBlock().getLocation();
 				//Boss Rituals
-				if(p.getInventory().getItemInMainHand().getType().equals(Material.ENDER_EYE) && l.getWorld().getEnvironment().equals(Environment.NORMAL) && l.getWorld().getBiome((int)l.getX(), (int)l.getZ()).toString().contains("SWAMP")) {
+				if(p.getInventory().getItemInMainHand().getType().equals(Material.ENDER_EYE) && l.getWorld().getEnvironment().equals(Environment.NORMAL) && l.getWorld().getBiome((int)l.getX(), (int)l.getY(), (int)l.getZ()).toString().contains("SWAMP")) {
 					if(checkBlockRecipe(l,"SLIME_BLOCK:SLIME_BLOCK:SLIME_BLOCK","SLIME_BLOCK:DIAMOND_BLOCK:SLIME_BLOCK","SLIME_BLOCK:SLIME_BLOCK:SLIME_BLOCK",true)) {
 						e.setCancelled(true);
 						l.getWorld().createExplosion(l, 3, false);
@@ -1973,7 +1983,7 @@ public class BossLand extends JavaPlugin implements Listener{
 							}
 						}, (20));
 					}
-				}else if(p.getInventory().getItemInMainHand().getType().equals(Material.CAKE) && l.getWorld().getEnvironment().equals(Environment.NORMAL) && (l.getWorld().getBiome((int)l.getX(), (int)l.getZ()).toString().contains("BAMBOO"))) {
+				}else if(p.getInventory().getItemInMainHand().getType().equals(Material.CAKE) && l.getWorld().getEnvironment().equals(Environment.NORMAL) && (l.getWorld().getBiome((int)l.getX(), (int)l.getY(), (int)l.getZ()).toString().contains("BAMBOO"))) {
 					if(checkBlockRecipe(l,"MOSSY_COBBLESTONE:MOSSY_COBBLESTONE:MOSSY_COBBLESTONE","MOSSY_COBBLESTONE:CHISELED_STONE_BRICKS:MOSSY_COBBLESTONE","MOSSY_COBBLESTONE:MOSSY_COBBLESTONE:MOSSY_COBBLESTONE",true)) {
 						//BAMBOO
 						e.setCancelled(true);
@@ -1986,7 +1996,7 @@ public class BossLand extends JavaPlugin implements Listener{
 							}
 						}, (20));
 					}
-				}else if(p.getInventory().getItemInMainHand().getType().equals(Material.BRAIN_CORAL) && l.getWorld().getEnvironment().equals(Environment.NORMAL) && (l.getWorld().getBiome((int)l.getX(), (int)l.getZ()).toString().contains("PLAINS"))) {
+				}else if(p.getInventory().getItemInMainHand().getType().equals(Material.BRAIN_CORAL) && l.getWorld().getEnvironment().equals(Environment.NORMAL) && (l.getWorld().getBiome((int)l.getX(), (int)l.getY(), (int)l.getZ()).toString().contains("PLAINS"))) {
 					if(checkBlockRecipe(l,"SOUL_SAND:SOUL_SAND:SOUL_SAND","SOUL_SAND:EMERALD_BLOCK:SOUL_SAND","SOUL_SAND:SOUL_SAND:SOUL_SAND",true)) {
 						e.setCancelled(true);
 						l.getWorld().createExplosion(l, 2, false);
@@ -1998,7 +2008,7 @@ public class BossLand extends JavaPlugin implements Listener{
 							}
 						}, (20));
 					}
-				}else if(p.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals("§5§lBook of Spells") && l.getWorld().getEnvironment().equals(Environment.NORMAL) && (l.getWorld().getBiome((int)l.getX(), (int)l.getZ()).toString().contains("SNOWY"))) {
+				}else if(p.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals("§5§lBook of Spells") && l.getWorld().getEnvironment().equals(Environment.NORMAL) && (l.getWorld().getBiome((int)l.getX(), (int)l.getY(), (int)l.getZ()).toString().contains("SNOWY"))) {
 					if(checkBlockRecipe(l,"REDSTONE_TORCH:REDSTONE_WIRE:REDSTONE_TORCH","REDSTONE_WIRE:CAMPFIRE:REDSTONE_WIRE","REDSTONE_TORCH:REDSTONE_WIRE:REDSTONE_TORCH",true)) {
 						e.setCancelled(true);
 						lightningShow(l, 2);
@@ -2010,7 +2020,7 @@ public class BossLand extends JavaPlugin implements Listener{
 							}
 						}, (20));
 					}
-				}else if(p.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals("§6§lBell of Doom") && l.getWorld().getEnvironment().equals(Environment.NORMAL) && (l.getWorld().getBiome((int)l.getX(), (int)l.getZ()).toString().contains("SAVANNA"))) {
+				}else if(p.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals("§6§lBell of Doom") && l.getWorld().getEnvironment().equals(Environment.NORMAL) && (l.getWorld().getBiome((int)l.getX(), (int)l.getY(), (int)l.getZ()).toString().contains("SAVANNA"))) {
 					if(checkBlockRecipe(l,"REDSTONE_TORCH:REDSTONE_WIRE:REDSTONE_TORCH","REDSTONE_WIRE:CAMPFIRE:REDSTONE_WIRE","REDSTONE_TORCH:REDSTONE_WIRE:REDSTONE_TORCH",true)) {
 						e.setCancelled(true);
 						lightningShow(l, 3);
@@ -2022,7 +2032,7 @@ public class BossLand extends JavaPlugin implements Listener{
 							}
 						}, (20));
 					}
-				}else if(p.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals("§2§lPotion of Giant Growth") && l.getWorld().getEnvironment().equals(Environment.NORMAL) && (l.getWorld().getBiome((int)l.getX(), (int)l.getZ()).toString().contains("PLAINS"))) {
+				}else if(p.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals("§2§lPotion of Giant Growth") && l.getWorld().getEnvironment().equals(Environment.NORMAL) && (l.getWorld().getBiome((int)l.getX(), (int)l.getY(), (int)l.getZ()).toString().contains("PLAINS"))) {
 					if(checkBlockRecipe(l,"REDSTONE_TORCH:REDSTONE_WIRE:REDSTONE_TORCH","REDSTONE_WIRE:CAMPFIRE:REDSTONE_WIRE","REDSTONE_TORCH:REDSTONE_WIRE:REDSTONE_TORCH",true)) {
 						e.setCancelled(true);
 						//boom(l,5,false);
@@ -2175,7 +2185,7 @@ public class BossLand extends JavaPlugin implements Listener{
 				inv.setItem(i,getItem(Material.GRAY_STAINED_GLASS_PANE, "§l", 1, null));
 			inv.setItem(4,s);
 			for(Enchantment c : Enchantment.values())
-				if(c != null && c.getName() != null && c.equals(Enchantment.MENDING) == false) {
+				if(c != null && c.getKey() != null && c.equals(Enchantment.MENDING) == false) {
 					ItemStack b = (getItem(Material.ENCHANTED_BOOK, "§eAdd Echantment", 1, null));
 					b.addUnsafeEnchantment(c, 1);
 					inv.addItem(b);
@@ -2403,7 +2413,7 @@ public class BossLand extends JavaPlugin implements Listener{
 					p.getWorld().strikeLightning(p.getLocation());
 					//Biome
 					final Location l = p.getLocation();
-					if(l.getWorld().getBiome((int)l.getX(), (int)l.getZ()).toString().contains("OCEAN") && l.getBlockY() <= getConfig().getInt("waterLevel")) {
+					if(l.getWorld().getBiome((int)l.getX(), (int)l.getY(), (int)l.getZ()).toString().contains("OCEAN") && l.getBlockY() <= getConfig().getInt("waterLevel")) {
 						takeItem(p,1);
 						boom(l,3,false);
 						p.sendMessage("§3§lThe Drowned God: §r§bYou will pay for that...");
@@ -2423,7 +2433,7 @@ public class BossLand extends JavaPlugin implements Listener{
 								spawnBoss(l,"AetherGod");
 							}
 						}, (40));
-					}else if(l.getWorld().getBiome((int)l.getX(), (int)l.getZ()).toString().contains("DESERT")) {
+					}else if(l.getWorld().getBiome((int)l.getX(), (int)l.getY(), (int)l.getZ()).toString().contains("DESERT")) {
 						takeItem(p,1);
 						//boom(l,2,false);
 						lightningShow(l,4);
@@ -2477,7 +2487,7 @@ public class BossLand extends JavaPlugin implements Listener{
 				}else if(s.getType().equals(Material.GOLDEN_CARROT) && s.getAmount() >= 16) {
 					Location l = ent.getLocation();
 					l.setY(l.getY()+1);
-					if(l.getWorld().getBiome((int)l.getX(), (int)l.getZ()).toString().contains("DESERT"))
+					if(l.getWorld().getBiome((int)l.getX(), (int)l.getY(), (int)l.getZ()).toString().contains("DESERT"))
 						if(l.getWorld().getEnvironment().equals(Environment.NORMAL) && checkBlockRecipe(l,"CARROTS:CARROTS:CARROTS","CARROTS:AIR:CARROTS","CARROTS:CARROTS:CARROTS",false)) {
 							//boom(l,2,false);
 							Location la = l.clone();
@@ -2502,7 +2512,7 @@ public class BossLand extends JavaPlugin implements Listener{
 			if(p.getInventory().getItemInMainHand().getAmount() > amount) {
 				p.getInventory().getItemInMainHand().setAmount(p.getInventory().getItemInMainHand().getAmount()-amount);
 			}else
-				p.getInventory().setItemInHand(null);
+				p.getInventory().setItemInMainHand(null);
 		}
 		
 		private void boom(final Location l, final int size, final boolean fire) {
@@ -2677,7 +2687,7 @@ public class BossLand extends JavaPlugin implements Listener{
 			try {
 				BossBar bar = bossMap.get(e);
 	        	float health = (float) ((Damageable) e).getHealth();
-	        	float maxHealth = (float) ((Damageable) e).getMaxHealth();
+	        	float maxHealth = (float) ((LivingEntity) e).getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
 	        	float setHealth = (health * 100.0f) / maxHealth;
 	        	bar.setProgress(setHealth/100.0f);
 			}catch(Exception x) {}
@@ -2687,9 +2697,9 @@ public class BossLand extends JavaPlugin implements Listener{
 			this.getLogger().log(Level.INFO, "Spawn Boss: " + bossType);
 			String entType =  getConfig().getString("bosses."+bossType+".entity");
 //			System.out.println("entType: " + entType);
-//			System.out.println("entType2: " + EntityType.fromName(entType));
+//			System.out.println("entType2: " + EntityType.valueOf(entType));
 //			System.out.println("entType3: " + EntityType.valueOf(entType));
-			Entity boss = l.getWorld().spawnEntity(l, EntityType.fromName(entType));
+			Entity boss = l.getWorld().spawnEntity(l, EntityType.valueOf(entType));
 			//Slime
 			if(boss instanceof Slime) {
 				((Slime)boss).setSize(10);
@@ -2797,10 +2807,10 @@ public class BossLand extends JavaPlugin implements Listener{
 			}
 			//Mount
 			if(getConfig().getString("bosses."+bossType+".mount") != null) {
-				LivingEntity mount = (LivingEntity) boss.getWorld().spawnEntity(boss.getLocation(), EntityType.fromName(getConfig().getString("bosses."+bossType+".mount")));
-				mount.setPassenger(boss);
+				LivingEntity mount = (LivingEntity) boss.getWorld().spawnEntity(boss.getLocation(), EntityType.valueOf(getConfig().getString("bosses."+bossType+".mount")));
+				mount.addPassenger(boss);
 				int h = getConfig().getInt("bosses."+bossType+".health");
-				mount.setMaxHealth(h);
+				mount.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(h);
 				mount.setHealth(h);
 				mount.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE,999*999,10));
 				if(mount.getType().equals(EntityType.BAT)) {
@@ -2809,10 +2819,10 @@ public class BossLand extends JavaPlugin implements Listener{
 					if(bossType.equals("AetherGod"))
 						mount.addPotionEffect(new PotionEffect(PotionEffectType.SLOW,999*999,2));
 				}
-				mount.setPersistent(true);
+				//mount.setPersistent(true);
 			}
 			//Stop Despawn
-			boss.setPersistent(true);
+			//boss.setPersistent(true);
 			//Save Boss 
 			saveFile.set("bosses."+boss.getUniqueId().toString(), bossType);
 			save();
@@ -2885,12 +2895,12 @@ public class BossLand extends JavaPlugin implements Listener{
             ee.setChestplateDropChance(0.0F);
             ee.setLeggingsDropChance(0.0F);
             ee.setBootsDropChance(0.0F);
-            ee.setItemInHandDropChance(0.0F);
+            ee.setItemInMainHandDropChance(0.0F);
             ee.setHelmet(helm);
             ee.setChestplate(chest);
             ee.setLeggings(pants);
             ee.setBoots(boots);
-            ee.setItemInHand(sword);
+            ee.setItemInMainHand(sword);
 		}
 	    
 		public void makeBoss(Entity ent, String bossType){
@@ -2899,8 +2909,9 @@ public class BossLand extends JavaPlugin implements Listener{
         	bar.setVisible(true);
 	    	bossMap.put(ent, bar);
 	    	int maxHP = getConfig().getInt("bosses."+bossType+".health");
-	    	if(((Damageable)ent).getMaxHealth() != maxHP){
-	    		((Damageable)ent).setMaxHealth(maxHP);
+	    	double maxHealth = ((LivingEntity) ent).getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
+	    	if(maxHealth != maxHP){
+	    		((LivingEntity)ent).getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(maxHP);
 	    		((Damageable)ent).setHealth(maxHP);
 	    	}
 	    	//Name
@@ -3009,16 +3020,7 @@ public class BossLand extends JavaPlugin implements Listener{
 	                setAmount = getIntFromString(setAmountString);
 	            } else
 	                setAmount = 1;
-	            //System.out.println("LOOT: " + setItem + "." + loot);
 	            ItemStack stack = new ItemStack(Material.valueOf(setItem.toUpperCase()), setAmount);
-	            if (this.getConfig().getString("bosses."+bossType+".loot." + loot + ".durability") != null) {
-	                String durabilityString = this.getConfig().getString("bosses."+bossType+".loot." + loot + ".durability");
-	                int durability = getIntFromString(durabilityString);
-	                stack.setDurability((short) durability);
-	            }
-				//Get Durability
-				if(getConfig().getString("bosses."+bossType+".loot." +loot + ".durability") != null)
-					stack.setDurability((short)getConfig().getInt("bosses."+bossType+".loot." + ".durability"));
 				//Texture
 	            if (stack.getType().equals(Material.PLAYER_HEAD)) {
 	                String tex = getConfig().getString("bosses."+bossType+".loot." + loot + ".texture");
@@ -3028,7 +3030,6 @@ public class BossLand extends JavaPlugin implements Listener{
 	            }
 				//Get Name
 				String name = null;
-				//System.out.println("1");
 				if(getConfig().getList("bosses."+bossType+".loot." +loot + ".name") != null){
 					//System.out.println("2");
 					ArrayList<String> names = (ArrayList<String>) getConfig().getList("bosses."+bossType+".loot." +loot + ".name");
@@ -3041,7 +3042,6 @@ public class BossLand extends JavaPlugin implements Listener{
 					name = getConfig().getString("bosses."+bossType+".loot." +loot + ".name") ;
 			        name = prosessLootName(name, stack);
 				}
-				//System.out.println("4");
 				//Get Lore
 				ArrayList<String> loreList = new ArrayList<String>();
 				for(int i = 0; i <= 10; i++) {
@@ -3072,10 +3072,19 @@ public class BossLand extends JavaPlugin implements Listener{
 				}
 				//System.out.println("8");
 	            ItemMeta meta = stack.getItemMeta();
+	            //Durability
+	            if (this.getConfig().getString("bosses."+bossType+".loot." + loot + ".durability") != null) {
+	                String durabilityString = this.getConfig().getString("bosses."+bossType+".loot." + loot + ".durability");
+	                int durability = getIntFromString(durabilityString);
+	                ((org.bukkit.inventory.meta.Damageable)meta).setDamage(durability);
+	                //stack.setDurability((short) durability);
+	            }
+	            //Name
 	            if (name != null) {
 	                meta.setDisplayName(name);
 					//System.out.println("9");
 	            }
+	            //Lore
 	            if (!loreList.isEmpty()) {
 	                meta.setLore(loreList);
 					//System.out.println("10");
@@ -3136,7 +3145,7 @@ public class BossLand extends JavaPlugin implements Listener{
 	                String owner = getConfig().getString("bosses."+bossType+".loot." + loot + ".owner");
 	            	if(owner != null) {
 		                SkullMeta sm = (SkullMeta) stack.getItemMeta();
-		                sm.setOwner(owner);
+		                sm.setOwningPlayer(Bukkit.getOfflinePlayer(owner));
 		                stack.setItemMeta(sm);
 		            }
 	            }
@@ -3181,11 +3190,11 @@ public class BossLand extends JavaPlugin implements Listener{
 
 	                            String levelString = this.getConfig().getString("bosses."+bossType+".loot." + loot + ".enchantments." + j + ".level");
 	                            int level = getIntFromString(levelString);
-	                            if (Enchantment.getByName(enchantment) != null) {
+	                            if (Enchantment.getByKey(NamespacedKey.minecraft(enchantment)) != null) {
 	                                if (level < 1) {
 	                                    level = 1;
 	                                }
-	                                LevelledEnchantment le = new LevelledEnchantment(Enchantment.getByName(enchantment), level);
+	                                LevelledEnchantment le = new LevelledEnchantment(Enchantment.getByKey(NamespacedKey.minecraft(enchantment)), level);
 
 	                                boolean con = false;
 	                                for (LevelledEnchantment testE : enchList) {
@@ -3411,7 +3420,8 @@ public class BossLand extends JavaPlugin implements Listener{
 	    private void addDeathNote() {
 	    	//God Fruit
 	    	ItemStack item = getDeathItem();
-	    	ShapedRecipe sr = new ShapedRecipe(item);
+	    	NamespacedKey key = new NamespacedKey(this, "death_note");
+	    	ShapedRecipe sr = new ShapedRecipe(key, item);
 			sr.shape("SSS", "SAS", "SSS");
 			sr.setIngredient('S', Material.NETHER_STAR);
 			sr.setIngredient('A', Material.ENCHANTED_BOOK);
@@ -3421,7 +3431,8 @@ public class BossLand extends JavaPlugin implements Listener{
 	    private void addDevilFruit() {
 	    	//God Fruit
 	    	ItemStack item = getDevilItem();
-	    	ShapedRecipe sr = new ShapedRecipe(item);
+	    	NamespacedKey key = new NamespacedKey(this, "devil_fruit");
+	    	ShapedRecipe sr = new ShapedRecipe(key, item);
 			sr.shape("ASA", "SGS", "ASA");
 			sr.setIngredient('S', Material.FIRE_CORAL);
 			sr.setIngredient('G', Material.ENCHANTED_GOLDEN_APPLE);
@@ -3431,7 +3442,8 @@ public class BossLand extends JavaPlugin implements Listener{
 	    private void addGodFruit() {
 	    	//God Fruit
 	    	ItemStack item = getGodItem();
-	    	ShapedRecipe sr = new ShapedRecipe(item);
+	    	NamespacedKey key = new NamespacedKey(this, "god_fruit");
+	    	ShapedRecipe sr = new ShapedRecipe(key, item);
 			sr.shape("GGG", "GFG", "ABC");
 			sr.setIngredient('G', Material.GOLD_BLOCK);
 			sr.setIngredient('F', Material.APPLE);
@@ -3444,7 +3456,8 @@ public class BossLand extends JavaPlugin implements Listener{
 	    private void addIllagerBell() {
 	    	//Illager Bell
 	    	ItemStack bell = getIllagerItem();
-	    	ShapedRecipe sr = new ShapedRecipe(bell);
+	    	NamespacedKey key = new NamespacedKey(this, "illager_bell");
+	    	ShapedRecipe sr = new ShapedRecipe(key, bell);
 			sr.shape("GGG", "ABC", "GGG");
 			sr.setIngredient('G', Material.GOLD_INGOT);
 			sr.setIngredient('A', Material.QUARTZ);
@@ -3456,7 +3469,8 @@ public class BossLand extends JavaPlugin implements Listener{
 	    private void addWizardBook() {
 	    	//Illager Bell
 	    	ItemStack item = getWizardItem();
-	    	ShapedRecipe sr = new ShapedRecipe(item);
+	    	NamespacedKey key = new NamespacedKey(this, "wizard_book");
+	    	ShapedRecipe sr = new ShapedRecipe(key, item);
 			sr.shape("LLL", "APB", "PPP");
 			sr.setIngredient('L', Material.LEATHER);
 			sr.setIngredient('P', Material.PAPER);
@@ -3468,7 +3482,8 @@ public class BossLand extends JavaPlugin implements Listener{
 	    private void addGiantPotion() {
 	    	//Giant Potion
 	    	ItemStack item = getGiantIem();
-	    	ShapedRecipe sr = new ShapedRecipe(item);
+	    	NamespacedKey key = new NamespacedKey(this, "giant_potion");
+	    	ShapedRecipe sr = new ShapedRecipe(key, item);
 			sr.shape("GGG", "ABC", "GWG");
 			sr.setIngredient('G', Material.GLASS);
 			sr.setIngredient('W', Material.WATER_BUCKET);
@@ -3481,7 +3496,8 @@ public class BossLand extends JavaPlugin implements Listener{
 	    private void addDragonEgg() {
 	    	//Giant Potion
 	    	ItemStack item = getGiantIem();
-	    	ShapedRecipe sr = new ShapedRecipe(item);
+	    	NamespacedKey key = new NamespacedKey(this, "dragon_egg");
+	    	ShapedRecipe sr = new ShapedRecipe(key, item);
 			sr.shape("OOO", "OAO", "OBO");
 			sr.setIngredient('O', Material.OBSIDIAN);
 			sr.setIngredient('A', Material.QUARTZ);
