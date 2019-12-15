@@ -1,0 +1,1009 @@
+bossRange: 35
+waterLevel: 40
+skyLevel: 200
+bosses:
+  "GhastLord":
+    entity: GHAST
+    minion: BLAZE
+    dropedXP: 6000
+    name: "§f§lGhast Lord"
+    health: 500
+    specialChance: 10
+    potionChance: 20
+    maxSpecial: 10
+    amountSpecial2: 5
+    attackParticle: "FLAME:0:3:0.3"
+    deathParticle: "CLOUD:1:25:0"
+    barColor: "WHITE"
+    barStyle: "SOLID"
+    hurtPotions:
+      - "LEVITATION:1:15"
+      - "FIRE:1:25"
+    loot:
+      1:
+        item: fire_charge
+        amount: 32-64
+      2:
+        item: ENCHANTED_GOLDEN_APPLE
+        amount: 4-8
+      3:
+        item: quartz
+        amount: 1
+        name: "&f&lWhite Boss Shard"
+        lore1: "&8Dropped by the Gast Lord"
+        enchantments: 
+          1:
+            enchantment: LOYALTY
+            level: 1
+      4:
+        item: GOLDEN_SWORD
+        amount: 1
+        name: "&cFlame Sword"
+        minEnchantments: 3
+        maxEnchantments: 6
+        enchantments: 
+          0:
+            enchantment: DURABILITY
+            level: 10-15
+            chance: 100
+          1:
+            enchantment: DAMAGE_ALL
+            level: 5-15
+            chance: 25
+          2:
+            enchantment: FIRE_ASPECT
+            level: 5-15
+            chance: 25
+          3:
+            enchantment: LOOT_BONUS_MOBS
+            level: 5-15
+            chance: 25
+          4:
+            enchantment: MENDINGs
+            level: 5-15
+            chance: 25
+      '5':
+        item: BOW
+        amount: 1
+        durability: 10
+        name: '&cFlame &6Bow'
+        lore1: '&eShoots fire to the heavens!'
+        minEnchantments: 3
+        maxEnchantments: 5
+        enchantments:
+          1:
+            enchantment: ARROW_INFINITE
+            level: 1
+            chance: 100
+          2:
+            enchantment: ARROW_FIRE
+            level: 10
+            chance: 100
+          3:
+            enchantment: MENDINGs
+            level: 5-15
+            chance: 50
+          4:
+            enchantment: DURABILITY
+            level: 10-15
+            chance: 50
+          5:
+            enchantment: DAMAGE_ALL
+            level: 5-15
+            chance: 50
+  "KingSlime":
+    entity: SLIME
+    minion: SLIME
+    dropedXP: 5000
+    name: "§a§lKing Slime"
+    health: 1000
+    specialChance: 10
+    potionChance: 20
+    maxSpecial: 10
+    deathParticle: "SLIME:1:25:5"
+    barColor: "GREEN"
+    barStyle: "SOLID"
+    hurtPotions:
+      - "WEAKNESS:3:10"
+      - "SLOW:1:25"
+    loot:
+      0:
+        item: leather_boots
+        amount: 1
+        name: "&a&lSlime Boots"
+        lore1: "&8Dropped by the Slime King"
+        colour: "102,255,102"
+        enchantments: 
+          1:
+            enchantment: PROTECTION_FALL
+            level: 10
+          2:
+            enchantment: DURABILITY
+            level: 10
+          3:
+            enchantment: PROTECTION_ENVIRONMENTAL
+            level: 10
+          4:
+            enchantment: MENDING
+            level: 10
+      1:
+        item: SLIME_BLOCK
+        amount: 32-64
+      2:
+        item: GREEN_DYE
+        amount: 1
+        name: "&a&lGreen Boss Shard"
+        lore1: "&8Dropped by the Slime King"
+        enchantments: 
+          1:
+            enchantment: LOYALTY
+            level: 1
+  "KillerBunny":
+    entity: RABBIT
+    minion: RABBIT
+    dropedXP: 3000
+    name: "§7§lKiller Bunny"
+    health: 300
+    specialChance: 30
+    potionChance: 20
+    maxSpecial: 10
+    deathParticle: "CLOUD:1:25:0"
+    attackParticle: "FLAME:0:3:0.6"
+    barColor: "RED"
+    barStyle: "SEGMENTED_6"
+    hurtPotions:
+      - "JUMP:3:15"
+      - "CONFUSION:1:15"
+    loot:
+      0:
+        item: ENCHANTED_GOLDEN_APPLE
+        amount: 8-16
+      1:
+        item: clay_ball
+        amount: 1
+        name: "&7&lGrey Boss Shard"
+        lore1: "&8Dropped by the Killer Bunny"
+        enchantments: 
+          1:
+            enchantment: LOYALTY
+            level: 1
+      2:
+        item: leather_pants
+        amount: 1
+        name: "&7&lBunny Pants"
+        lore1: "&8Dropped by the Killer Bunny"
+        colour: "191, 191, 191"
+        enchantments: 
+          2:
+            enchantment: DURABILITY
+            level: 10
+          3:
+            enchantment: PROTECTION_ENVIRONMENTAL
+            level: 10
+          4:
+            enchantment: MENDING
+            level: 10
+  "PapaPanda":
+    entity: Panda
+    minion: Panda
+    dropedXP: 4000
+    name: "§6§lPapa Panda"
+    health: 1000
+    specialChance: 25
+    specal2DMG: 6
+    potionChance: 20
+    maxSpecial: 9
+    deathParticle: "CLOUD:1:25:0"
+    barColor: "GREEN"
+    barStyle: "SEGMENTED_6"
+    hurtPotions:
+      - "CONFUSION:3:15"
+    loot:
+      0:
+        item: brown_dye
+        amount: 1
+        name: "&4&lBrown Boss Shard"
+        lore1: "&8Dropped by Papa Panda"
+        enchantments: 
+          1:
+            enchantment: LOYALTY
+            level: 1
+      1:
+        item: leather_pants
+        amount: 1
+        name: "&f&lPanda Pants"
+        lore1: "&8Dropped by the Papa Panda"
+        colour: "255,255,255"
+        enchantments: 
+          2:
+            enchantment: DURABILITY
+            level: 10
+          3:
+            enchantment: PROTECTION_ENVIRONMENTAL
+            level: 10
+          4:
+            enchantment: MENDING
+            level: 10
+  "WitherSkeletonKing":
+    entity: WITHER_SKELETON
+    mount: SKELETON_HORSE
+    minion: SKELETON
+    dropedXP: 4000
+    name: "§8§lWither Skeleton King"
+    health: 1000
+    specialChance: 10
+    potionChance: 20
+    maxSpecial: 8
+    amountSpecial2: 3
+    deathParticle: "SMOKE_NORMAL:1:25:0"
+    attackParticle: "SMOKE_NORMAL:0:2:0.2"
+    barColor: "WHITE"
+    barStyle: "SEGMENTED_10"
+    hurtPotions:
+      - "WITHER:1:15"
+      - "BLINDNESS:1:5"
+    loot:
+      0:
+        item: COAL
+        amount: 1
+        name: "&8&lBlack Boss Shard"
+        lore1: "&8Dropped by the Wither Skeleton King"
+        enchantments: 
+          1:
+            enchantment: LOYALTY
+            level: 1
+      1:
+        item: DIAMOND_SWORD
+        amount: 1
+        name:
+        - '&c&lNether Sword'
+        - '&c&lWither Sword'
+        - '&c&lGhast Sword'
+        - '&c&lMagma Sword'
+        enchantments:
+          '1':
+            enchantment: DAMAGE_ALL
+            level: 5-15
+            chance: 15
+          '2':
+            enchantment: DURABILITY
+            level: 5-15
+            chance: 25
+          '3':
+            enchantment: KNOCKBACK
+            level: 5-10
+            chance: 25
+          '4':
+            enchantment: DAMAGE_UNDEAD
+            level: 5-15
+            chance: 15
+          '5':
+            enchantment: FIRE_ASPECT
+            level: 5-15
+            chance: 15
+          '6':
+            enchantment: LOOT_BONUS_MOBS
+            level: 5-15
+            chance: 15
+          '7':
+            enchantment: MENDING
+            level: 5-15
+            chance: 15
+      2:
+        item: DIAMOND_HELMET
+        amount: 1
+        name: '&8&lDeath Mask'
+        lore1: '&8Breath death itself!'
+        enchantments:
+          1:
+            enchantment: THORNS
+            level: 10-20
+          2:
+            enchantment: OXYGEN
+            level: 1
+          3:
+            enchantment: DURABILITY
+            level: 10-20
+          4:
+            enchantment: MENDING
+            level: 10-20
+          5:
+            enchantment: PROTECTION_ENVIRONMENTAL
+            level: 10-15
+  "ZombieKing":
+    entity: ZOMBIE
+    mount: ZOMBIE_HORSE
+    minion: ZOMBIE
+    minionMount: CHICKEN
+    dropedXP: 4000
+    name: "§2§lZombie King"
+    health: 1000
+    specialChance: 10
+    potionChance: 20
+    maxSpecial: 9
+    amountSpecial2: 3
+    deathParticle: "SMOKE_NORMAL:1:25:0"
+    attackParticle: "SMOKE_NORMAL:0:2:0.2"
+    barColor: "WHITE"
+    barStyle: "SEGMENTED_10"
+    hurtPotions:
+      - "WITHER:1:15"
+      - "BLINDNESS:1:5"
+    loot:
+      0:
+        item: red_dye
+        amount: 1
+        name: "&c&lRed Boss Shard"
+        lore1: "&8Dropped by the Zombie King"
+        enchantments: 
+          1:
+            enchantment: LOYALTY
+            level: 1
+      1:
+        item: DIAMOND_PICKAXE
+        amount: 1
+        name: "&2&lPick of the Undead"
+        lore1: "&8Dropped by the Zombie King"
+        minEnchantments: 2
+        maxEnchantments: 4
+        enchantments: 
+          0:
+            enchantment: MENDING
+            level: 8-15
+            chance: 25
+          1:
+            enchantment: DURABILITY
+            level: 8-15
+            chance: 25
+          2:
+            enchantment: DIG_SPEED
+            level: 8-15
+            chance: 25
+          3:
+            enchantment: LOOT_BONUS_BLOCKS
+            level: 8-15
+            chance: 25
+      2:
+        item: DIAMOND_SHOVEL
+        amount: 1
+        name: "&2&lGrave Digger"
+        lore1: "&8Dropped by the Zombie King"
+        minEnchantments: 2
+        maxEnchantments: 4
+        enchantments: 
+          0:
+            enchantment: MENDING
+            level: 8-15
+            chance: 25
+          10:
+            enchantment: DURABILITY
+            level: 8-15
+            chance: 25
+          2:
+            enchantment: DIG_SPEED
+            level: 8-15
+            chance: 25
+          3:
+            enchantment: LOOT_BONUS_BLOCKS
+            level: 8-15
+            chance: 25
+      3:
+        item: DIAMOND_AXE
+        amount: 1
+        name: "&2&lThe Headmans Axe"
+        lore1: "&8Dropped by the Zombie King"
+        minEnchantments: 3
+        maxEnchantments: 5
+        enchantments: 
+          0:
+            enchantment: MENDING
+            level: 8-15
+            chance: 25
+          1:
+            enchantment: DURABILITY
+            level: 8-15
+            chance: 25
+          2:
+            enchantment: DIG_SPEED
+            level: 8-15
+            chance: 25
+          3:
+            enchantment: LOOT_BONUS_BLOCKS
+            level: 8-15
+            chance: 25
+          4:
+            enchantment: DAMAGE_ALL
+            level: 8-15
+            chance: 25
+  "EvilWizard":
+    entity: ILLUSIONER
+    minion: ENDERMITE
+    minion3: Witch
+    dropedXP: 8000
+    name: "§9§lEvil Wizard"
+    health: 2000
+    specialChance: 20
+    potionChance: 20
+    maxSpecial: 12
+    deathParticle: "CRIT_MAGIC:1:25:0"
+    attackParticle: "CRIT_MAGIC:0:3:0.2"
+    barColor: "BLUE"
+    barStyle: "SEGMENTED_10"
+    hurtPotions:
+      - "SLOW:2:30"
+    attackPotions:
+      - "HARM:2"
+      - "POISON:2"
+    loot:
+      0: 
+        item: LAPIS_LAZULI
+        amount: 1
+        name: "&9&lBlue Boss Shard"
+        lore1: "&8Dropped by the Evil Wizard"
+        enchantments: 
+          1:
+            enchantment: LOYALTY
+            level: 1
+      1:
+        item: enchanted_book
+        amount: 1
+        enchantments: 
+          1:
+            enchantment: MENDING
+            level: 5
+      2:
+        item: diamond_block
+        amount: 16-32
+      3: 
+        item: ENCHANTED_BOOK
+        amount: 1
+        name: "&5&lMagic Book"
+        lore1: "&8Use when all hope is lost"
+        enchantments: 
+          1:
+            enchantment: LOYALTY
+            level: 1
+  "IllagerKing":
+    entity: EVOKER
+    minion: Pillager
+    minion2: Vex
+    minion3: Vindicator
+    dropedXP: 10000
+    name: "§6§lKing of the Illagers"
+    health: 2000
+    mount: Ravager
+    specialChance: 10
+    potionChance: 15
+    maxSpecial: 6
+    deathParticle: "SPELL_MOB:1:25:0"
+    attackParticle: "SPELL_MOB:0:4:0.2"
+    barColor: "YELLOW"
+    barStyle: "SEGMENTED_10"
+    hurtPotions:
+      - "HUNGER:1:15"
+    attackPotions:
+      - "HARM:2"
+    loot:
+      0: 
+        item: yellow_dye
+        amount: 1
+        name: "&6&lGold Boss Shard"
+        lore1: "&8Dropped by the Illager King"
+        enchantments: 
+          1:
+            enchantment: LOYALTY
+            level: 1
+      1:
+        item: enchanted_book
+        amount: 1
+        enchantments: 
+          1:
+            enchantment: MENDING
+            level: 5
+      2:
+        item: emerald_block
+        amount: 32-64
+      3:
+        item: DIAMOND_CHESTPLATE
+        amount: 1
+        name: "&7&lPlate of Death"
+        lore1: "&8Dropped by the Illager King"
+        enchantments: 
+          0:
+            enchantment: MENDING
+            level: 8-20
+          1:
+            enchantment: DURABILITY
+            level: 8-20
+          2:
+            enchantment: PROTECTION_ENVIRONMENTAL
+            level: 8-20
+          3:
+            enchantment: PROTECTION_PROJECTILE
+            level: 8-15
+          4:
+            enchantment: PROTECTION_EXPLOSIONS
+            level: 8-15
+  "Giant":
+    entity: GIANT
+    minion: Zombie
+    minion2: Zombie
+    minion2Mount: ZOMBIE_HORSE
+    minion3: Skeleton
+    minion3Mount: SKELETONE_HORSE
+    dropedXP: 10000
+    name: "§2§lGiant"
+    health: 2000
+    specialChance: 50
+    special2Damage: 25
+    potionChance: 20
+    maxSpecial: 6
+    deathParticle: "EXPLOSION_LARGE:1:8:5"
+    attackParticle: "CAMPFIRE_COSY_SMOKE:0:1:0"
+    barColor: "GREEN"
+    barStyle: "SEGMENTED_10"
+    hurtPotions:
+      - "HUNGER:1:15"
+    loot:
+      0: 
+        item: emerald
+        amount: 1
+        name: "&a&lEmerald Boss Shard"
+        lore1: "&8Dropped by the Giant"
+        enchantments: 
+          1:
+            enchantment: LOYALTY
+            level: 1
+      1:
+        item: DIAMOND_PICKAXE
+        amount: 1
+        name: "&7&lGiant's Pick"
+        lore1: "&8Dropped by the Giant"
+        enchantments: 
+          1:
+            enchantment: DURABILITY
+            level: 8-10
+          2:
+            enchantment: DIG_SPEED
+            level: 5-10
+      2:
+        item: DIAMOND_SHOVEL
+        amount: 1
+        name: "&7&lGiant's Spade"
+        lore1: "&8Dropped by the Giant"
+        enchantments: 
+          1:
+            enchantment: DURABILITY
+            level: 8-10
+          2:
+            enchantment: DIG_SPEED
+            level: 5-10
+  "DrownedGod":
+    entity: Drowned
+    minion: Drowned
+    minion4Mount: Dolphin
+    amountSpecial3: 3
+    dropedXP: 20000
+    name: "§b§lThe Drowned God"
+    health: 2048
+    specialChance: 20
+    potionChance: 33
+    maxSpecial: 25
+    deathParticle: "BUBBLE_COLUMN_UP:1:25:0"
+    attackParticle: "BUBBLE_COLUMN_UP:0:4:0.2"
+    auraParticle: "WATER_SPLASH:0:12:0.9"
+    barColor: "BLUE"
+    barStyle: "SEGMENTED_20"
+    hurtPotions:
+      - "CONFUSION:5:10"
+    loot:
+      0: 
+        item: TRIDENT
+        amount: 1
+        name: "&3&lTrident of Ultimate Power"
+        lore1: "&8His lightnings lit up the world"
+        lore2: "&8The earth saw and trembled"
+        enchantments: 
+          1:
+            enchantment: CHANNELING
+            level: 10
+          2:
+            enchantment: DURABILITY
+            level: 10
+          3:
+            enchantment: IMPALING
+            level: 10
+          4:
+            enchantment: LOYALTY
+            level: 10
+          5:
+            enchantment: MENDING
+            level: 10
+          6:
+            enchantment: DAMAGE_ALL
+            level: 10
+      1: 
+        item: TRIDENT
+        amount: 1
+        name: "&3&lTrident of Ultimate Speed"
+        lore1: "&8The rains fall on the"
+        lore2: "&8wicked and the good alike"
+        enchantments: 
+          1:
+            enchantment: RIPTIDE
+            level: 10
+          2:
+            enchantment: DURABILITY
+            level: 10
+          3:
+            enchantment: IMPALING
+            level: 10
+          4:
+            enchantment: MENDING
+            level: 10
+          5:
+            enchantment: DAMAGE_ALL
+            level: 10
+      2:
+        item: DIAMOND_HELMET
+        amount: 1
+        name: "&3&lDrowned Helm"
+        lore1: "&8What is dead may never die"
+        lore2: "&8but rises again, harder and stronger"
+        enchantments: 
+          0:
+            enchantment: MENDING
+            level: 15-25
+          1:
+            enchantment: DURABILITY
+            level: 15-25
+          2:
+            enchantment: PROTECTION_ENVIRONMENTAL
+            level: 15-25
+          3:
+            enchantment: PROTECTION_PROJECTILE
+            level: 15-25
+          4:
+            enchantment: PROTECTION_EXPLOSIONS
+            level: 15-25
+          5:
+            enchantment: OXYGEN
+            level: 15-25
+          6:
+            enchantment: WATER_WORKER
+            level: 15-25
+  "PharaohGod":
+    entity: WITHER_SKELETON
+    minion: Husk
+    minion3: WITHER_SKELETON
+    minion4: WITHER_SKELETON
+    amountSpecial2: 3
+    amountSpecial3: 2
+    amountSpecial4: 1
+    specialDamage3: 10
+    dropedXP: 20000
+    name: "§0§lThe Pharaoh God"
+    health: 2048
+    specialChance: 20
+    special3Chance: 10
+    minionChance: 20
+    potionChance: 33
+    maxSpecial: 25
+    deathParticle: "SMOKE_LARGE:1:25:0"
+    attackParticle: "SMOKE_LARGE:0:4:0.2"
+    auraParticle: "SMOKE_LARGE:0:2:0.9"
+    barColor: "YELLOW"
+    barStyle: "SEGMENTED_20"
+    hurtPotions:
+      - "HUNGER:5:10"
+    loot:
+      0: 
+        item: PLAYER_HEAD
+        amount: 1
+        name: "&e&lThe Cursed Skull"
+        lore1: "&8Immortality, a fate worse than death"
+        texture: "http://textures.minecraft.net/texture/4ad0476e8671696af3a8949afa2a814b9bdde65eccd1a8b593aeeff5a0318d"
+        enchantments: 
+          1:
+            enchantment: LOYALTY
+            level: 1
+      1: 
+        item: BLAZE_ROD
+        amount: 1
+        name: "&e&lStaff of Brimstone"
+        lore1: "&8Rain upon them fire and brimstone"
+        lore2: "&8Their ruin will be great"
+        enchantments: 
+          1:
+            enchantment: LOYALTY
+            level: 1
+      2:
+        item: DIAMOND_BOOTS
+        amount: 1
+        name: "&6&lSwiftfoot Boots"
+        lore1: "&8Prowl like a roaring lion"
+        lore2: "&8seeking who you may devour"
+        enchantments: 
+          0:
+            enchantment: MENDING
+            level: 15-25
+          1:
+            enchantment: DURABILITY
+            level: 15-25
+          2:
+            enchantment: PROTECTION_ENVIRONMENTAL
+            level: 15-25
+          3:
+            enchantment: PROTECTION_PROJECTILE
+            level: 15-25
+          4:
+            enchantment: PROTECTION_EXPLOSIONS
+            level: 15-25
+          4:
+            enchantment: PROTECTION_FALL
+            level: 15-25
+  "AetherGod":
+    entity: SKELETON
+    minion: VEX
+    minion2: Phantom
+    minion3: SKELETON
+    minion4: SKELETON
+    minion4Mount: Phantom
+    amountSpecial: 3
+    amountSpecial2: 1
+    amountSpecial4: 3
+    specialDamage3: 6
+    dropedXP: 20000
+    name: "§b§lThe Aether God"
+    health: 2048
+    specialChance: 30
+    minionChance: 20
+    potionChance: 30
+    maxSpecial: 25
+    deathParticle: "CLOUD:1:25:0"
+    attackParticle: "CLOUD:0:4:0.2"
+    attackParticle2: "CLOUD:0:1:0"
+    auraParticle: "CLOUD:0:12:0.4"
+    minionAuraParticle: "CLOUD:0:1:0.3"
+    barColor: "WHITE"
+    barStyle: "SEGMENTED_20"
+    hurtPotions:
+      - "HUNGER:5:10"
+    loot:
+      0:
+        item: DIAMOND_CHESTPLATE
+        amount: 1
+        name: "&lZephyr Wings"
+        lore1: "&8Soft the zephyr blows, While "
+        lore2: "&8proudly riding o'er the azure realm"
+        enchantments: 
+          0:
+            enchantment: MENDING
+            level: 15-25
+          1:
+            enchantment: DURABILITY
+            level: 15-25
+          2:
+            enchantment: PROTECTION_ENVIRONMENTAL
+            level: 15-25
+          3:
+            enchantment: PROTECTION_PROJECTILE
+            level: 15-25
+          4:
+            enchantment: PROTECTION_EXPLOSIONS
+            level: 15-25
+      1: 
+        item: END_ROD
+        amount: 1
+        name: "&lStaff of Control"
+        lore1: "&8Mode: Shard"
+        lore2: "&8(Sneak/Click to Change)"
+        enchantments: 
+          1:
+            enchantment: LOYALTY
+            level: 1
+      2:
+        item: BOW
+        amount: 1
+        name: "&lZephyr Bow"
+        lore1: "&8Hushed in grim repose,"
+        lore2: "&8expects his evening prey"
+        enchantments: 
+          0:
+            enchantment: MENDING
+            level: 15-25
+          1:
+            enchantment: DURABILITY
+            level: 15-25
+          2:
+            enchantment: ARROW_DAMAGE
+            level: 15-25
+          3:
+            enchantment: ARROW_INFINITE
+            level: 1
+          4:
+            enchantment: PIERCING
+            level: 15-25
+  "Demon":
+    entity: WITHER_SKELETON
+    minion: Husk
+    minion2: Husk
+    minion3: SKELETON
+    minion4: SKELETON
+    amountSpecial: 3
+    dropedXP: 20000
+    name: "§c§lDemon"
+    health: 1111
+    specialChance: 35
+    minionChance: 20
+    potionChance: 33
+    specialDamage: 18
+    maxSpecial: 25
+    deathParticle: "FLAME:1:25:0"
+    attackParticle: "FLAME:0:3:0.2"
+    auraParticle: "FLAME:0:5:0.5"
+    tpParticle: "FLAME:0:20:0.7"
+    barColor: "RED"
+    barStyle: "SEGMENTED_10"
+    hurtPotions:
+      - "SLOW:1:30"
+    loot:
+      0: 
+        item: fire_coral
+        amount: 1
+        name: "&c&lDemonic Shard"
+        lore1: "&8Dropped by a demon"
+        enchantments: 
+          1:
+            enchantment: LOYALTY
+            level: 1
+      1:
+        item: DIAMOND_AXE
+        amount: 1
+        name: '&c&lDemonic Axe'
+        enchantments:
+          '1':
+            enchantment: DAMAGE_ALL
+            level: 10-30
+          '2':
+            enchantment: DURABILITY
+            level: 10-30
+          '3':
+            enchantment: KNOCKBACK
+            level: 5-10
+          '4':
+            enchantment: DAMAGE_UNDEAD
+            level: 10-15
+          '5':
+            enchantment: FIRE_ASPECT
+            level: 10-15
+          '6':
+            enchantment: LOOT_BONUS_MOBS
+            level: 10-30
+          '7':
+            enchantment: MENDING
+            level: 1
+  "Devil":
+    entity: ZOMBIE_PIGMAN
+    minion: ZOMBIE_PIGMAN
+    minion2: ZOMBIE_PIGMAN
+    minion3: ZOMBIE_PIGMAN
+    minion4: WITHER_SKELETON
+    minion3Mount: BAT
+    amountSpecial: 3
+    dropedXP: 20000
+    name: "§c§lThe Devil"
+    health: 2048
+    specialChance: 35
+    minionChance: 20
+    potionChance: 25
+    maxSpecial: 25
+    specialDamage2: 30
+    specialDamage3: 10
+    deathParticle: "FLAME:1:25:0"
+    attackParticle: "FLAME:0:3:0.2"
+    auraParticle: "FLAME:0:3:0.9"
+    minionAuraParticle: "FLAME:0:1:0.3"
+    barColor: "RED"
+    barStyle: "SEGMENTED_20"
+    hurtPotions:
+      - "FIRE:1:60"
+      - "CONFUSION:5:30"
+    loot:
+      0:
+        item: DIAMOND_LEGGINGS
+        amount: 1
+        name: "&c&lDevil's Greaves"
+        lore1: "&8Prowl like a roaring lion"
+        lore2: "&8seeking who you may devour"
+        enchantments: 
+          0:
+            enchantment: MENDING
+            level: 15-25
+          1:
+            enchantment: DURABILITY
+            level: 15-25
+          2:
+            enchantment: PROTECTION_ENVIRONMENTAL
+            level: 15-25
+          3:
+            enchantment: PROTECTION_PROJECTILE
+            level: 15-25
+          4:
+            enchantment: PROTECTION_EXPLOSIONS
+            level: 15-25
+      1: 
+        item: ENCHANTED_BOOK
+        amount: 1
+        name: "&c&lBook of Knowledge"
+        lore1: "&8When you read thereof"
+        lore2: "&8your eyes will be opened" 
+        lore3: "&8you will be like God"
+        enchantments: 
+          1:
+            enchantment: LOYALTY
+            level: 1
+  "Death":
+    entity: WITHER_SKELETON
+    minion: VEX
+    minion2: Shulker
+    minion3: ZOMBIE
+    minion4: ZOMBIE
+    amountSpecial: 3
+    specialDamage2: 6
+    dropedXP: 20000
+    name: "§5§lDeath"
+    health: 2048
+    specialChance: 40
+    minionChance: 30
+    potionChance: 30
+    maxSpecial: 25
+    specialDamage2: 10
+    specialDamage3: 2
+    deathParticle: "DRAGON_BREATH:1:25:0"
+    attackParticle: "DRAGON_BREATH:0:3:0.2"
+    auraParticle: "DRAGON_BREATH:0:3:0.9"
+    minionAuraParticle: "DRAGON_BREATH:0:1:0.3"
+    barColor: "PURPLE"
+    barStyle: "SEGMENTED_20"
+    hurtPotions:
+      - "WITHER:3:15"
+      - "BLINDNESS:0:8"
+    loot:
+      0:
+        item: DIAMOND_SWORD
+        amount: 1
+        name: '&5&lEnd Blade'
+        lore1: "The blade to end all"
+        enchantments:
+          '1':
+            enchantment: DAMAGE_ALL
+            level: 15-25
+          '2':
+            enchantment: DURABILITY
+            level: 15-25
+          '3':
+            enchantment: KNOCKBACK
+            level: 15-25
+          '4':
+            enchantment: DAMAGE_UNDEAD
+            level: 15-25
+          '5':
+            enchantment: FIRE_ASPECT
+            level: 15-25
+          '6':
+            enchantment: LOOT_BONUS_MOBS
+            level: 15-25
+          '7':
+            enchantment: MENDING
+            level: 1
+      1: 
+        item: IRON_HOE
+        amount: 1
+        name: "&5&lScythe of Death"
+        lore1: "life and death are one"
+        lore2: "even as the river and the sea are one" 
+        enchantments: 
+          '1':
+            enchantment: DURABILITY
+            level: 999

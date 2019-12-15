@@ -1,0 +1,13 @@
+name: BossLand
+main: io.hotmail.com.jacob_vejvoda.BossLand.BossLand
+version: 0.1
+api-version: 1.13
+author: Eliminator
+
+commands:
+  bossland:
+    aliases: [bl]
+    description: Base Boss Land command.
+    usage: /<command>
+    permission: bl.cmds
+    permission-message: You don't have <permission>
