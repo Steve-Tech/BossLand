@@ -1460,13 +1460,13 @@ public class BossLand extends JavaPlugin implements Listener{
 				        ItemStack boots = new ItemStack(Material.CHAINMAIL_BOOTS, 1);
 				        EntityEquipment ee = ((LivingEntity) minion).getEquipment();
 						if(phase == 2) {
-							ItemStack head = getHead("Vaporeon","Fish Man Head");
+							ItemStack head = getHead("d5f9d66b-8c46-48d6-aaba-8f67072c9668","Fish Man Head");//"Vaporeon"
 				            ee.setHelmet(head);
 				            ee.setChestplate(chest);
 				            ee.setLeggings(pants);
 				            ee.setBoots(boots);
 						}else if(phase == 3) {
-							ItemStack head = getHead("MinerByTrade","Squid Man Head");
+							ItemStack head = getHead("b7191c02-8966-4e56-bacd-36990ad7bb27","Squid Man Head");//"MinerByTrade"
 				            ee.setHelmet(head);
 				            chest.addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 2);
 				            ee.setChestplate(chest);
@@ -1476,7 +1476,7 @@ public class BossLand extends JavaPlugin implements Listener{
 				            ee.setBoots(boots);
 				            ee.setItemInMainHand(hand);
 						}else if(phase == 4) {
-							ItemStack head = getHead("ELF_PUNSHER","Cthulhu Man Head");
+							ItemStack head = getHead("ac819439-ecf8-4040-aa32-48b3eb251243","Cthulhu Man Head");//"ELF_PUNSHER"
 				            ee.setHelmet(head);
 				            chest.addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 4);
 				            ee.setChestplate(chest);
@@ -1540,7 +1540,7 @@ public class BossLand extends JavaPlugin implements Listener{
 							minion.addPotionEffect(new PotionEffect(PotionEffectType.SPEED,999*999,1));
 							minion.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE,999*999,2));
 						}else if(phase == 3) {
-							ItemStack head = getHead("Ryse93_YT","Sky Knight Head");
+							ItemStack head = getHead("b182e3c7-1560-4573-abda-4e4b91b806e5","Sky Knight Head");//"Ryse93_YT"
 							minion.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE,999*999,4));
 				            ee.setHelmet(head);
 				            chest.addUnsafeEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 5);
@@ -2718,7 +2718,7 @@ public class BossLand extends JavaPlugin implements Listener{
 				((Panda)boss).setMainGene(Gene.AGGRESSIVE);
 			}else if(bossType.equals("DrownedGod")) {
 				equipMob(boss, "DIAMOND");
-				ItemStack head = getHead("LeftShark","§b§lDrowned God's Head");
+				ItemStack head = getHead("5cf625ba-8f8e-4069-bcfe-af5fbb35a3f4","§b§lDrowned God's Head");//"LeftShark"
 				ItemStack hand = new ItemStack(Material.TRIDENT);
 		        EntityEquipment ee = ((LivingEntity) boss).getEquipment();
 		        ee.setItemInMainHandDropChance(0.0F);
@@ -2727,7 +2727,7 @@ public class BossLand extends JavaPlugin implements Listener{
 		        //((LivingEntity) boss).addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE,999*999,2));
 			}else if(bossType.equals("PharaohGod")) {
 				equipMob(boss, "GOLDEN");
-				ItemStack head = getHead("Sam1_6","§6§lPharaoh God's Head");
+				ItemStack head = getHead("73917135-da9d-4fd1-b032-158a7d1d03d1","§6§lPharaoh God's Head");//"Sam1_6"
 				ItemStack hand = new ItemStack(Material.BLAZE_ROD);
 				hand.addUnsafeEnchantment(Enchantment.KNOCKBACK, 5);
 				hand.addUnsafeEnchantment(Enchantment.DAMAGE_ALL, 10);
@@ -2740,7 +2740,7 @@ public class BossLand extends JavaPlugin implements Listener{
 			}else if(bossType.equals("AetherGod")) {
 				//System.out.println("Aether God 1");
 				equipMob(boss, "DIAMOND");
-				ItemStack head = getHead("jeb_","§lAether God's Head");
+				ItemStack head = getHead("853c80ef-3c37-49fd-aa49-938b674adae6","§lAether God's Head");//"jeb_"
 				ItemStack hand = new ItemStack(Material.BOW);
 				hand.addUnsafeEnchantment(Enchantment.ARROW_DAMAGE, 10);
 				hand.addUnsafeEnchantment(Enchantment.ARROW_KNOCKBACK, 3);
@@ -3145,7 +3145,7 @@ public class BossLand extends JavaPlugin implements Listener{
 	                String owner = getConfig().getString("bosses."+bossType+".loot." + loot + ".owner");
 	            	if(owner != null) {
 		                SkullMeta sm = (SkullMeta) stack.getItemMeta();
-		                sm.setOwningPlayer(Bukkit.getOfflinePlayer(owner));
+		                sm.setOwningPlayer(Bukkit.getOfflinePlayer(UUID.fromString(owner)));
 		                stack.setItemMeta(sm);
 		            }
 	            }
@@ -3154,7 +3154,7 @@ public class BossLand extends JavaPlugin implements Listener{
 	                if (stack.getType().equals(Material.POTION) || stack.getType().equals(Material.SPLASH_POTION) || stack.getType().equals(Material.LINGERING_POTION)) {
 	                    PotionMeta pMeta = (PotionMeta) stack.getItemMeta();
 	                    String pn = getConfig().getString("bosses."+bossType+".loot." + loot + ".potion");
-	                    pMeta.setBasePotionData(new PotionData(PotionType.getByEffect(PotionEffectType.getByName(pn)), false, false));
+	                    pMeta.setBasePotionData(new PotionData(PotionType.valueOf(pn), false, false));
 	                    stack.setItemMeta(pMeta);
 	                }
 	            int enchAmount = 0;
@@ -3328,9 +3328,9 @@ public class BossLand extends JavaPlugin implements Listener{
 						ci.setResult(null);
 				}else if (ci.getResult().getItemMeta().getDisplayName().contains("§5§lDeath Note")) {
 					//Death Note
-					System.out.println("1F");
+					//System.out.println("1F");
 					if(!ci.getItem(5).getItemMeta().getDisplayName().equals("§c§lBook of Knowledge")) {
-						System.out.println("2F");
+						//System.out.println("2F");
 						ci.setResult(null);
 					}
 				}
@@ -3338,9 +3338,15 @@ public class BossLand extends JavaPlugin implements Listener{
 		  }
 		
 		public ItemStack getHead(String owner, String name) {
+			//Test for UUID
+			if(UUID.fromString(owner) == null) {
+				this.getLogger().log(Level.SEVERE, "Invalid skin found: " + owner + " please notify plugin author!");
+				owner = "3506994a-bc90-427d-bdda-be06e992aed9";
+			}
+			//Get Skin
 			ItemStack stack = new ItemStack(Material.PLAYER_HEAD);
             SkullMeta sm = (SkullMeta) stack.getItemMeta();
-            sm.setOwner(owner);
+            sm.setOwningPlayer(Bukkit.getOfflinePlayer(UUID.fromString(owner)));
             sm.setDisplayName(prosessLootName(name, stack));
             stack.setItemMeta(sm);
             return stack;

@@ -10,7 +10,7 @@ bosses:
     health: 500
     specialChance: 10
     potionChance: 20
-    maxSpecial: 10
+    maxSpecial: 10bo
     amountSpecial2: 5
     attackParticle: "FLAME:0:3:0.3"
     deathParticle: "CLOUD:1:25:0"
@@ -43,11 +43,11 @@ bosses:
         maxEnchantments: 6
         enchantments: 
           0:
-            enchantment: DURABILITY
+            enchantment: unbreaking
             level: 10-15
             chance: 100
           1:
-            enchantment: DAMAGE_ALL
+            enchantment: sharpness
             level: 5-15
             chance: 25
           2:
@@ -55,7 +55,7 @@ bosses:
             level: 5-15
             chance: 25
           3:
-            enchantment: LOOT_BONUS_MOBS
+            enchantment: looting
             level: 5-15
             chance: 25
           4:
@@ -65,14 +65,14 @@ bosses:
       '5':
         item: BOW
         amount: 1
-        durability: 10
+        unbreaking: 10
         name: '&cFlame &6Bow'
         lore1: '&eShoots fire to the heavens!'
         minEnchantments: 3
         maxEnchantments: 5
         enchantments:
           1:
-            enchantment: ARROW_INFINITE
+            enchantment: infinity
             level: 1
             chance: 100
           2:
@@ -84,11 +84,11 @@ bosses:
             level: 5-15
             chance: 50
           4:
-            enchantment: DURABILITY
+            enchantment: unbreaking
             level: 10-15
             chance: 50
           5:
-            enchantment: DAMAGE_ALL
+            enchantment: sharpness
             level: 5-15
             chance: 50
   "KingSlime":
@@ -115,13 +115,13 @@ bosses:
         colour: "102,255,102"
         enchantments: 
           1:
-            enchantment: PROTECTION_FALL
+            enchantment: feather_falling
             level: 10
           2:
-            enchantment: DURABILITY
+            enchantment: unbreaking
             level: 10
           3:
-            enchantment: PROTECTION_ENVIRONMENTAL
+            enchantment: protection
             level: 10
           4:
             enchantment: MENDING
@@ -175,10 +175,10 @@ bosses:
         colour: "191, 191, 191"
         enchantments: 
           2:
-            enchantment: DURABILITY
+            enchantment: unbreaking
             level: 10
           3:
-            enchantment: PROTECTION_ENVIRONMENTAL
+            enchantment: protection
             level: 10
           4:
             enchantment: MENDING
@@ -216,10 +216,10 @@ bosses:
         colour: "255,255,255"
         enchantments: 
           2:
-            enchantment: DURABILITY
+            enchantment: unbreaking
             level: 10
           3:
-            enchantment: PROTECTION_ENVIRONMENTAL
+            enchantment: protection
             level: 10
           4:
             enchantment: MENDING
@@ -262,11 +262,11 @@ bosses:
         - '&c&lMagma Sword'
         enchantments:
           '1':
-            enchantment: DAMAGE_ALL
+            enchantment: sharpness
             level: 5-15
             chance: 15
           '2':
-            enchantment: DURABILITY
+            enchantment: unbreaking
             level: 5-15
             chance: 25
           '3':
@@ -274,7 +274,7 @@ bosses:
             level: 5-10
             chance: 25
           '4':
-            enchantment: DAMAGE_UNDEAD
+            enchantment: smite
             level: 5-15
             chance: 15
           '5':
@@ -282,7 +282,7 @@ bosses:
             level: 5-15
             chance: 15
           '6':
-            enchantment: LOOT_BONUS_MOBS
+            enchantment: looting
             level: 5-15
             chance: 15
           '7':
@@ -299,16 +299,16 @@ bosses:
             enchantment: THORNS
             level: 10-20
           2:
-            enchantment: OXYGEN
+            enchantment: respiration
             level: 1
           3:
-            enchantment: DURABILITY
+            enchantment: unbreaking
             level: 10-20
           4:
             enchantment: MENDING
             level: 10-20
           5:
-            enchantment: PROTECTION_ENVIRONMENTAL
+            enchantment: protection
             level: 10-15
   "ZombieKing":
     entity: ZOMBIE
@@ -352,15 +352,15 @@ bosses:
             level: 8-15
             chance: 25
           1:
-            enchantment: DURABILITY
+            enchantment: unbreaking
             level: 8-15
             chance: 25
           2:
-            enchantment: DIG_SPEED
+            enchantment: efficiency
             level: 8-15
             chance: 25
           3:
-            enchantment: LOOT_BONUS_BLOCKS
+            enchantment: fortune
             level: 8-15
             chance: 25
       2:
@@ -376,15 +376,15 @@ bosses:
             level: 8-15
             chance: 25
           10:
-            enchantment: DURABILITY
+            enchantment: unbreaking
             level: 8-15
             chance: 25
           2:
-            enchantment: DIG_SPEED
+            enchantment: efficiency
             level: 8-15
             chance: 25
           3:
-            enchantment: LOOT_BONUS_BLOCKS
+            enchantment: fortune
             level: 8-15
             chance: 25
       3:
@@ -400,19 +400,19 @@ bosses:
             level: 8-15
             chance: 25
           1:
-            enchantment: DURABILITY
+            enchantment: unbreaking
             level: 8-15
             chance: 25
           2:
-            enchantment: DIG_SPEED
+            enchantment: efficiency
             level: 8-15
             chance: 25
           3:
-            enchantment: LOOT_BONUS_BLOCKS
+            enchantment: fortune
             level: 8-15
             chance: 25
           4:
-            enchantment: DAMAGE_ALL
+            enchantment: sharpness
             level: 8-15
             chance: 25
   "EvilWizard":
@@ -513,16 +513,16 @@ bosses:
             enchantment: MENDING
             level: 8-20
           1:
-            enchantment: DURABILITY
+            enchantment: unbreaking
             level: 8-20
           2:
-            enchantment: PROTECTION_ENVIRONMENTAL
+            enchantment: protection
             level: 8-20
           3:
-            enchantment: PROTECTION_PROJECTILE
+            enchantment: projectile_protection
             level: 8-15
           4:
-            enchantment: PROTECTION_EXPLOSIONS
+            enchantment: blast_protection
             level: 8-15
   "Giant":
     entity: GIANT
@@ -561,10 +561,10 @@ bosses:
         lore1: "&8Dropped by the Giant"
         enchantments: 
           1:
-            enchantment: DURABILITY
+            enchantment: unbreaking
             level: 8-10
           2:
-            enchantment: DIG_SPEED
+            enchantment: efficiency
             level: 5-10
       2:
         item: DIAMOND_SHOVEL
@@ -573,10 +573,10 @@ bosses:
         lore1: "&8Dropped by the Giant"
         enchantments: 
           1:
-            enchantment: DURABILITY
+            enchantment: unbreaking
             level: 8-10
           2:
-            enchantment: DIG_SPEED
+            enchantment: efficiency
             level: 5-10
   "DrownedGod":
     entity: Drowned
@@ -608,7 +608,7 @@ bosses:
             enchantment: CHANNELING
             level: 10
           2:
-            enchantment: DURABILITY
+            enchantment: unbreaking
             level: 10
           3:
             enchantment: IMPALING
@@ -620,7 +620,7 @@ bosses:
             enchantment: MENDING
             level: 10
           6:
-            enchantment: DAMAGE_ALL
+            enchantment: sharpness
             level: 10
       1: 
         item: TRIDENT
@@ -633,7 +633,7 @@ bosses:
             enchantment: RIPTIDE
             level: 10
           2:
-            enchantment: DURABILITY
+            enchantment: unbreaking
             level: 10
           3:
             enchantment: IMPALING
@@ -642,7 +642,7 @@ bosses:
             enchantment: MENDING
             level: 10
           5:
-            enchantment: DAMAGE_ALL
+            enchantment: sharpness
             level: 10
       2:
         item: DIAMOND_HELMET
@@ -655,22 +655,22 @@ bosses:
             enchantment: MENDING
             level: 15-25
           1:
-            enchantment: DURABILITY
+            enchantment: unbreaking
             level: 15-25
           2:
-            enchantment: PROTECTION_ENVIRONMENTAL
+            enchantment: protection
             level: 15-25
           3:
-            enchantment: PROTECTION_PROJECTILE
+            enchantment: projectile_protection
             level: 15-25
           4:
-            enchantment: PROTECTION_EXPLOSIONS
+            enchantment: blast_protection
             level: 15-25
           5:
-            enchantment: OXYGEN
+            enchantment: respiration
             level: 15-25
           6:
-            enchantment: WATER_WORKER
+            enchantment: aqua_affinity
             level: 15-25
   "PharaohGod":
     entity: WITHER_SKELETON
@@ -728,19 +728,19 @@ bosses:
             enchantment: MENDING
             level: 15-25
           1:
-            enchantment: DURABILITY
+            enchantment: unbreaking
             level: 15-25
           2:
-            enchantment: PROTECTION_ENVIRONMENTAL
+            enchantment: protection
             level: 15-25
           3:
-            enchantment: PROTECTION_PROJECTILE
+            enchantment: projectile_protection
             level: 15-25
           4:
-            enchantment: PROTECTION_EXPLOSIONS
+            enchantment: blast_protection
             level: 15-25
           4:
-            enchantment: PROTECTION_FALL
+            enchantment: feather_falling
             level: 15-25
   "AetherGod":
     entity: SKELETON
@@ -781,16 +781,16 @@ bosses:
             enchantment: MENDING
             level: 15-25
           1:
-            enchantment: DURABILITY
+            enchantment: unbreaking
             level: 15-25
           2:
-            enchantment: PROTECTION_ENVIRONMENTAL
+            enchantment: protection
             level: 15-25
           3:
-            enchantment: PROTECTION_PROJECTILE
+            enchantment: projectile_protection
             level: 15-25
           4:
-            enchantment: PROTECTION_EXPLOSIONS
+            enchantment: blast_protection
             level: 15-25
       1: 
         item: END_ROD
@@ -813,13 +813,13 @@ bosses:
             enchantment: MENDING
             level: 15-25
           1:
-            enchantment: DURABILITY
+            enchantment: unbreaking
             level: 15-25
           2:
-            enchantment: ARROW_DAMAGE
+            enchantment: power
             level: 15-25
           3:
-            enchantment: ARROW_INFINITE
+            enchantment: infinity
             level: 1
           4:
             enchantment: PIERCING
@@ -863,22 +863,22 @@ bosses:
         name: '&c&lDemonic Axe'
         enchantments:
           '1':
-            enchantment: DAMAGE_ALL
+            enchantment: sharpness
             level: 10-30
           '2':
-            enchantment: DURABILITY
+            enchantment: unbreaking
             level: 10-30
           '3':
             enchantment: KNOCKBACK
             level: 5-10
           '4':
-            enchantment: DAMAGE_UNDEAD
+            enchantment: smite
             level: 10-15
           '5':
             enchantment: FIRE_ASPECT
             level: 10-15
           '6':
-            enchantment: LOOT_BONUS_MOBS
+            enchantment: looting
             level: 10-30
           '7':
             enchantment: MENDING
@@ -921,16 +921,16 @@ bosses:
             enchantment: MENDING
             level: 15-25
           1:
-            enchantment: DURABILITY
+            enchantment: unbreaking
             level: 15-25
           2:
-            enchantment: PROTECTION_ENVIRONMENTAL
+            enchantment: protection
             level: 15-25
           3:
-            enchantment: PROTECTION_PROJECTILE
+            enchantment: projectile_protection
             level: 15-25
           4:
-            enchantment: PROTECTION_EXPLOSIONS
+            enchantment: blast_protection
             level: 15-25
       1: 
         item: ENCHANTED_BOOK
@@ -977,22 +977,22 @@ bosses:
         lore1: "The blade to end all"
         enchantments:
           '1':
-            enchantment: DAMAGE_ALL
+            enchantment: sharpness
             level: 15-25
           '2':
-            enchantment: DURABILITY
+            enchantment: unbreaking
             level: 15-25
           '3':
             enchantment: KNOCKBACK
             level: 15-25
           '4':
-            enchantment: DAMAGE_UNDEAD
+            enchantment: smite
             level: 15-25
           '5':
             enchantment: FIRE_ASPECT
             level: 15-25
           '6':
-            enchantment: LOOT_BONUS_MOBS
+            enchantment: looting
             level: 15-25
           '7':
             enchantment: MENDING
@@ -1005,5 +1005,5 @@ bosses:
         lore2: "even as the river and the sea are one" 
         enchantments: 
           '1':
-            enchantment: DURABILITY
+            enchantment: unbreaking
             level: 999
