@@ -29,7 +29,7 @@ bosses:
       3:
         item: quartz
         amount: 1
-        name: "&f&lWhite Boss Shard"
+        name: "&lWhite Boss Shard"
         lore1: "&8Dropped by the Gast Lord"
         enchantments: 
           1:
@@ -211,7 +211,7 @@ bosses:
       1:
         item: leather_pants
         amount: 1
-        name: "&f&lPanda Pants"
+        name: "&lPanda Pants"
         lore1: "&8Dropped by the Papa Panda"
         colour: "255,255,255"
         enchantments: 

@@ -113,6 +113,9 @@ import com.mojang.authlib.properties.Property;
 public class BossLand extends JavaPlugin implements Listener{
 		File saveYML = new File(getDataFolder(), "save.yml");
 		YamlConfiguration saveFile = YamlConfiguration.loadConfiguration(saveYML); 
+		
+		File langYML = new File(getDataFolder(), "lang.yml");
+		YamlConfiguration langFile = YamlConfiguration.loadConfiguration(langYML); 
 	
 		HashMap<Entity, BossBar> bossMap = new HashMap<Entity, BossBar>();
 		HashMap<Entity, Entity> targetMap = new HashMap<Entity, Entity>();
@@ -140,6 +143,16 @@ public class BossLand extends JavaPlugin implements Listener{
 	      			e.printStackTrace();
 	      		}
 	      	}
+	      	//Register Lang
+	        if (!langYML.exists()) {
+	            this.getLogger().log(Level.INFO, "No lang.yml found, generating...");
+	            //Generate Lang
+                this.saveResource("lang.yml", false);
+                //new File(this.getDataFolder(), "lang.yml").renameTo(new File(this.getDataFolder(), "lang.yml"));
+                this.getLogger().log(Level.INFO, Bukkit.getVersion() + " Lang successfully generated!");
+	            reloadLang();
+	        }
+	      	//Metrics
 			try {
 			    Metrics metrics = new Metrics(this);
 			    metrics.start();
@@ -148,6 +161,51 @@ public class BossLand extends JavaPlugin implements Listener{
 			}
 			addRecipes();
 	    	timer();
+	    }
+	    
+	    private void reloadLang() {
+	        if (this.langYML == null) {
+	            this.langYML = new File(getDataFolder(), "lang.yml");
+	        }
+	        this.langFile = YamlConfiguration.loadConfiguration(this.langYML);
+
+	        YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(langYML);
+	        this.langFile.setDefaults(defConfig);
+	    }
+	    
+	    private String getBossItemName(String b, int l) {
+	    	String s = getConfig().getString("bosses."+b+".loot."+l+".name").replace("&", "§");
+	    	return s;
+	    }
+	    
+	    private String getLang(String s) {
+	    	if(langFile.getString(s) == null) {
+	    		this.getLogger().log(Level.SEVERE, "Error with Lang file!");
+		    	System.out.print("Looking for path: " + s);
+		    	System.out.print("Found: " + langFile.getString(s));
+	    		langFile.set(s,"Missing!");
+	    		try {
+					langFile.save(langYML);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				};
+	    	}
+	    	return langFile.getString(s).replace("&", "§");
+	    }
+	    
+	    @SuppressWarnings("unchecked")
+		private ArrayList<String> getLangList(String s) {
+	    	ArrayList<String> list = (ArrayList<String>) langFile.getList(s);
+	    	if(list == null || list.isEmpty()) {
+	    		this.getLogger().log(Level.SEVERE, "Error with Lang file!");
+		    	System.out.print("Looking for list path: " + s);
+		    	System.out.print("Found: " + langFile.getString(s));
+	    	}
+	    	ArrayList<String> list2 = new ArrayList<String>();
+	    	for(String l : list)
+	    		list2.add(l.replace("&", "§"));
+	    	return list2;
 	    }
 	    
 	    @SuppressWarnings({ "unchecked" })
@@ -170,15 +228,15 @@ public class BossLand extends JavaPlugin implements Listener{
 	    			if(!p.isDead()){
 	    				//Potion Effects
 	    				try {
-	    					if(p.getInventory().getLeggings().getItemMeta().getDisplayName().equals("§lPanda Pants")) {
+	    					if(p.getInventory().getLeggings().getItemMeta().getDisplayName().equals(getBossItemName("PapaPanda",1))) {
 	    						p.removePotionEffect(PotionEffectType.SPEED);
 	    						p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED,20*5,3));
 	    						repairItem(p.getInventory().getLeggings());
-	    					}else if(p.getInventory().getLeggings().getItemMeta().getDisplayName().equals("§7&lBunny Pants")) {
+	    					}else if(p.getInventory().getLeggings().getItemMeta().getDisplayName().equals(getBossItemName("KillerBunny",2))) {
 	    						p.removePotionEffect(PotionEffectType.JUMP);
 	    						p.addPotionEffect(new PotionEffect(PotionEffectType.JUMP,20*5,3));
 	    						repairItem(p.getInventory().getLeggings());
-	    					}else if(p.getInventory().getLeggings().getItemMeta().getDisplayName().equals("§c§lDevil's Greaves")) {
+	    					}else if(p.getInventory().getLeggings().getItemMeta().getDisplayName().equals(getBossItemName("Devil",0))) {
 	    						p.removePotionEffect(PotionEffectType.FIRE_RESISTANCE);
 	    						p.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE,20*5,3));
 	    						//p.removePotionEffect(PotionEffectType.ABSORPTION);
@@ -187,7 +245,7 @@ public class BossLand extends JavaPlugin implements Listener{
 	    					}
 	    				}catch(Exception x2){}
 	    				try {
-	    					if(p.getInventory().getChestplate().getItemMeta().getDisplayName().equals("§lZephyr Wings")) {
+	    					if(p.getInventory().getChestplate().getItemMeta().getDisplayName().equals(getBossItemName("AetherGod",0))) {
 	    						p.removePotionEffect(PotionEffectType.SLOW_FALLING);
 	    						p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING,20*5,3));
 //	    						p.removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
@@ -198,7 +256,7 @@ public class BossLand extends JavaPlugin implements Listener{
 	    					}
 	    				}catch(Exception x2){}
 	    				try {
-	    					if(p.getInventory().getBoots().getItemMeta().getDisplayName().equals("§6§lSwiftfoot Boots")) {
+	    					if(p.getInventory().getBoots().getItemMeta().getDisplayName().equals(getBossItemName("PharaohGod",2))) {
 	    						p.removePotionEffect(PotionEffectType.FAST_DIGGING);
 	    						p.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING,20*5,2));
 	    						p.removePotionEffect(PotionEffectType.JUMP);
@@ -209,7 +267,7 @@ public class BossLand extends JavaPlugin implements Listener{
 	    					}
 	    				}catch(Exception x2){}
 	    				try {
-	    					if(p.getInventory().getHelmet().getItemMeta().getDisplayName().equals("§3§lDrowned Helm")) {
+	    					if(p.getInventory().getHelmet().getItemMeta().getDisplayName().equals(getBossItemName("DrownedGod",2))) {
 	    						p.removePotionEffect(PotionEffectType.CONDUIT_POWER);
 	    						p.addPotionEffect(new PotionEffect(PotionEffectType.CONDUIT_POWER,20*5,0));
 	    						p.removePotionEffect(PotionEffectType.DOLPHINS_GRACE);
@@ -281,9 +339,9 @@ public class BossLand extends JavaPlugin implements Listener{
 				if(e.getEntity().getShooter() instanceof Player) {
 					//Check For Trident
 					Player p = (Player) e.getEntity().getShooter();
-					if(p.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals("§3§lTrident of Ultimate Power")) {
+					if(p.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals(getBossItemName("DrownedGod",0))) {
 						lightningList.add(e.getEntity());
-					}else if(p.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals("§lZephyr Bow")) {
+					}else if(p.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals(getBossItemName("AetherGod",2))) {
 						Arrow a = (Arrow) e.getEntity();
 						a.setGlowing(true);
 						a.setBasePotionData(new PotionData(PotionType.SLOWNESS));
@@ -304,9 +362,9 @@ public class BossLand extends JavaPlugin implements Listener{
 			Player p = e.getPlayer();
 			try {
 				List<Material> list = Arrays.asList(Material.DIRT, Material.GRASS_BLOCK, Material.GRASS_PATH, Material.GRAVEL, Material.SAND, Material.RED_SAND, Material.SOUL_SAND, Material.FARMLAND, Material.CLAY, Material.MYCELIUM,Material.PODZOL,Material.COARSE_DIRT,Material.SNOW_BLOCK,Material.SNOW);
-				if(p.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals("§7§lGiant's Pick")) {
+				if(p.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals(getBossItemName("Giant",1))) {
 					dig(p,e.getBlock().getLocation(), 2, list, false);
-				}else if(p.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals("§7§lGiant's Spade")) {
+				}else if(p.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals(getBossItemName("Giant",2))) {
 					dig(p,e.getBlock().getLocation(), 2, list, true);
 				}
 			}catch (Exception x) {}
@@ -361,7 +419,7 @@ public class BossLand extends JavaPlugin implements Listener{
 				final Player p = (Player) e.getEntity();
 				//Slime Boots
 				try {
-					if(e.getCause().equals(DamageCause.FALL) && p.getInventory().getBoots().getItemMeta().getDisplayName().contains("§a§lSlime Boots")) {
+					if(e.getCause().equals(DamageCause.FALL) && p.getInventory().getBoots().getItemMeta().getDisplayName().contains(getBossItemName("KingSlime",0))) {
 						e.setCancelled(true);
 						Vector v = p.getVelocity();
 						//System.out.println("DMG: " + e.getDamage());
@@ -378,7 +436,7 @@ public class BossLand extends JavaPlugin implements Listener{
 					}
 				}catch (Exception x) {}
 				try {
-					if((!e.isCancelled()) && (!diedList.contains(p.getUniqueId())) && p.getInventory().getItemInOffHand().getItemMeta().getDisplayName().equals("§e§lThe Cursed Skull")) {
+					if((!e.isCancelled()) && (!diedList.contains(p.getUniqueId())) && p.getInventory().getItemInOffHand().getItemMeta().getDisplayName().equals(getBossItemName("PharaohGod",0))) {
 						//System.out.println("D2: " + p.getHealth() + " : " +  e.getFinalDamage());
 						if(checkDeath(p,e.getFinalDamage())) {
 							e.setCancelled(true);
@@ -1092,7 +1150,7 @@ public class BossLand extends JavaPlugin implements Listener{
 		private boolean checkDeath(final Player p, double fd) {
 			if((p.getHealth() - fd) <= 0) {
 				//System.out.println("D3");
-				p.sendMessage("§6§lYour curse may not be so easily lifted...");
+				p.sendMessage(getLang("curse"));
 				double maxHealth = ((LivingEntity) p).getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
 				p.setHealth(maxHealth);
 				p.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION,10*40,1));
@@ -1902,7 +1960,7 @@ public class BossLand extends JavaPlugin implements Listener{
 			for(ItemStack s : p.getInventory())
 				if(s != null)
 					try {
-						if(s.getItemMeta().getDisplayName().equals("§lStaff of Control")) {
+						if(s.getItemMeta().getDisplayName().equals(getBossItemName("AetherGod",1))) {
 							String[] sp = s.getItemMeta().getLore().get(0).split(": ");
 							return sp[1].trim();
 						}
@@ -1914,7 +1972,7 @@ public class BossLand extends JavaPlugin implements Listener{
 			for(ItemStack s : p.getInventory())
 				if(s != null)
 					try {
-						if(s.getItemMeta().getDisplayName().equals("§5§lDeath Note")) {
+						if(s.getItemMeta().getDisplayName().equals(getBossItemName("Death",1))) {
 							if(s.getAmount() > 1) {
 								s.setAmount(s.getAmount()-1);
 							}else
@@ -1939,11 +1997,11 @@ public class BossLand extends JavaPlugin implements Listener{
 		public void onBlockPlace(BlockPlaceEvent e) {
 //			Player p = e.getPlayer();
 			try {
-				if(e.getItemInHand().getItemMeta().getDisplayName().equals("§e§lThe Cursed Skull")) {
+				if(e.getItemInHand().getItemMeta().getDisplayName().equals(getBossItemName("PharaohGod",0))) {
 					e.setCancelled(true);
-				}else if(e.getItemInHand().getItemMeta().getDisplayName().equals("§lStaff of Control")) {
+				}else if(e.getItemInHand().getItemMeta().getDisplayName().equals(getBossItemName("AetherGod",1))) {
 					e.setCancelled(true);
-				}else if(e.getItemInHand().getItemMeta().getDisplayName().equals("§5§lDeath Note")) {
+				}else if(e.getItemInHand().getItemMeta().getDisplayName().equals(getLang("items.deathnote"))) {
 					e.setCancelled(true);
 				}
 //				if(p.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals("§e§lThe Cursed Skull") || p.getInventory().getItemInOffHand().getItemMeta().getDisplayName().equals("§e§lThe Cursed Skull")) {
@@ -2059,7 +2117,7 @@ public class BossLand extends JavaPlugin implements Listener{
 								}
 							}, (10));
 						}else
-							p.sendMessage("§c§lYou have not the power to summon me...");
+							p.sendMessage(getLang("noPower"));
 					}
 				}
 				//System.out.println("Is Shard: " + isShard(p.getInventory().getItemInMainHand()));
@@ -2070,7 +2128,7 @@ public class BossLand extends JavaPlugin implements Listener{
 					return;
 				}
 				//Boss Items
-				if(p.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals("§5§lMagic Book")) {
+				if(p.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals(getBossItemName("EvilWizard",3))) {
 					//Magic Book Use
 					if(p.getBedSpawnLocation() != null){
 						//Take Book
@@ -2092,25 +2150,25 @@ public class BossLand extends JavaPlugin implements Listener{
 						if(took >= count) {
 							p.teleport(p.getBedSpawnLocation());
 							p.getWorld().playSound(p.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 1,1);
-							p.sendMessage("§eYou have returned to your bed.");
+							p.sendMessage(getLang("bed"));
 							cool(p.getUniqueId());
 						}else {
-							p.sendMessage("§cYou are out of books!");
+							p.sendMessage(getLang("books"));
 							if(took > 0)
 								p.getInventory().addItem(new ItemStack(Material.BOOK,took));
 						}
 					}else
-						p.sendMessage("§cThere is not to lay thy head!");
-				}else if(p.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals("§3§lTrident of Ultimate Speed")) {
+						p.sendMessage(getLang("noBed"));
+				}else if(p.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals(getBossItemName("DrownedGod",1))) {
 					if((!p.getLocation().getBlock().getType().equals(Material.WATER)) && (!p.getWorld().hasStorm())){
 						getServer().dispatchCommand(Bukkit.getConsoleSender(), "weather rain");
 						cool(p.getUniqueId());
 					}
-				}else if(p.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals("§e§lStaff of Brimstone")) {
+				}else if(p.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals(getBossItemName("PharaohGod",1))) {
 					Projectile f = p.launchProjectile(LargeFireball.class);
 					makeTrail(f,"SMOKE_LARGE:0:4:0.2");
 					cool(p.getUniqueId());
-				}else if(p.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals("§lStaff of Control")) {
+				}else if(p.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals(getBossItemName("AetherGod",1))) {
 					String mode = getStaffMode(p);
 					if(p.isSneaking()) {
 						//Mode Change
@@ -2130,15 +2188,15 @@ public class BossLand extends JavaPlugin implements Listener{
 						m.setLore(lore);
 						s.setItemMeta(m);
 						p.getInventory().setItemInMainHand(s);
-						p.sendMessage("§eControl Staff: §fMode set to " + nMode);
+						p.sendMessage(getLang("modeChange") + nMode);
 					}else {
 						controlCheck(p);
 					}
 					cool(p.getUniqueId());
-				}else if(p.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals("§c§lBook of Knowledge")) {
+				}else if(p.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals(getLang("items.knowledgebook"))) {
 					openKnowledgBook(p);
-				}else if(p.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals("§5§lDeath Note")) {
-					p.sendMessage("§5§lEnter a Name:");
+				}else if(p.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals(getLang("items.deathnote"))) {
+					p.sendMessage(getLang("deathQ"));
 					deathList.add(p.getUniqueId());
 					cool(p.getUniqueId());
 				}
@@ -2164,14 +2222,14 @@ public class BossLand extends JavaPlugin implements Listener{
 							 vic.damage(999*999);
 						 }
 					 }, 5L);
-					 p.sendMessage("§5§lIt has been done.");
+					 p.sendMessage(getLang("deathPass"));
 				 }else
-					 p.sendMessage("§5§lNo mortal found with that name.");
+					 p.sendMessage(getLang("deathFail"));
 			 }
 		 }
 		
 		private void openKnowledgBook(Player p){
-			Inventory inv = getServer().createInventory(p, 9, "§0§lBook of Knowledge");
+			Inventory inv = getServer().createInventory(p, 9, getLang("items.knowledgebook"));
 			inv.setItem(2,getItem(Material.ENCHANTED_BOOK, "§eEnchant", 1, null));
 			inv.setItem(6,getItem(Material.BOOK, "§cDisEnchant", 1, null));
 			for(int i : Arrays.asList(0,1,3,5,7,8))
@@ -2215,7 +2273,7 @@ public class BossLand extends JavaPlugin implements Listener{
 		    Player p = (Player)e.getWhoClicked();
 		    try{
 		    	String n = e.getCurrentItem().getItemMeta().getDisplayName();
-		    	if (name.contains("§0§lBook of Knowledge")) {
+		    	if (name.contains(getLang("items.knowledgebook"))) {
 		    		if (n.equals("§eEnchant")) {
 			    		e.setCancelled(true);
 			    		noList.add(p.getUniqueId());
@@ -2225,7 +2283,7 @@ public class BossLand extends JavaPlugin implements Listener{
 		    			if(s != null) {
 		    				openEnchantGUI(p,s);
 		    			}else
-		    				p.sendMessage("§cNo Item Set!");
+		    				p.sendMessage(getLang("noItem"));
 		    		}else if (n.equals("§cDisEnchant")) {
 			    		e.setCancelled(true);
 			    		noList.add(p.getUniqueId());
@@ -2235,7 +2293,7 @@ public class BossLand extends JavaPlugin implements Listener{
 		    			if(s != null) {
 		    				openDisEnchantGUI(p,s);
 		    			}else
-		    				p.sendMessage("§cNo Item Set!");
+		    				p.sendMessage(getLang("noItem"));
 		    		}else if (n.equals("§l")) {
 			    		e.setCancelled(true);
 		    		}
@@ -2251,7 +2309,7 @@ public class BossLand extends JavaPlugin implements Listener{
 		    				for (Map.Entry<Enchantment, Integer> hm : e.getCurrentItem().getEnchantments().entrySet())
 		    					s.addUnsafeEnchantment(hm.getKey(), lvl);
 		    			}else {
-		    				p.sendMessage("§cYou need " + need + " XP levels for that!");
+		    				p.sendMessage(getLang("needXP").replace("<xp>", need+""));
 		    				p.closeInventory();
 		    			}
 		    		}else if (n.equals("§eRemove Echantment")) {
@@ -2287,7 +2345,7 @@ public class BossLand extends JavaPlugin implements Listener{
 		    String name = e.getView().getTitle();
 		    Player p = (Player)e.getPlayer();
 		    try{
-		    	if (name.contains("§0§lBook of Knowledge") || name.contains("§0§lAdd Enchantments") || name.contains("§0§lRemove Enchantments")) {
+		    	if (name.contains(getLang("items.knowledgebook")) || name.contains("§0§lAdd Enchantments") || name.contains("§0§lRemove Enchantments")) {
 		    		if(!noList.contains(p.getUniqueId())){
 		    			ItemStack s = e.getView().getItem(4);
 		    			p.getInventory().addItem(s);
@@ -2316,7 +2374,7 @@ public class BossLand extends JavaPlugin implements Listener{
 		}
 		
 		private void controlCheck(Player p) {
-			if((!p.isSneaking()) && p.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals("§lStaff of Control")) {
+			if((!p.isSneaking()) && p.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals(getBossItemName("AetherGod",1))) {
 				String mode = getStaffMode(p);
 				if(mode.equals("Control")) {
 					//Control
@@ -2408,7 +2466,7 @@ public class BossLand extends JavaPlugin implements Listener{
 		public void onPlayerEat(PlayerItemConsumeEvent e) {
 			Player p = e.getPlayer();
 			try {
-				if(p.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals("§6§lForbidden Fruit")) {
+				if(p.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals(getLang("items.forbiddenfruit"))) {
 					e.setCancelled(true);
 					p.getWorld().strikeLightning(p.getLocation());
 					//Biome
@@ -2416,7 +2474,7 @@ public class BossLand extends JavaPlugin implements Listener{
 					if(l.getWorld().getBiome((int)l.getX(), (int)l.getY(), (int)l.getZ()).toString().contains("OCEAN") && l.getBlockY() <= getConfig().getInt("waterLevel")) {
 						takeItem(p,1);
 						boom(l,3,false);
-						p.sendMessage("§3§lThe Drowned God: §r§bYou will pay for that...");
+						p.sendMessage(getLang("drownSpawn"));
 						Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
 							public void run() {
 								spawnBoss(l,"DrownedGod");
@@ -2427,7 +2485,7 @@ public class BossLand extends JavaPlugin implements Listener{
 						//boom(l,3,false);
 						lightningShow(l,3);
 						l.setY(l.getY()+5);
-						p.sendMessage("§f§lThe Aether God: §r§7You will pay for that...");
+						p.sendMessage(getLang("aetherSpawn"));
 						Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
 							public void run() {
 								spawnBoss(l,"AetherGod");
@@ -2437,15 +2495,15 @@ public class BossLand extends JavaPlugin implements Listener{
 						takeItem(p,1);
 						//boom(l,2,false);
 						lightningShow(l,4);
-						p.sendMessage("§6§lThe Pharaoh God: §r§eYou will pay for that...");
+						p.sendMessage(getLang("pharaohSpawn"));
 						Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
 							public void run() {
 								spawnBoss(l,"PharaohGod");
 							}
 						}, (40));
 					}else
-						p.sendMessage("§6§lThe Gods are quiet...");
-				}else if(p.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals("§c§lAbhorrent Fruit")) {
+						p.sendMessage(getLang("failSpawn"));
+				}else if(p.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals(getLang("items.abhorrentfruit"))) {
 					e.setCancelled(true);
 					p.setFireTicks(60*20);
 					//Biome
@@ -2453,14 +2511,14 @@ public class BossLand extends JavaPlugin implements Listener{
 					if(l.getWorld().getEnvironment().equals(Environment.NETHER)) {
 						takeItem(p,1);
 						boom(l,8,false);
-						p.sendMessage("§6§lDevil: §r§4Wisdom is yours, if you can defeat me!");
+						p.sendMessage(getLang("devilSpawn"));
 						Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
 							public void run() {
 								spawnBoss(l,"Devil");
 							}
 						}, (40));
 					}else
-						p.sendMessage("§6§lThe wicked go down to the realm of the dead, all the nations that forget God.");
+						p.sendMessage(getLang("hellSpawn"));
 				}
 			}catch(Exception x) {x.printStackTrace();}
 		}
@@ -2994,11 +3052,11 @@ public class BossLand extends JavaPlugin implements Listener{
 					String mode = getStaffMode(((Player)p));
 					if(mode != null) {
 						if(mode.equals("Shard")) {
-							if(s.getItemMeta() == null || s.getItemMeta().getDisplayName() == null || (!s.getItemMeta().getDisplayName().contains("Shard"))) {
+							if(s.getItemMeta() == null || s.getItemMeta().getDisplayName() == null || (!s.getItemMeta().getDisplayName().contains(getLang("shardKeyWord")))) {
 								s = null;
 							}
 						}else if(mode.equals("Loot")) {
-							if(s.getItemMeta() != null && s.getItemMeta().getDisplayName() != null && s.getItemMeta().getDisplayName().contains("Shard")) {
+							if(s.getItemMeta() != null && s.getItemMeta().getDisplayName() != null && s.getItemMeta().getDisplayName().contains(getLang("shardKeyWord"))) {
 								s = null;
 							}
 						}
@@ -3190,11 +3248,11 @@ public class BossLand extends JavaPlugin implements Listener{
 
 	                            String levelString = this.getConfig().getString("bosses."+bossType+".loot." + loot + ".enchantments." + j + ".level");
 	                            int level = getIntFromString(levelString);
-	                            if (Enchantment.getByKey(NamespacedKey.minecraft(enchantment)) != null) {
+	                            if (Enchantment.getByKey(NamespacedKey.minecraft(enchantment.toLowerCase())) != null) {
 	                                if (level < 1) {
 	                                    level = 1;
 	                                }
-	                                LevelledEnchantment le = new LevelledEnchantment(Enchantment.getByKey(NamespacedKey.minecraft(enchantment)), level);
+	                                LevelledEnchantment le = new LevelledEnchantment(Enchantment.getByKey(NamespacedKey.minecraft(enchantment.toLowerCase())), level);
 
 	                                boolean con = false;
 	                                for (LevelledEnchantment testE : enchList) {
@@ -3282,54 +3340,54 @@ public class BossLand extends JavaPlugin implements Listener{
 		public void restrictCrafting(PrepareItemCraftEvent e) {
 			CraftingInventory ci = e.getInventory();
 			try{
-				if (ci.getResult().getItemMeta().getDisplayName().contains("§6§lBell of Doom")) {
+				if (ci.getResult().getItemMeta().getDisplayName().contains(getLang("items.bell"))) {
 					//Bell of Doom
-					if(!ci.getItem(4).getItemMeta().getDisplayName().equals("§lWhite Boss Shard")) {
+					if(!ci.getItem(4).getItemMeta().getDisplayName().equals(getLang("items.whiteshard"))) {
 						ci.setResult(null);
-					}else if(!ci.getItem(5).getItemMeta().getDisplayName().equals("§a§lGreen Boss Shard")) {
+					}else if(!ci.getItem(5).getItemMeta().getDisplayName().equals(getLang("items.greenshard"))) {
 						ci.setResult(null);
-					}else if(!ci.getItem(6).getItemMeta().getDisplayName().equals("§7§lGrey Boss Shard")) {
+					}else if(!ci.getItem(6).getItemMeta().getDisplayName().equals(getLang("items.greyshard"))) {
 						ci.setResult(null);
 					}
-				}else if (ci.getResult().getItemMeta().getDisplayName().contains("§5§lBook of Spells")) {
+				}else if (ci.getResult().getItemMeta().getDisplayName().contains(getLang("items.spelbook"))) {
 					//Wizard Book
-					if(!ci.getItem(4).getItemMeta().getDisplayName().equals("§8§lBlack Boss Shard"))
+					if(!ci.getItem(4).getItemMeta().getDisplayName().equals(getLang("items.blackshard")))
 						ci.setResult(null);
-					if(!ci.getItem(6).getItemMeta().getDisplayName().equals("§c§lRed Boss Shard"))
+					if(!ci.getItem(6).getItemMeta().getDisplayName().equals(getLang("items.redshard")))
 						ci.setResult(null);
-				}else if (ci.getResult().getItemMeta().getDisplayName().contains("§2§lPotion of Giant Growth")) {
+				}else if (ci.getResult().getItemMeta().getDisplayName().contains(getLang("items.giantpotion"))) {
 					//Giant Potion
-					if(!ci.getItem(4).getItemMeta().getDisplayName().equals("§a§lGreen Boss Shard"))
+					if(!ci.getItem(4).getItemMeta().getDisplayName().equals(getLang("items.greenshard")))
 						ci.setResult(null);
-					if(!ci.getItem(5).getItemMeta().getDisplayName().equals("§c§lRed Boss Shard"))
+					if(!ci.getItem(5).getItemMeta().getDisplayName().equals(getLang("items.redshard")))
 						ci.setResult(null);
-					if(!ci.getItem(6).getItemMeta().getDisplayName().equals("§4§lBrown Boss Shard"))
+					if(!ci.getItem(6).getItemMeta().getDisplayName().equals(getLang("items.brownshard")))
 						ci.setResult(null);
-				}else if (ci.getResult().getItemMeta().getDisplayName().contains("§5§lElder Dragon Egg")) {
+				}else if (ci.getResult().getItemMeta().getDisplayName().contains(getLang("items.elderegg"))) {
 					//Dragon Egg
-					if(!ci.getItem(5).getItemMeta().getDisplayName().equals("§lWhite Boss Shard"))
+					if(!ci.getItem(5).getItemMeta().getDisplayName().equals(getLang("items.whiteshard")))
 						ci.setResult(null);
-					if(!ci.getItem(8).getItemMeta().getDisplayName().equals("§8§lBlack Boss Shard"))
+					if(!ci.getItem(8).getItemMeta().getDisplayName().equals(getLang("items.blackshard")))
 						ci.setResult(null);
-				}else if (ci.getResult().getItemMeta().getDisplayName().contains("§6§lForbidden Fruit")) {
+				}else if (ci.getResult().getItemMeta().getDisplayName().contains(getLang("items.forbiddenfruit"))) {
 					//Forbidden Fruit
-					if(!ci.getItem(7).getItemMeta().getDisplayName().equals("§a§lEmerald Boss Shard"))
+					if(!ci.getItem(7).getItemMeta().getDisplayName().equals(getLang("items.emeraldshard")))
 						ci.setResult(null);
-					if(!ci.getItem(8).getItemMeta().getDisplayName().equals("§6§lGold Boss Shard"))
+					if(!ci.getItem(8).getItemMeta().getDisplayName().equals(getLang("items.goldshard")))
 						ci.setResult(null);
-					if(!ci.getItem(9).getItemMeta().getDisplayName().equals("§9§lBlue Boss Shard"))
+					if(!ci.getItem(9).getItemMeta().getDisplayName().equals(getLang("items.blueshard")))
 						ci.setResult(null);
-				}else if (ci.getResult().getItemMeta().getDisplayName().contains("§c§lAbhorrent Fruit")) {
+				}else if (ci.getResult().getItemMeta().getDisplayName().contains(getLang("items.abhorrentfruit"))) {
 					//Abhorrent Fruit
 					for(ItemStack s :  Arrays.asList(ci.getItem(2),ci.getItem(4),ci.getItem(6),ci.getItem(8)))
-						if(!s.getItemMeta().getDisplayName().equals("§c§lDemonic Shard"))
+						if(!s.getItemMeta().getDisplayName().equals(getLang("items.demonicshard")))
 							ci.setResult(null);
-					if(!ci.getItem(5).getItemMeta().getDisplayName().equals("§6§lForbidden Fruit"))
+					if(!ci.getItem(5).getItemMeta().getDisplayName().equals(getLang("items.forbiddenfruit")))
 						ci.setResult(null);
-				}else if (ci.getResult().getItemMeta().getDisplayName().contains("§5§lDeath Note")) {
+				}else if (ci.getResult().getItemMeta().getDisplayName().contains(getLang("items.deathnote"))) {
 					//Death Note
 					//System.out.println("1F");
-					if(!ci.getItem(5).getItemMeta().getDisplayName().equals("§c§lBook of Knowledge")) {
+					if(!ci.getItem(5).getItemMeta().getDisplayName().equals(getLang("items.knowledgebook"))) {
 						//System.out.println("2F");
 						ci.setResult(null);
 					}
@@ -3353,7 +3411,7 @@ public class BossLand extends JavaPlugin implements Listener{
 		}
 		
 	    public ItemStack getIllagerItem(){
-	    	ItemStack s = getItem(Material.BELL, "§6§lBell of Doom", 1, Arrays.asList("It's ring calls unknown horors"));
+	    	ItemStack s = getItem(Material.BELL, getLang("items.bell"), 1, getLangList("items.belllore"));
 	    	ItemMeta m = s.getItemMeta();
 	    	m.addEnchant(Enchantment.VANISHING_CURSE, 1, true);
 	    	s.setItemMeta(m);
@@ -3361,7 +3419,7 @@ public class BossLand extends JavaPlugin implements Listener{
 	    }
 	    
 	    public ItemStack getWizardItem(){
-	    	ItemStack s = getItem(Material.ENCHANTED_BOOK, "§5§lBook of Spells", 1, Arrays.asList("§kSo many words","§kToo many words"));
+	    	ItemStack s = getItem(Material.ENCHANTED_BOOK, getLang("items.spellbook"), 1, getLangList("items.spellbooklore"));
 	    	ItemMeta m = s.getItemMeta();
 	    	m.addEnchant(Enchantment.VANISHING_CURSE, 1, true);
 	    	s.setItemMeta(m);
@@ -3369,7 +3427,7 @@ public class BossLand extends JavaPlugin implements Listener{
 	    }
 	    
 	    public ItemStack getGiantIem(){
-	    	ItemStack item = getItem(Material.POTION, "§2§lPotion of Giant Growth", 1, Arrays.asList("Drink at your own peril"));
+	    	ItemStack item = getItem(Material.POTION, getLang("items.giantpotion"), 1,  getLangList("items.giantpotionlore"));
 			PotionMeta meta = (PotionMeta) item.getItemMeta();
 			meta.setColor(Color.GREEN);
 			meta.addCustomEffect(new PotionEffect(PotionEffectType.POISON, 3600*20, 10), true);	
@@ -3379,7 +3437,7 @@ public class BossLand extends JavaPlugin implements Listener{
 	    }
 
 	    public ItemStack getDragonItem(){
-	    	ItemStack s = getItem(Material.DRAGON_EGG, "§5§lElder Dragon Egg", 1, Arrays.asList("An ancient egg from the depths"));
+	    	ItemStack s = getItem(Material.DRAGON_EGG, getLang("items.elderegg"), 1, getLangList("items.elderegglore"));
 	    	ItemMeta m = s.getItemMeta();
 	    	m.addEnchant(Enchantment.VANISHING_CURSE, 1, true);
 	    	s.setItemMeta(m);
@@ -3387,7 +3445,7 @@ public class BossLand extends JavaPlugin implements Listener{
 	    }
 	    
 	    public ItemStack getGodItem(){
-	    	ItemStack s = getItem(Material.ENCHANTED_GOLDEN_APPLE, "§6§lForbidden Fruit", 1, Arrays.asList("Thou shalt not eat of this flesh","In the day that thou eatest thereof", "thou shalt surely die."));
+	    	ItemStack s = getItem(Material.ENCHANTED_GOLDEN_APPLE, getLang("items.forbiddenfruit"), 1, getLangList("items.forbiddenfruitlore"));
 	    	ItemMeta m = s.getItemMeta();
 	    	//m.addEnchant(Enchantment.VANISHING_CURSE, 1, true);
 	    	s.setItemMeta(m);
@@ -3395,7 +3453,7 @@ public class BossLand extends JavaPlugin implements Listener{
 	    }
 	    
 	    public ItemStack getDevilItem(){
-	    	ItemStack s = getItem(Material.APPLE, "§c§lAbhorrent Fruit", 1, Arrays.asList("The fruit of the tree was good","and desirable for gaining wisdom", "she took some and ate therof."));
+	    	ItemStack s = getItem(Material.APPLE, getLang("items.abhorrentfruit"), 1, getLangList("items.abhorrentfruitlore"));
 	    	ItemMeta m = s.getItemMeta();
 	    	m.addEnchant(Enchantment.BINDING_CURSE, 1, true);
 	    	s.setItemMeta(m);
@@ -3404,11 +3462,10 @@ public class BossLand extends JavaPlugin implements Listener{
 	    
 	    public ItemStack getDeathItem(){
 	    	ItemStack s = getSkull("http://textures.minecraft.net/texture/7eea345908d17dc44967d1dce428f22f2b19397370abeb77bdc12e2dd1cb6");
-	    	//ItemStack s = getItem(Material.APPLE, "§5§lDeath Note", 1, Arrays.asList("This world is rotten","the people in it deserve to die"));
 	    	ItemMeta m = s.getItemMeta();
 	    	//m.addEnchant(Enchantment.BINDING_CURSE, 1, true);
-	    	m.setDisplayName("§5§lDeath Note");
-	    	m.setLore(Arrays.asList("This world is rotten","the people in it deserve to die"));
+	    	m.setDisplayName(getLang("items.deathnote"));
+	    	m.setLore(getLangList("items.deathnotelore"));
 	    	s.setItemMeta(m);
 	    	return s;
 	    }
@@ -3535,6 +3592,7 @@ public class BossLand extends JavaPlugin implements Listener{
 	    		try{
 		    		if(args[0].equals("reload")){
 		    			reloadConfig();
+		    			reloadLang();
 		    			sender.sendMessage("§eBossLand: Reloaded config!");
 		    			return true; 
 		    		}else if(args[0].equals("spawn") && args.length == 2){
