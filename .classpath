@@ -7,5 +7,7 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="/home/eliminator/eclipse/1.15/spigot-1.15.jar"/>
+	<classpathentry kind="lib" path="/home/eliminator/eclipse/worldguard-6.0.0-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="/home/eliminator/eclipse/worldedit-bukkit-6.1.1-SNAPSHOT-dist.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

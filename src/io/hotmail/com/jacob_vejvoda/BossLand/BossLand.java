@@ -15,6 +15,7 @@ import java.util.logging.Level;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Chunk;
 import org.bukkit.Color;
 import org.bukkit.DyeColor;
 import org.bukkit.GameMode;
@@ -36,6 +37,7 @@ import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.craftbukkit.libs.org.apache.commons.codec.binary.Base64;
 import org.bukkit.enchantments.Enchantment;
@@ -98,6 +100,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
@@ -108,6 +111,12 @@ import org.bukkit.util.Vector;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
+import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+import com.sk89q.worldguard.protection.ApplicableRegionSet;
+import com.sk89q.worldguard.protection.flags.DefaultFlag;
+import com.sk89q.worldguard.protection.flags.StateFlag.State;
+import com.sk89q.worldguard.protection.managers.RegionManager;
+import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
 
 public class BossLand extends JavaPlugin implements Listener{
@@ -187,7 +196,6 @@ public class BossLand extends JavaPlugin implements Listener{
 	    		try {
 					langFile.save(langYML);
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				};
 	    	}
@@ -2213,8 +2221,7 @@ public class BossLand extends JavaPlugin implements Listener{
 				 if(vic != null) {
 					 //Check
 					 if(p.getUniqueId().equals(vic.getUniqueId())) {
-						 canEnterDeath.add(p.getUniqueId());
-						 
+						 canEnterDeath.add(p.getUniqueId());				 
 					 }
 					 //Kill
 					 Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
@@ -2222,6 +2229,11 @@ public class BossLand extends JavaPlugin implements Listener{
 							 vic.damage(999*999);
 						 }
 					 }, 5L);
+					 //Consume Chance
+					 if(rand(1,100) <= getConfig().getInt("deathNoteConsumeChance")) {
+						 p.getInventory().setItemInMainHand(null);
+						 p.sendMessage(getLang("noteConsume"));
+					 }
 					 p.sendMessage(getLang("deathPass"));
 				 }else
 					 p.sendMessage(getLang("deathFail"));
@@ -2752,6 +2764,19 @@ public class BossLand extends JavaPlugin implements Listener{
 		}
 		
 		private void spawnBoss(Location l, String bossType) {
+			//Check World Guard
+			if(new WorldGuardMethods().canSpawn(l) == false) {
+				for(Entity e : getNearbyEntities(l, 24, new ArrayList<EntityType>(Arrays.asList(EntityType.PLAYER))))
+					((Player)e).sendMessage(getLang("spawnFail"));
+				return;
+			}
+			//Check Boss Limit
+			if(bossMap.size() >= getConfig().getInt("bossLimit")) {
+				for(Entity e : getNearbyEntities(l, 24, new ArrayList<EntityType>(Arrays.asList(EntityType.PLAYER))))
+					((Player)e).sendMessage(getLang("tooManyBosses"));
+				return;
+			}
+			//Log Spawn
 			this.getLogger().log(Level.INFO, "Spawn Boss: " + bossType);
 			String entType =  getConfig().getString("bosses."+bossType+".entity");
 //			System.out.println("entType: " + entType);
@@ -3065,9 +3090,21 @@ public class BossLand extends JavaPlugin implements Listener{
 			}while(s == null && i > 0);
 			return s;
 		}
+		
+		public ItemStack getItem(String bossType, String loot) {
+			ItemStack s = getConfig().getItemStack("bosses."+bossType+".loot." + loot);
+			if(s == null)
+				s = getItemOld(bossType, loot);
+			return s;
+		}
+		
+		private void setItem(ItemStack s, String path, FileConfiguration fc) {
+			fc.set(path,s);
+			saveConfig();
+		}
 	    
 	    @SuppressWarnings({ "unchecked" })
-		public ItemStack getItem(String bossType, String loot) {
+		public ItemStack getItemOld(String bossType, String loot) {
 	        //System.out.println("Get Loot: " + loot);
 	        try {
 	            String setItem = this.getConfig().getString("bosses."+bossType+".loot." + loot + ".item");
@@ -3298,6 +3335,110 @@ public class BossLand extends JavaPlugin implements Listener{
 	        }
 	        return null;
 	    }
+	    
+//	    @SuppressWarnings("rawtypes")
+//		private void setItem(ItemStack s, String path, FileConfiguration fc) {
+//	        if (s != null) {
+//	            fc.set(path + ".item", s.getType().toString());
+//	            fc.set(path + ".amount", s.getAmount());
+//	            fc.set(path + ".durability", ((org.bukkit.inventory.meta.Damageable)s.getItemMeta()).getDamage());
+//	            if (s.getItemMeta() != null) {
+//	                fc.set(path + ".name", s.getItemMeta().getDisplayName());
+//	                if (s.getItemMeta().getLore() != null) {
+//	                    for (int l = 0; l < s.getItemMeta().getLore().size(); l++) {
+//	                        if (s.getItemMeta().getLore().get(l) != null) {
+//	                            fc.set(path + ".lore" + l, s.getItemMeta().getLore().get(l));
+//	                        }
+//	                    }
+//	                }
+//	            }
+//	            Enchantment e;
+//	            for (Map.Entry<Enchantment, Integer> hm : s.getEnchantments().entrySet()) {
+//	                e = hm.getKey();
+//	                int level = hm.getValue();
+//	                for (int ei = 0; ei < 13; ei++) {
+//	                    if (fc.getString(path + ".enchantments." + ei) == null) {
+//	                        fc.set(path + ".enchantments." + ei + ".enchantment", e.getKey().getKey().toString());
+//	                        fc.set(path + ".enchantments." + ei + ".level", level);
+//	                        break;
+//	                    }
+//	                }
+//	            }
+//	            if (s.getType().equals(Material.ENCHANTED_BOOK)) {
+//	                EnchantmentStorageMeta em = (EnchantmentStorageMeta) s.getItemMeta();
+//	                for (Object hm : em.getStoredEnchants().entrySet()) {
+//	                    e = (Enchantment) ((Map.Entry) hm).getKey();
+//	                    int level = (Integer) ((Map.Entry) hm).getValue();
+//	                    for (int ei = 0; ei < 13; ei++) {
+//	                        if (fc.getString(path + ".enchantments." + ei) == null) {
+//	                            fc.set(path + ".enchantments." + ei + ".enchantment", e.getKey().getKey().toString());
+//	                            fc.set(path + ".enchantments." + ei + ".level", level);
+//	                            break;
+//	                        }
+//	                    }
+//	                }
+//	            }
+//	            if ((s.getType().equals(Material.WRITTEN_BOOK)) || (s.getType().equals(Material.WRITABLE_BOOK))) {
+//	                BookMeta meta = (BookMeta) s.getItemMeta();
+//	                if (meta.getAuthor() != null) {
+//	                    fc.set(path + ".author", meta.getAuthor());
+//	                }
+//	                if (meta.getTitle() != null) {
+//	                    fc.set(path + ".title", meta.getTitle());
+//	                }
+//	                int i = 0;
+//	                for (String p : meta.getPages()) {
+//	                    fc.set(path + ".pages." + i, p);
+//	                    i++;
+//	                }
+//	            }
+//	            //Banner
+//	            if (s.getType().toString().contains("BANNER")) {
+//	                BannerMeta b = (BannerMeta) s.getItemMeta();
+//	                if (b != null) {
+//	                    List patList = b.getPatterns();
+//	                    if (!patList.isEmpty())
+//	                        fc.set(path + ".patterns", patList);
+//	                }
+//	            }
+//	            //Shield
+//	            if (s.getType().equals(Material.SHIELD)) {
+//	                ItemMeta im = s.getItemMeta();
+//	                BlockStateMeta bmeta = (BlockStateMeta) im;
+//	                Banner b = (Banner) bmeta.getBlockState();
+//
+//	                fc.set(path + ".colour", b.getBaseColor().toString());
+//	                List patList = b.getPatterns();
+//	                if (!patList.isEmpty())
+//	                    fc.set(path + ".patterns", patList);
+//	            }
+//	            //Potions
+//	            if (s.getType().equals(Material.POTION) || s.getType().equals(Material.SPLASH_POTION) || s.getType().equals(Material.LINGERING_POTION)) {
+//	                PotionMeta pMeta = (PotionMeta) s.getItemMeta();
+//	                org.bukkit.potion.PotionData pd = pMeta.getBasePotionData();
+//	                fc.set(path + ".potion", pd.getType().getEffectType().getName());
+//	            }
+//	            if ((s.getType().equals(Material.LEATHER_BOOTS)) || (s.getType().equals(Material.LEATHER_CHESTPLATE)) || (s.getType().equals(Material.LEATHER_HELMET)) || (s.getType().equals(Material.LEATHER_LEGGINGS))) {
+//	                LeatherArmorMeta l = (LeatherArmorMeta) s.getItemMeta();
+//	                Color c = l.getColor();
+//	                String color = c.getRed() + "," + c.getGreen() + "," + c.getBlue();
+//	                fc.set(path + ".colour", color);
+//	            }
+//	            if (s.getType().equals(Material.PLAYER_HEAD)) {
+//	                SkullMeta sm = (SkullMeta) s.getItemMeta();
+//	                fc.set(path + ".owner", sm.getOwningPlayer().getUniqueId().toString());
+//	            }
+//	            ArrayList<String> flags = new ArrayList<>();
+//	            for (ItemFlag f : s.getItemMeta().getItemFlags())
+//	                if (f != null)
+//	                    flags.add(f.name());
+//	            if (!flags.isEmpty())
+//	                fc.set(path + ".flags", flags);
+//	        } else {
+//	            System.out.println("Item is null!");
+//	        }
+//	        saveConfig();
+//	    }
 		
 		public int rand(int min, int max){
 			int r = min + (int)(Math.random() * (1 + max - min));
@@ -3568,6 +3709,58 @@ public class BossLand extends JavaPlugin implements Listener{
 			Bukkit.addRecipe(sr);
 	    }
 	    
+	    private static List<Chunk> getNearbyChunks(Location l, int range)
+	    {
+	      List<Chunk> chunkList = new ArrayList<Chunk>();
+	      World world = l.getWorld();
+	      int chunks = range / 16 + 1;
+	      for (int x = l.getChunk().getX() - chunks; x < l.getChunk().getX() + chunks; x++) {
+	        for (int z = l.getChunk().getZ() - chunks; z < l.getChunk().getZ() + chunks; z++)
+	        {
+	          Chunk chunk = world.getChunkAt(x, z);
+	          if ((chunk != null) && (chunk.isLoaded())) {
+	            chunkList.add(chunk);
+	          }
+	        }
+	      }
+	      return chunkList;
+	    }
+	    
+	    private static List<Entity> getEntitiesInNearbyChunks(Location l, int range, List<EntityType> entityTypes)
+	    {
+	      List<Entity> entities = new ArrayList<Entity>();
+	      for (Chunk chunk : getNearbyChunks(l, range)) {
+	        if (entityTypes == null)
+	        {
+	          entities.addAll(Arrays.asList(chunk.getEntities()));
+	        }
+	        else
+	        {
+	          Entity[] arrayOfEntity;
+	          int j = (arrayOfEntity = chunk.getEntities()).length;
+	          for (int i = 0; i < j; i++)
+	          {
+	            Entity e = arrayOfEntity[i];
+	            if (entityTypes.contains(e.getType())) {
+	              entities.add(e);
+	            }
+	          }
+	        }
+	      }
+	      return entities;
+	    }
+	    
+		private static List<Entity> getNearbyEntities(Location l, float range, List<EntityType> entityTypes){
+	  	  List<Entity> entities = new ArrayList<Entity>();
+	  	  for (Entity e : getEntitiesInNearbyChunks(l, (int)range, entityTypes)) {
+	  		  if(e.getLocation().getWorld().getName().equals(l.getWorld().getName()))
+	  			  if (e.getLocation().distance(l) <= range) {
+	  				  entities.add(e);
+	  			  }
+	  	  }
+	  	  return entities;
+	    }
+	    
 	    private ItemStack getItem(Material mat, String name, int amount, List<String> loreList){
 	    	ItemStack item = new ItemStack(mat, amount);
 	    	ItemMeta m = item.getItemMeta();
@@ -3635,12 +3828,41 @@ public class BossLand extends JavaPlugin implements Listener{
 		    					bossError(sender);
 		    			}
 		    			return true; 
+		    		}else if((args[0].equalsIgnoreCase("setLoot") || args[0].equalsIgnoreCase("addLoot")) && args.length >= 2){
+		    			if(sender instanceof Player){
+		    				Player p = (Player) sender;
+		    				if(getConfig().getString("bosses." + args[1]) != null) {
+				    			String bossType = args[1];
+				    			int id;
+				    			if(args[0].equalsIgnoreCase("addLoot")) {
+				    				id = 0;
+				    				while(getConfig().getString("bosses."+bossType+".loot."+id) != null) {
+				    					id = id + 1;
+				    					if(id > 999) {
+				    						this.getLogger().log(Level.SEVERE, "Add loot count for " + bossType + " exceded max!");
+				    						return true;
+				    					}
+				    				}
+				    			}else
+				    				id = Integer.parseInt(args[2]);
+				    			ItemStack s = p.getInventory().getItemInMainHand();
+				    			if(s != null && (!s.getType().equals(Material.AIR))) {
+				    				setItem(s,"bosses."+bossType+".loot."+id,getConfig());
+				    				sender.sendMessage("§eBossLand: Loot at " + id + " for boss " + bossType+ " set!");
+				    			}else
+				    				sender.sendMessage("§eBossLand: No item is in your hand!");
+		    				}else
+		    					bossError(sender);
+		    			}
+		    			return true; 
 		    		}
 	    		}catch(Exception e){}
     			sender.sendMessage("§6--- Boss Land v" + Bukkit.getServer().getPluginManager().getPlugin("BossLand").getDescription().getVersion() + " ---");
     			sender.sendMessage("§e/bl spawn <boss> <- Spawns a Boss");
     			sender.sendMessage("§e/bl cspawn <boss> <x> <y> <z> <world>");
     			sender.sendMessage("§e/bl loot <boss>   <- Drops a Bosses's death loot");
+    			sender.sendMessage("§e/bl setLoot <boss> <id> <- Set loot for boss");
+    			sender.sendMessage("§e/bl addLoot <boss>     <- Add loot for boss");
     			sender.sendMessage("§e/bl reload         <- Re-loads the config");
 	    	}
 	    	return true; 
@@ -3651,6 +3873,45 @@ public class BossLand extends JavaPlugin implements Listener{
 			sender.sendMessage("§eValid Bosses are: ");
 			for (String b : getConfig().getConfigurationSection("bosses").getKeys(false))
 				sender.sendMessage(b);
+		}
+		
+		class WorldGuardMethods{
+			WorldGuardMethods() {}
+			
+			private  WorldGuardPlugin getWorldGuard(){
+				Plugin plugin = BossLand.this.getServer().getPluginManager().getPlugin("WorldGuard");
+				if ((plugin == null) || (!(plugin instanceof WorldGuardPlugin))) {
+					return null;
+				}
+				return (WorldGuardPlugin)plugin;
+			}
+			
+			@SuppressWarnings("deprecation")
+			public boolean canSpawn(Location l) {
+				boolean build = false;
+				try{
+					WorldGuardPlugin wg = getWorldGuard();
+					RegionManager regionManager = wg.getRegionManager(l.getWorld());
+					ApplicableRegionSet set = regionManager.getApplicableRegions(l);
+					
+					ProtectedRegion r = regionManager.getRegion("__global__");
+					State s = (State)r.getFlag(DefaultFlag.BUILD);
+					if (s.toString().equals("DENY")) {
+						build = false;
+					}else{
+						build = true;
+					}
+					if (!set.getRegions().isEmpty()) {
+						if (set.allows(DefaultFlag.BLOCK_PLACE)) {
+							build = true;
+						}else{
+							return false;
+						}
+					}
+				}catch (Exception localException) {}
+				return build;
+			}
+			
 		}
 	    
 	    class LevelledEnchantment {

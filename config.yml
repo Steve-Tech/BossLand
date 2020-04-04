@@ -1,6 +1,8 @@
 bossRange: 35
+bossLimit: 99
 waterLevel: 40
 skyLevel: 200
+deathNoteConsumeChance: 10
 bosses:
   "GhastLord":
     entity: GHAST

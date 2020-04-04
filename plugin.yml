@@ -3,6 +3,7 @@ main: io.hotmail.com.jacob_vejvoda.BossLand.BossLand
 version: 0.3
 api-version: 1.13
 author: Eliminator
+softdepend: [WorldGuard]
 
 commands:
   bossland:
