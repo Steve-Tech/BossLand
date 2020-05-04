@@ -82,6 +82,7 @@ import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.entity.SlimeSplitEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
@@ -100,7 +101,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.inventory.meta.SkullMeta;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
@@ -111,12 +111,13 @@ import org.bukkit.util.Vector;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldguard.LocalPlayer;
+import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
-import com.sk89q.worldguard.protection.ApplicableRegionSet;
-import com.sk89q.worldguard.protection.flags.DefaultFlag;
-import com.sk89q.worldguard.protection.flags.StateFlag.State;
-import com.sk89q.worldguard.protection.managers.RegionManager;
-import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import com.sk89q.worldguard.protection.flags.Flags;
+import com.sk89q.worldguard.protection.regions.RegionContainer;
+import com.sk89q.worldguard.protection.regions.RegionQuery;
 
 
 public class BossLand extends JavaPlugin implements Listener{
@@ -129,6 +130,7 @@ public class BossLand extends JavaPlugin implements Listener{
 		HashMap<Entity, BossBar> bossMap = new HashMap<Entity, BossBar>();
 		HashMap<Entity, Entity> targetMap = new HashMap<Entity, Entity>();
 		HashMap<Entity, UUID> controlMap = new HashMap<Entity, UUID>();
+		HashMap<Entity, Player> itemDropMap = new HashMap<Entity, Player>();
 		//HashMap<String, BossBar> playerBars = new HashMap<String, BossBar>();
 		ArrayList<UUID> coolList = new ArrayList<UUID>();
 		ArrayList<UUID> diedList = new ArrayList<UUID>();
@@ -393,7 +395,7 @@ public class BossLand extends JavaPlugin implements Listener{
 			p.updateInventory();
 		}
 		
-		private void enterDeath(Player p) {
+		private void enterDeath(final Player p) {
 			this.getLogger().log(Level.INFO, "Enter Death");
 			if(p.getWorld().getEnvironment().equals(Environment.NORMAL)) {
 				World end = getServer().getWorld(p.getWorld().getName()+"_the_end");
@@ -403,7 +405,7 @@ public class BossLand extends JavaPlugin implements Listener{
 				p.getWorld().createExplosion(l, 4);
 				Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
 					public void run() {
-						spawnBoss(l,"Death");
+						spawnBoss(p,l,"Death");
 					}
 				}, (10));
 			}
@@ -2020,7 +2022,7 @@ public class BossLand extends JavaPlugin implements Listener{
 		
 		@EventHandler(priority=EventPriority.HIGH)
 		public void onPlayerInteract(PlayerInteractEvent e) {
-			Player p = e.getPlayer();
+			final Player p = e.getPlayer();
 			try {
 				Location l = e.getClickedBlock().getLocation();
 				//Boss Rituals
@@ -2033,7 +2035,7 @@ public class BossLand extends JavaPlugin implements Listener{
 						takeItem(p,1);
 						Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
 							public void run() {
-								spawnBoss(bs,"KingSlime");
+								spawnBoss(p,bs,"KingSlime");
 							}
 						}, (40));
 					}
@@ -2045,7 +2047,7 @@ public class BossLand extends JavaPlugin implements Listener{
 						takeItem(p,1);
 						Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
 							public void run() {
-								spawnBoss(bs,"WitherSkeletonKing");
+								spawnBoss(p,bs,"WitherSkeletonKing");
 							}
 						}, (20));
 					}
@@ -2058,7 +2060,7 @@ public class BossLand extends JavaPlugin implements Listener{
 						takeItem(p,1);
 						Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
 							public void run() {
-								spawnBoss(bs,"PapaPanda");
+								spawnBoss(p,bs,"PapaPanda");
 							}
 						}, (20));
 					}
@@ -2070,7 +2072,7 @@ public class BossLand extends JavaPlugin implements Listener{
 						takeItem(p,1);
 						Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
 							public void run() {
-								spawnBoss(bs,"ZombieKing");
+								spawnBoss(p,bs,"ZombieKing");
 							}
 						}, (20));
 					}
@@ -2082,7 +2084,7 @@ public class BossLand extends JavaPlugin implements Listener{
 						final Location bs = l.clone();
 						Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
 							public void run() {
-								spawnBoss(bs,"EvilWizard");
+								spawnBoss(p,bs,"EvilWizard");
 							}
 						}, (20));
 					}
@@ -2094,7 +2096,7 @@ public class BossLand extends JavaPlugin implements Listener{
 						final Location bs = l.clone();
 						Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
 							public void run() {
-								spawnBoss(bs,"IllagerKing");
+								spawnBoss(p,bs,"IllagerKing");
 							}
 						}, (20));
 					}
@@ -2107,7 +2109,7 @@ public class BossLand extends JavaPlugin implements Listener{
 						final Location bs = l.clone();
 						Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
 							public void run() {
-								spawnBoss(bs,"Giant");
+								spawnBoss(p,bs,"Giant");
 							}
 						}, (20));
 					}
@@ -2121,7 +2123,7 @@ public class BossLand extends JavaPlugin implements Listener{
 							p.sendMessage("§c§lFool, who dares summon me!");
 							Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
 								public void run() {
-									spawnBoss(bs,"Demon");
+									spawnBoss(p,bs,"Demon");
 								}
 							}, (10));
 						}else
@@ -2476,7 +2478,7 @@ public class BossLand extends JavaPlugin implements Listener{
 		
 		@EventHandler(priority=EventPriority.HIGH)
 		public void onPlayerEat(PlayerItemConsumeEvent e) {
-			Player p = e.getPlayer();
+			final Player p = e.getPlayer();
 			try {
 				if(p.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals(getLang("items.forbiddenfruit"))) {
 					e.setCancelled(true);
@@ -2489,7 +2491,7 @@ public class BossLand extends JavaPlugin implements Listener{
 						p.sendMessage(getLang("drownSpawn"));
 						Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
 							public void run() {
-								spawnBoss(l,"DrownedGod");
+								spawnBoss(p,l,"DrownedGod");
 							}
 						}, (40));
 					}else if(l.getWorld().getEnvironment().equals(Environment.NORMAL) && l.getBlockY() >= getConfig().getInt("skyLevel")) {
@@ -2500,7 +2502,7 @@ public class BossLand extends JavaPlugin implements Listener{
 						p.sendMessage(getLang("aetherSpawn"));
 						Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
 							public void run() {
-								spawnBoss(l,"AetherGod");
+								spawnBoss(p,l,"AetherGod");
 							}
 						}, (40));
 					}else if(l.getWorld().getBiome((int)l.getX(), (int)l.getY(), (int)l.getZ()).toString().contains("DESERT")) {
@@ -2510,7 +2512,7 @@ public class BossLand extends JavaPlugin implements Listener{
 						p.sendMessage(getLang("pharaohSpawn"));
 						Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
 							public void run() {
-								spawnBoss(l,"PharaohGod");
+								spawnBoss(p,l,"PharaohGod");
 							}
 						}, (40));
 					}else
@@ -2526,7 +2528,7 @@ public class BossLand extends JavaPlugin implements Listener{
 						p.sendMessage(getLang("devilSpawn"));
 						Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
 							public void run() {
-								spawnBoss(l,"Devil");
+								spawnBoss(p,l,"Devil");
 							}
 						}, (40));
 					}else
@@ -2536,11 +2538,18 @@ public class BossLand extends JavaPlugin implements Listener{
 		}
 		
 		@EventHandler(priority=EventPriority.HIGH)
+		public void onEntityCombust(PlayerDropItemEvent e) {
+			Player p = e.getPlayer();
+			itemDropMap.put(e.getItemDrop(), p);
+		}
+		
+		@EventHandler(priority=EventPriority.HIGH)
 		public void onEntityCombust(EntityCombustEvent e) {
 			//Item Death
 			Entity ent = e.getEntity();
 			if(ent.getType().equals(EntityType.DROPPED_ITEM)) {
 				ItemStack s = ((Item)ent).getItemStack();
+				final Player p = itemDropMap.get(((Item)ent));
 				if(s.getType().equals(Material.GOLD_INGOT) && s.getAmount() >= 16) {
 					//Ghast Spawn
 					Location l = ent.getLocation();
@@ -2550,7 +2559,7 @@ public class BossLand extends JavaPlugin implements Listener{
 						final Location bs = l.clone();
 						Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
 							public void run() {
-								spawnBoss(bs,"GhastLord");
+								spawnBoss(p,bs,"GhastLord");
 							}
 						}, (40));
 					}
@@ -2567,7 +2576,7 @@ public class BossLand extends JavaPlugin implements Listener{
 							final Location bs = l.clone();
 							Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
 								public void run() {
-									spawnBoss(bs,"KillerBunny");
+									spawnBoss(p,bs,"KillerBunny");
 								}
 							}, (40));
 						}
@@ -2763,11 +2772,11 @@ public class BossLand extends JavaPlugin implements Listener{
 			}catch(Exception x) {}
 		}
 		
-		private void spawnBoss(Location l, String bossType) {
+		private void spawnBoss(Player p, Location l, String bossType) {
 			//Check World Guard
-			if(new WorldGuardMethods().canSpawn(l) == false) {
+			if(new WorldGuardMethods().queryBuild(p, l) == false) {
 				for(Entity e : getNearbyEntities(l, 24, new ArrayList<EntityType>(Arrays.asList(EntityType.PLAYER))))
-					((Player)e).sendMessage(getLang("spawnFail"));
+					((Player)e).sendMessage(getLang("failSpawnWG"));
 				return;
 			}
 			//Check Boss Limit
@@ -3792,7 +3801,7 @@ public class BossLand extends JavaPlugin implements Listener{
 		    			if(sender instanceof Player){
 		    				Player p = (Player) sender;
 		    				if(getConfig().getString("bosses." + args[1]) != null) {
-		    					spawnBoss(p.getLocation(), args[1]);
+		    					spawnBoss(p,p.getLocation(), args[1]);
 		    					sender.sendMessage("§eBossLand: Spawned a "+args[1]+" boss!");
 		    				}else
 		    					bossError(sender);
@@ -3806,7 +3815,7 @@ public class BossLand extends JavaPlugin implements Listener{
 	    						return true; 
 	    					}
 	    					Location l = new Location(w, Integer.parseInt(args[2]),Integer.parseInt(args[3]),Integer.parseInt(args[4]));
-	    					spawnBoss(l, args[1]);
+	    					spawnBoss(null,l, args[1]);
 	    					sender.sendMessage("§eBossLand: Spawned a "+args[1]+" boss at the coords!");
 	    				}else
 	    					bossError(sender);
@@ -3878,41 +3887,69 @@ public class BossLand extends JavaPlugin implements Listener{
 		class WorldGuardMethods{
 			WorldGuardMethods() {}
 			
-			private  WorldGuardPlugin getWorldGuard(){
-				Plugin plugin = BossLand.this.getServer().getPluginManager().getPlugin("WorldGuard");
-				if ((plugin == null) || (!(plugin instanceof WorldGuardPlugin))) {
-					return null;
+//			private  WorldGuardPlugin getWorldGuard(){
+//				Plugin plugin = BossLand.this.getServer().getPluginManager().getPlugin("WorldGuard");
+//				if ((plugin == null) || (!(plugin instanceof WorldGuardPlugin))) {
+//					return null;
+//				}
+//				return (WorldGuardPlugin)plugin;
+//			}
+			
+//			public boolean canSpawn(Player p, Location l) {
+//				boolean build = false;
+//				try{
+//					//RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
+//					//RegionManager regionManager = container.get(BukkitAdapter.adapt(l.getWorld()));
+//					ApplicableRegionSet set = WorldGuard.getInstance().getPlatform().getRegionContainer().get(new BukkitWorld(l.getWorld())).getApplicableRegions(BlockVector3.at(l.getX(),l.getY(),l.getZ()));
+//					if (!set.getRegions().isEmpty()) 
+//						for(ProtectedRegion i : set.getRegions()) {
+//							build = queryBuild(p,l);
+//						}
+//				}catch (Exception x) {x.printStackTrace();}
+//				return build;
+//			}
+			
+			private boolean queryBuild(Player player, Location loc) {
+				if(player == null)
+					return true;
+				LocalPlayer localPlayer = WorldGuardPlugin.inst().wrapPlayer(player);
+				RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
+				RegionQuery query = container.createQuery();
+
+				if (!query.testState(BukkitAdapter.adapt(loc), localPlayer, Flags.BUILD)) {
+				    // Can't build
+					return false;
 				}
-				return (WorldGuardPlugin)plugin;
+				return true;
 			}
 			
-			@SuppressWarnings("deprecation")
-			public boolean canSpawn(Location l) {
-				boolean build = false;
-				try{
-					WorldGuardPlugin wg = getWorldGuard();
-					RegionManager regionManager = wg.getRegionManager(l.getWorld());
-					ApplicableRegionSet set = regionManager.getApplicableRegions(l);
-					
-					ProtectedRegion r = regionManager.getRegion("__global__");
-					State s = (State)r.getFlag(DefaultFlag.BUILD);
-					if (s.toString().equals("DENY")) {
-						build = false;
-					}else{
-						build = true;
-					}
-					if (!set.getRegions().isEmpty()) {
-						if (set.allows(DefaultFlag.BLOCK_PLACE)) {
-							build = true;
-						}else{
-							return false;
-						}
-					}
-				}catch (Exception localException) {}
-				return build;
-			}
-			
-		}
+//			@SuppressWarnings("deprecation")
+//			public boolean canSpawn(Location l) {
+//				boolean build = false;
+//				try{
+//					WorldGuardPlugin wg = getWorldGuard();
+//					RegionManager regionManager = wg.getRegionManager(l.getWorld());
+//					ApplicableRegionSet set = regionManager.getApplicableRegions(l);
+//					
+//					ProtectedRegion r = regionManager.getRegion("__global__");
+//					State s = (State)r.getFlag(DefaultFlag.BUILD);
+//					if (s.toString().equals("DENY")) {
+//						build = false;
+//					}else{
+//						build = true;
+//					}
+//					if (!set.getRegions().isEmpty()) {
+//						if (set.allows(DefaultFlag.BLOCK_PLACE)) {
+//							build = true;
+//						}else{
+//							return false;
+//						}
+//					}
+//				}catch (Exception localException) {}
+//				return build;
+//			}
+		
+	}
 	    
 	    class LevelledEnchantment {
 	    	public Enchantment getEnchantment;
