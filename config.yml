@@ -647,7 +647,7 @@ bosses:
             enchantment: sharpness
             level: 10
       2:
-        item: DIAMOND_HELMET
+        item: NETHERITE_HELMET
         amount: 1
         name: "&3&lDrowned Helm"
         lore1: "&8What is dead may never die"
@@ -720,7 +720,7 @@ bosses:
             enchantment: LOYALTY
             level: 1
       2:
-        item: DIAMOND_BOOTS
+        item: NETHERITE_BOOTS
         amount: 1
         name: "&6&lSwiftfoot Boots"
         lore1: "&8Prowl like a roaring lion"
@@ -773,7 +773,7 @@ bosses:
       - "HUNGER:5:10"
     loot:
       0:
-        item: DIAMOND_CHESTPLATE
+        item: NETHERITE_CHESTPLATE
         amount: 1
         name: "&lZephyr Wings"
         lore1: "&8Soft the zephyr blows, While "
@@ -913,7 +913,7 @@ bosses:
       - "CONFUSION:5:30"
     loot:
       0:
-        item: DIAMOND_LEGGINGS
+        item: NETHERITE_LEGGINGS
         amount: 1
         name: "&c&lDevil's Greaves"
         lore1: "&8Prowl like a roaring lion"
@@ -973,7 +973,7 @@ bosses:
       - "BLINDNESS:0:8"
     loot:
       0:
-        item: DIAMOND_SWORD
+        item: NETHERITE_SWORD
         amount: 1
         name: '&5&lEnd Blade'
         lore1: "The blade to end all"
@@ -1000,7 +1000,7 @@ bosses:
             enchantment: MENDING
             level: 1
       1: 
-        item: IRON_HOE
+        item: NETHERITE_HOE
         amount: 1
         name: "&5&lScythe of Death"
         lore1: "life and death are one"

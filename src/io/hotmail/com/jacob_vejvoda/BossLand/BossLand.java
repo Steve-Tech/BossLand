@@ -483,7 +483,7 @@ public class BossLand extends JavaPlugin implements Listener{
 			}catch (Exception x) {}
 		}
 		
-		@SuppressWarnings("unchecked")
+		@SuppressWarnings({ "unchecked", "deprecation" })
 		@EventHandler(priority=EventPriority.HIGH)
 		public void onEntityDamagedByEntity(EntityDamageByEntityEvent e) {
 			final String bossType = saveFile.getString("bosses."+e.getEntity().getUniqueId().toString());
@@ -1781,7 +1781,7 @@ public class BossLand extends JavaPlugin implements Listener{
 						}
 					}
 					//Pigmen
-					if(minion.getType().equals(EntityType.PIG_ZOMBIE)) {
+					if(minion.getType().equals(EntityType.PIGLIN)) {
 						((PigZombie)minion).setAngry(true);
 						((PigZombie)minion).setAnger(999*999);
 					}
