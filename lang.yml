@@ -18,6 +18,7 @@ tooManyBosses: "§6§lThere are already too many other Gods in this world..."
 devilSpawn: "§6§lDevil: §r§4Wisdom is yours, if you can defeat me!"
 hellSpawn: "§6§lThe wicked go down to the realm of the dead, all the nations that forget God."
 noteConsume: "§6§lYou have filled your Death Note."
+failSpawnWorld: "§6§lThe gods refuse to enter this cursed plain..."
 shardKeyWord: "Shard"
 items:
   bell: "§6§lBell of Doom"

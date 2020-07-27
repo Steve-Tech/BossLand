@@ -47,7 +47,6 @@ import org.bukkit.entity.DragonFireball;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Fireball;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.LargeFireball;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Panda;
@@ -2129,6 +2128,41 @@ public class BossLand extends JavaPlugin implements Listener{
 						}else
 							p.sendMessage(getLang("noPower"));
 					}
+				}else if(p.getInventory().getItemInMainHand().getType().equals(Material.GOLD_INGOT) && p.getInventory().getItemInMainHand().getAmount() >= 16) {
+					//Ghast Spawn
+					//l.setY(l.getY()+1);
+					if(l.getWorld().getEnvironment().equals(Environment.NETHER) && checkBlockRecipe(l,"REDSTONE_WIRE:REDSTONE_WIRE:REDSTONE_WIRE","REDSTONE_WIRE:MAGMA_BLOCK:REDSTONE_WIRE","REDSTONE_WIRE:REDSTONE_WIRE:REDSTONE_WIRE",false)) {
+						l.getBlock().setType(Material.AIR);
+						boom(l,5,true);
+						e.setCancelled(true);
+						takeItem(p,16);
+						final Location bs = l.clone();
+						Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
+							public void run() {
+								spawnBoss(p,bs,"GhastLord");
+							}
+						}, (40));
+					}
+				}else if(p.getInventory().getItemInMainHand().getType().equals(Material.GOLDEN_CARROT) && p.getInventory().getItemInMainHand().getAmount() >= 16) {
+					this.getLogger().log(Level.WARNING, "Gold Consumed!");
+					//l.setY(l.getY()+1);
+					if(l.getWorld().getBiome((int)l.getX(), (int)l.getY(), (int)l.getZ()).toString().contains("DESERT"))
+						if(l.getWorld().getEnvironment().equals(Environment.NORMAL) && checkBlockRecipe(l,"CARROTS:CARROTS:CARROTS","CARROTS:MAGMA_BLOCK:CARROTS","CARROTS:CARROTS:CARROTS",false)) {
+							this.getLogger().log(Level.WARNING, "Correct condition found for Killer Bunny!");
+							e.setCancelled(true);
+							takeItem(p,16);
+							//boom(l,2,false);
+							//Location la = l.clone();
+							//la.setY(la.getY()-1);
+							l.getBlock().setType(Material.AIR);
+							l.getWorld().strikeLightning(l);
+							final Location bs = l.clone();
+							Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
+								public void run() {
+									spawnBoss(p,bs,"KillerBunny");
+								}
+							}, (40));
+						}
 				}
 				//System.out.println("Is Shard: " + isShard(p.getInventory().getItemInMainHand()));
 			}catch(Exception x) {}
@@ -2534,7 +2568,7 @@ public class BossLand extends JavaPlugin implements Listener{
 					}else
 						p.sendMessage(getLang("hellSpawn"));
 				}
-			}catch(Exception x) {x.printStackTrace();}
+			}catch(Exception x) {/**x.printStackTrace();**/}
 		}
 		
 		@EventHandler(priority=EventPriority.HIGH)
@@ -2545,43 +2579,46 @@ public class BossLand extends JavaPlugin implements Listener{
 		
 		@EventHandler(priority=EventPriority.HIGH)
 		public void onEntityCombust(EntityCombustEvent e) {
-			//Item Death
-			Entity ent = e.getEntity();
-			if(ent.getType().equals(EntityType.DROPPED_ITEM)) {
-				ItemStack s = ((Item)ent).getItemStack();
-				final Player p = itemDropMap.get(((Item)ent));
-				if(s.getType().equals(Material.GOLD_INGOT) && s.getAmount() >= 16) {
-					//Ghast Spawn
-					Location l = ent.getLocation();
-					l.setY(l.getY()+1);
-					if(l.getWorld().getEnvironment().equals(Environment.NETHER) && checkBlockRecipe(l,"REDSTONE_WIRE:REDSTONE_WIRE:REDSTONE_WIRE","REDSTONE_WIRE:AIR:REDSTONE_WIRE","REDSTONE_WIRE:REDSTONE_WIRE:REDSTONE_WIRE",false)) {
-						boom(l,5,true);
-						final Location bs = l.clone();
-						Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
-							public void run() {
-								spawnBoss(p,bs,"GhastLord");
-							}
-						}, (40));
-					}
-				}else if(s.getType().equals(Material.GOLDEN_CARROT) && s.getAmount() >= 16) {
-					Location l = ent.getLocation();
-					l.setY(l.getY()+1);
-					if(l.getWorld().getBiome((int)l.getX(), (int)l.getY(), (int)l.getZ()).toString().contains("DESERT"))
-						if(l.getWorld().getEnvironment().equals(Environment.NORMAL) && checkBlockRecipe(l,"CARROTS:CARROTS:CARROTS","CARROTS:AIR:CARROTS","CARROTS:CARROTS:CARROTS",false)) {
-							//boom(l,2,false);
-							Location la = l.clone();
-							la.setY(la.getY()-1);
-							la.getBlock().setType(Material.OBSIDIAN);
-							la.getWorld().strikeLightning(la);
-							final Location bs = l.clone();
-							Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
-								public void run() {
-									spawnBoss(p,bs,"KillerBunny");
-								}
-							}, (40));
-						}
-				}
-			}
+//			//Item Death
+//			Entity ent = e.getEntity();
+//			if(ent.getType().equals(EntityType.DROPPED_ITEM)) {
+//				System.out.println("C: 2");
+//				ItemStack s = ((Item)ent).getItemStack();
+//				final Player p = itemDropMap.get(((Item)ent));
+//				if(s.getType().equals(Material.GOLD_INGOT) && s.getAmount() >= 16) {
+//					//Ghast Spawn
+//					Location l = ent.getLocation();
+//					l.setY(l.getY()+1);
+//					if(l.getWorld().getEnvironment().equals(Environment.NETHER) && checkBlockRecipe(l,"REDSTONE_WIRE:REDSTONE_WIRE:REDSTONE_WIRE","REDSTONE_WIRE:AIR:REDSTONE_WIRE","REDSTONE_WIRE:REDSTONE_WIRE:REDSTONE_WIRE",false)) {
+//						boom(l,5,true);
+//						final Location bs = l.clone();
+//						Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
+//							public void run() {
+//								spawnBoss(p,bs,"GhastLord");
+//							}
+//						}, (40));
+//					}
+//				}else if(s.getType().equals(Material.GOLDEN_CARROT) && s.getAmount() >= 16) {
+//					this.getLogger().log(Level.WARNING, "Gold Carrors Consumed!");
+//					Location l = ent.getLocation();
+//					l.setY(l.getY()+1);
+//					if(l.getWorld().getBiome((int)l.getX(), (int)l.getY(), (int)l.getZ()).toString().contains("DESERT"))
+//						if(l.getWorld().getEnvironment().equals(Environment.NORMAL) && checkBlockRecipe(l,"CARROTS:CARROTS:CARROTS","CARROTS:AIR:CARROTS","CARROTS:CARROTS:CARROTS",false)) {
+//							this.getLogger().log(Level.WARNING, "Correct condition found for Killer Bunny!");
+//							//boom(l,2,false);
+//							Location la = l.clone();
+//							la.setY(la.getY()-1);
+//							la.getBlock().setType(Material.OBSIDIAN);
+//							la.getWorld().strikeLightning(la);
+//							final Location bs = l.clone();
+//							Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
+//								public void run() {
+//									spawnBoss(p,bs,"KillerBunny");
+//								}
+//							}, (40));
+//						}
+//				}
+//			}
 			//No Fire Check
 			if(noFireList.contains(e.getEntity().getUniqueId()))
 				e.setCancelled(true);
@@ -2773,12 +2810,21 @@ public class BossLand extends JavaPlugin implements Listener{
 		}
 		
 		private void spawnBoss(Player p, Location l, String bossType) {
-			//Check World Guard
-			if(new WorldGuardMethods().queryBuild(p, l) == false) {
+			//Check Disabled Worlds
+			if(getConfig().getList("disabledWorlds").contains(l.getWorld().getName())) {
 				for(Entity e : getNearbyEntities(l, 24, new ArrayList<EntityType>(Arrays.asList(EntityType.PLAYER))))
-					((Player)e).sendMessage(getLang("failSpawnWG"));
+					((Player)e).sendMessage(getLang("failSpawnWorld"));
 				return;
 			}
+			//Check World Guard
+			if(this.getServer().getPluginManager().getPlugin("WorldGuard") != null)
+				try {
+					if(new WorldGuardMethods().queryBuild(p, l) == false) {
+						for(Entity e : getNearbyEntities(l, 24, new ArrayList<EntityType>(Arrays.asList(EntityType.PLAYER))))
+							((Player)e).sendMessage(getLang("failSpawnWG"));
+						return;
+					}
+				}catch(Exception x) {}
 			//Check Boss Limit
 			if(bossMap.size() >= getConfig().getInt("bossLimit")) {
 				for(Entity e : getNearbyEntities(l, 24, new ArrayList<EntityType>(Arrays.asList(EntityType.PLAYER))))
@@ -3019,6 +3065,9 @@ public class BossLand extends JavaPlugin implements Listener{
 	    	}
 			if(bossType.equals("PharaohGod") || bossType.equals("Demon"))
 				autoBalls((LivingEntity) ent,bossType);
+			//No Despawn
+			if(ent instanceof LivingEntity)
+				((LivingEntity)ent).setRemoveWhenFarAway(false);
 	    }
 		
 		public void displayParticle(String effect, Location loc){
@@ -3789,6 +3838,7 @@ public class BossLand extends JavaPlugin implements Listener{
 	        return rd;
 	    }
 	    
+		@SuppressWarnings("unchecked")
 		public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args){
 	    	if((cmd.getName().equals("bossland")) || (cmd.getName().equals("bl"))){
 	    		try{
@@ -3864,6 +3914,19 @@ public class BossLand extends JavaPlugin implements Listener{
 		    					bossError(sender);
 		    			}
 		    			return true; 
+		    		}else if(args[0].equals("killBosses") && args.length == 2){
+    					World w = getServer().getWorld(args[1]);
+    					if(w == null) {
+    						sender.sendMessage("§cWorld not found!");
+    						return true; 
+    					}
+    					HashMap<Entity, BossBar> pm = (HashMap<Entity, BossBar>)bossMap.clone();
+    					for (Map.Entry<Entity, BossBar> i : pm.entrySet())
+    						if(i.getKey().getLocation().getWorld().equals(w)) {
+    							((LivingEntity)i.getKey()).damage(999*999);
+    						}
+    					sender.sendMessage("§eBossLand: Removed all bosses from the world.");
+		    			return true; 
 		    		}
 	    		}catch(Exception e){}
     			sender.sendMessage("§6--- Boss Land v" + Bukkit.getServer().getPluginManager().getPlugin("BossLand").getDescription().getVersion() + " ---");
@@ -3872,6 +3935,7 @@ public class BossLand extends JavaPlugin implements Listener{
     			sender.sendMessage("§e/bl loot <boss>   <- Drops a Bosses's death loot");
     			sender.sendMessage("§e/bl setLoot <boss> <id> <- Set loot for boss");
     			sender.sendMessage("§e/bl addLoot <boss>     <- Add loot for boss");
+    			sender.sendMessage("§e/bl killBosses <world>  <- Remove bosses");
     			sender.sendMessage("§e/bl reload         <- Re-loads the config");
 	    	}
 	    	return true; 
