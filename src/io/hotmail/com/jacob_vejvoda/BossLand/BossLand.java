@@ -343,27 +343,29 @@ public class BossLand extends JavaPlugin implements Listener{
 		@EventHandler(priority=EventPriority.HIGH)
 		public void onProjectileLaunch(ProjectileLaunchEvent e) {
 			//Check for God Trident
-			final String bossType = saveFile.getString("bosses."+e.getEntity().getUniqueId().toString());
-			if(e.getEntity().getShooter() != null) {
-				if(e.getEntity().getShooter() instanceof Player) {
-					//Check For Trident
-					Player p = (Player) e.getEntity().getShooter();
-					if(p.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals(getBossItemName("DrownedGod",0))) {
+			try {
+				final String bossType = saveFile.getString("bosses."+e.getEntity().getUniqueId().toString());
+				if(e.getEntity().getShooter() != null) {
+					if(e.getEntity().getShooter() instanceof Player) {
+						//Check For Trident
+						Player p = (Player) e.getEntity().getShooter();
+						if(p.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals(getBossItemName("DrownedGod",0))) {
+							lightningList.add(e.getEntity());
+						}else if(p.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals(getBossItemName("AetherGod",2))) {
+							Arrow a = (Arrow) e.getEntity();
+							a.setGlowing(true);
+							a.setBasePotionData(new PotionData(PotionType.SLOWNESS));
+							makeTrail(a,"CLOUD:0:1:0");
+							Entity t = getTarget(p);
+							if(t != null)
+								moveToward(a,t,1.1);
+							//lightningList.add(e.getEntity());
+						}
+					}else if(bossType != null && bossType.equals("DrownedGod")){
 						lightningList.add(e.getEntity());
-					}else if(p.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals(getBossItemName("AetherGod",2))) {
-						Arrow a = (Arrow) e.getEntity();
-						a.setGlowing(true);
-						a.setBasePotionData(new PotionData(PotionType.SLOWNESS));
-						makeTrail(a,"CLOUD:0:1:0");
-						Entity t = getTarget(p);
-						if(t != null)
-							moveToward(a,t,1.1);
-						//lightningList.add(e.getEntity());
 					}
-				}else if(bossType != null && bossType.equals("DrownedGod")){
-					lightningList.add(e.getEntity());
 				}
-			}
+			}catch (Exception x) {}
 		}
 	    
 		@EventHandler(priority=EventPriority.HIGH)
@@ -1527,13 +1529,15 @@ public class BossLand extends JavaPlugin implements Listener{
 				        ItemStack boots = new ItemStack(Material.CHAINMAIL_BOOTS, 1);
 				        EntityEquipment ee = ((LivingEntity) minion).getEquipment();
 						if(phase == 2) {
-							ItemStack head = getHead("d5f9d66b-8c46-48d6-aaba-8f67072c9668","Fish Man Head");//"Vaporeon"
+							//ItemStack head = getHead("d5f9d66b-8c46-48d6-aaba-8f67072c9668","Fish Man Head");//"Vaporeon"
+							ItemStack head = getSkull("http://textures.minecraft.net/texture/d88ba8bb50b79e441e47b7e452764d5fff6693779d2dadd9f7f52f98d7ea0");
 				            ee.setHelmet(head);
 				            ee.setChestplate(chest);
 				            ee.setLeggings(pants);
 				            ee.setBoots(boots);
 						}else if(phase == 3) {
-							ItemStack head = getHead("b7191c02-8966-4e56-bacd-36990ad7bb27","Squid Man Head");//"MinerByTrade"
+							//ItemStack head = getHead("b7191c02-8966-4e56-bacd-36990ad7bb27","Squid Man Head");//"MinerByTrade"
+							ItemStack head = getSkull("http://textures.minecraft.net/texture/85ef46255c156b465dbf83c41ca145e9f57b0e87a4e6a2a143abab7f854b98");
 				            ee.setHelmet(head);
 				            chest.addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 2);
 				            ee.setChestplate(chest);
@@ -1543,7 +1547,8 @@ public class BossLand extends JavaPlugin implements Listener{
 				            ee.setBoots(boots);
 				            ee.setItemInMainHand(hand);
 						}else if(phase == 4) {
-							ItemStack head = getHead("ac819439-ecf8-4040-aa32-48b3eb251243","Cthulhu Man Head");//"ELF_PUNSHER"
+							//ItemStack head = getHead("ac819439-ecf8-4040-aa32-48b3eb251243","Cthulhu Man Head");//"ELF_PUNSHER"
+							ItemStack head = getSkull("http://textures.minecraft.net/texture/296343dcc59df35552f46d3ffc50ea2c4269dac139da2a581228cb3601bfe");
 				            ee.setHelmet(head);
 				            chest.addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 4);
 				            ee.setChestplate(chest);
@@ -1607,7 +1612,8 @@ public class BossLand extends JavaPlugin implements Listener{
 							minion.addPotionEffect(new PotionEffect(PotionEffectType.SPEED,999*999,1));
 							minion.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE,999*999,2));
 						}else if(phase == 3) {
-							ItemStack head = getHead("b182e3c7-1560-4573-abda-4e4b91b806e5","Sky Knight Head");//"Ryse93_YT"
+							//ItemStack head = getHead("b182e3c7-1560-4573-abda-4e4b91b806e5","Sky Knight Head");//"Ryse93_YT"
+							ItemStack head = getSkull("http://textures.minecraft.net/texture/1ab2d069a0027cda3341b5e8549ab6b214ecbc6080e1f779e7434a8e6fa253c1");
 							minion.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE,999*999,4));
 				            ee.setHelmet(head);
 				            chest.addUnsafeEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 5);
@@ -2144,11 +2150,11 @@ public class BossLand extends JavaPlugin implements Listener{
 						}, (40));
 					}
 				}else if(p.getInventory().getItemInMainHand().getType().equals(Material.GOLDEN_CARROT) && p.getInventory().getItemInMainHand().getAmount() >= 16) {
-					this.getLogger().log(Level.WARNING, "Gold Consumed!");
+					//this.getLogger().log(Level.WARNING, "Gold Consumed!");
 					//l.setY(l.getY()+1);
 					if(l.getWorld().getBiome((int)l.getX(), (int)l.getY(), (int)l.getZ()).toString().contains("DESERT"))
 						if(l.getWorld().getEnvironment().equals(Environment.NORMAL) && checkBlockRecipe(l,"CARROTS:CARROTS:CARROTS","CARROTS:MAGMA_BLOCK:CARROTS","CARROTS:CARROTS:CARROTS",false)) {
-							this.getLogger().log(Level.WARNING, "Correct condition found for Killer Bunny!");
+							//this.getLogger().log(Level.WARNING, "Correct condition found for Killer Bunny!");
 							e.setCancelled(true);
 							takeItem(p,16);
 							//boom(l,2,false);
@@ -2810,161 +2816,169 @@ public class BossLand extends JavaPlugin implements Listener{
 		}
 		
 		private void spawnBoss(Player p, Location l, String bossType) {
-			//Check Disabled Worlds
-			if(getConfig().getList("disabledWorlds").contains(l.getWorld().getName())) {
-				for(Entity e : getNearbyEntities(l, 24, new ArrayList<EntityType>(Arrays.asList(EntityType.PLAYER))))
-					((Player)e).sendMessage(getLang("failSpawnWorld"));
-				return;
-			}
-			//Check World Guard
-			if(this.getServer().getPluginManager().getPlugin("WorldGuard") != null)
-				try {
-					if(new WorldGuardMethods().queryBuild(p, l) == false) {
-						for(Entity e : getNearbyEntities(l, 24, new ArrayList<EntityType>(Arrays.asList(EntityType.PLAYER))))
-							((Player)e).sendMessage(getLang("failSpawnWG"));
-						return;
-					}
-				}catch(Exception x) {}
-			//Check Boss Limit
-			if(bossMap.size() >= getConfig().getInt("bossLimit")) {
-				for(Entity e : getNearbyEntities(l, 24, new ArrayList<EntityType>(Arrays.asList(EntityType.PLAYER))))
-					((Player)e).sendMessage(getLang("tooManyBosses"));
-				return;
-			}
-			//Log Spawn
-			this.getLogger().log(Level.INFO, "Spawn Boss: " + bossType);
-			String entType =  getConfig().getString("bosses."+bossType+".entity");
-//			System.out.println("entType: " + entType);
-//			System.out.println("entType2: " + EntityType.valueOf(entType));
-//			System.out.println("entType3: " + EntityType.valueOf(entType));
-			Entity boss = l.getWorld().spawnEntity(l, EntityType.valueOf(entType));
-			//Slime
-			if(boss instanceof Slime) {
-				((Slime)boss).setSize(10);
-			}else if(boss instanceof Rabbit) {
-				((Rabbit)boss).setRabbitType(Type.THE_KILLER_BUNNY);
-				((Rabbit) boss).addPotionEffect(new PotionEffect(PotionEffectType.SPEED,999*999,1));
-				((Rabbit) boss).addPotionEffect(new PotionEffect(PotionEffectType.JUMP,999*999,1));
-				((Rabbit) boss).addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE,999*999,1));
-				//((Rabbit)boss).setFireTicks(999*999);
-				//((Rabbit) boss).setCustomName(null);
-			}else if(bossType.equals("WitherSkeletonKing") || bossType.equals("ZombieKing")) {
-				equipMob(boss, "DIAMOND");
-			}/**else if(bossType.equals("IllagerKing")) {
-
-			}**/else if(bossType.equals("PapaPanda")) {
-				((Panda)boss).setMainGene(Gene.AGGRESSIVE);
-			}else if(bossType.equals("DrownedGod")) {
-				equipMob(boss, "DIAMOND");
-				ItemStack head = getHead("5cf625ba-8f8e-4069-bcfe-af5fbb35a3f4","§b§lDrowned God's Head");//"LeftShark"
-				ItemStack hand = new ItemStack(Material.TRIDENT);
-		        EntityEquipment ee = ((LivingEntity) boss).getEquipment();
-		        ee.setItemInMainHandDropChance(0.0F);
-		        ee.setHelmet(head);
-		        ee.setItemInMainHand(hand);
-		        //((LivingEntity) boss).addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE,999*999,2));
-			}else if(bossType.equals("PharaohGod")) {
-				equipMob(boss, "GOLDEN");
-				ItemStack head = getHead("73917135-da9d-4fd1-b032-158a7d1d03d1","§6§lPharaoh God's Head");//"Sam1_6"
-				ItemStack hand = new ItemStack(Material.BLAZE_ROD);
-				hand.addUnsafeEnchantment(Enchantment.KNOCKBACK, 5);
-				hand.addUnsafeEnchantment(Enchantment.DAMAGE_ALL, 10);
-		        EntityEquipment ee = ((LivingEntity) boss).getEquipment();
-		        ee.setItemInMainHandDropChance(0.0F);
-		        ee.setHelmet(head);
-		        ee.setItemInMainHand(hand);
-		        ((LivingEntity) boss).addPotionEffect(new PotionEffect(PotionEffectType.SLOW,999*999,1));
-		        ((LivingEntity) boss).addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE,999*999,2));
-			}else if(bossType.equals("AetherGod")) {
-				//System.out.println("Aether God 1");
-				equipMob(boss, "DIAMOND");
-				ItemStack head = getHead("853c80ef-3c37-49fd-aa49-938b674adae6","§lAether God's Head");//"jeb_"
-				ItemStack hand = new ItemStack(Material.BOW);
-				hand.addUnsafeEnchantment(Enchantment.ARROW_DAMAGE, 10);
-				hand.addUnsafeEnchantment(Enchantment.ARROW_KNOCKBACK, 3);
-				hand.addUnsafeEnchantment(Enchantment.ARROW_FIRE, 3);
-		        EntityEquipment ee = ((LivingEntity) boss).getEquipment();
-		        ee.setItemInMainHandDropChance(0.0F);
-		        ee.setHelmet(head);
-		        ee.setItemInMainHand(hand);
-		        ((LivingEntity) boss).addPotionEffect(new PotionEffect(PotionEffectType.GLOWING,999*999,1));
-		        levitate((LivingEntity) boss, true);
-		        target(boss, 0.01);
-			}else if(bossType.equals("Demon")) {
-		        ItemStack chest = new ItemStack(Material.LEATHER_CHESTPLATE, 1);
-		        ItemStack pants = new ItemStack(Material.LEATHER_LEGGINGS, 1);
-		        ItemStack boots = new ItemStack(Material.LEATHER_BOOTS, 1);
-		        for(ItemStack s : Arrays.asList(chest,pants,boots))
-		        	dye(s,Color.MAROON);
-				ItemStack head = getSkull("http://textures.minecraft.net/texture/e00cd37a4ebcbb28cb85d75bbde7b7aad5a0f42bf4842f8da77dffdea18c1356");
-				ItemStack hand = new ItemStack(Material.IRON_HOE);
-				hand.addUnsafeEnchantment(Enchantment.DAMAGE_ALL, 10);
-				hand.addUnsafeEnchantment(Enchantment.KNOCKBACK, 3);
-				hand.addUnsafeEnchantment(Enchantment.FIRE_ASPECT, 10);
-		        EntityEquipment ee = ((LivingEntity) boss).getEquipment();
-		        ee.setItemInMainHandDropChance(0.0F);
-		        ee.setHelmetDropChance(0.0F);
-		        ee.setHelmet(head);
-		        ee.setChestplate(chest);
-		        ee.setLeggings(pants);
-		        ee.setBoots(boots);
-		        ee.setItemInMainHand(hand);
-		        ((LivingEntity) boss).addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE,999*999,1));
-		        ((LivingEntity) boss).addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE,999*999,5));
-			}else if(bossType.equals("Devil")) {
-				((PigZombie)boss).setAngry(true);
-				((PigZombie)boss).setAnger(999*999);
-				equipMob(boss, "DIAMOND");
-				ItemStack head = getSkull("http://textures.minecraft.net/texture/9da39269ef45f825ec61bb4f8aa09bd3cf07996fb6fac338a6e91d6699ae425");
-				ItemStack hand = new ItemStack(Material.ENCHANTED_BOOK);
-				hand.addUnsafeEnchantment(Enchantment.DAMAGE_ALL, 999);
-		        EntityEquipment ee = ((LivingEntity) boss).getEquipment();
-		        ee.setItemInMainHandDropChance(0.0F);
-		        ee.setHelmet(head);
-		        ee.setItemInMainHand(hand);
-		        levitate((LivingEntity) boss, true);
-		        target(boss, 0.05);
-			}else if(bossType.equals("Death")) {
-		        ItemStack chest = new ItemStack(Material.LEATHER_CHESTPLATE, 1);
-		        ItemStack pants = new ItemStack(Material.LEATHER_LEGGINGS, 1);
-		        ItemStack boots = new ItemStack(Material.LEATHER_BOOTS, 1);
-		        for(ItemStack s : Arrays.asList(chest,pants,boots))
-		        	dye(s,Color.BLACK);
-				ItemStack head = getSkull("http://textures.minecraft.net/texture/69e2f33eb180f0434916dc5d2bb326a6ea22fc9bbf988bc31a241fd4278023");
-				ItemStack hand = new ItemStack(Material.IRON_HOE);
-				hand.addUnsafeEnchantment(Enchantment.DAMAGE_ALL, 999);
-		        EntityEquipment ee = ((LivingEntity) boss).getEquipment();
-		        ee.setItemInMainHandDropChance(0.0F);
-		        ee.setHelmet(head);
-		        ee.setItemInMainHand(hand);
-		        ee.setChestplate(chest);
-		        ee.setLeggings(pants);
-		        //ee.setBoots(boots);
-		        levitate((LivingEntity) boss, true);
-		        target(boss, 0.2);
-			}
-			//Mount
-			if(getConfig().getString("bosses."+bossType+".mount") != null) {
-				LivingEntity mount = (LivingEntity) boss.getWorld().spawnEntity(boss.getLocation(), EntityType.valueOf(getConfig().getString("bosses."+bossType+".mount")));
-				mount.addPassenger(boss);
-				int h = getConfig().getInt("bosses."+bossType+".health");
-				mount.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(h);
-				mount.setHealth(h);
-				mount.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE,999*999,10));
-				if(mount.getType().equals(EntityType.BAT)) {
-					mount.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY,999*999,1));
-					mount.setInvulnerable(true);
-					if(bossType.equals("AetherGod"))
-						mount.addPotionEffect(new PotionEffect(PotionEffectType.SLOW,999*999,2));
+			try {
+				//Check Disabled Worlds
+				if(getConfig().getList("disabledWorlds").contains(l.getWorld().getName())) {
+					for(Entity e : getNearbyEntities(l, 24, new ArrayList<EntityType>(Arrays.asList(EntityType.PLAYER))))
+						((Player)e).sendMessage(getLang("failSpawnWorld"));
+					return;
 				}
-				//mount.setPersistent(true);
+				//Check World Guard
+				if(this.getServer().getPluginManager().getPlugin("WorldGuard") != null)
+					try {
+						if(new WorldGuardMethods().queryBuild(p, l) == false) {
+							for(Entity e : getNearbyEntities(l, 24, new ArrayList<EntityType>(Arrays.asList(EntityType.PLAYER))))
+								((Player)e).sendMessage(getLang("failSpawnWG"));
+							return;
+						}
+					}catch(Exception x) {}
+				//Check Boss Limit
+				if(bossMap.size() >= getConfig().getInt("bossLimit")) {
+					for(Entity e : getNearbyEntities(l, 24, new ArrayList<EntityType>(Arrays.asList(EntityType.PLAYER))))
+						((Player)e).sendMessage(getLang("tooManyBosses"));
+					return;
+				}
+				//Log Spawn
+				this.getLogger().log(Level.INFO, "Spawn Boss: " + bossType);
+				String entType =  getConfig().getString("bosses."+bossType+".entity");
+	//			System.out.println("entType: " + entType);
+	//			System.out.println("entType2: " + EntityType.valueOf(entType));
+	//			System.out.println("entType3: " + EntityType.valueOf(entType));
+				Entity boss = l.getWorld().spawnEntity(l, EntityType.valueOf(entType.toUpperCase()));
+				//Slime
+				if(boss instanceof Slime) {
+					((Slime)boss).setSize(10);
+				}else if(boss instanceof Rabbit) {
+					((Rabbit)boss).setRabbitType(Type.THE_KILLER_BUNNY);
+					((Rabbit) boss).addPotionEffect(new PotionEffect(PotionEffectType.SPEED,999*999,1));
+					((Rabbit) boss).addPotionEffect(new PotionEffect(PotionEffectType.JUMP,999*999,1));
+					((Rabbit) boss).addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE,999*999,1));
+					//((Rabbit)boss).setFireTicks(999*999);
+					//((Rabbit) boss).setCustomName(null);
+				}else if(bossType.equals("WitherSkeletonKing") || bossType.equals("ZombieKing")) {
+					equipMob(boss, "DIAMOND");
+				}/**else if(bossType.equals("IllagerKing")) {
+	
+				}**/else if(bossType.equals("PapaPanda")) {
+					((Panda)boss).setMainGene(Gene.AGGRESSIVE);
+				}else if(bossType.equals("DrownedGod")) {
+					equipMob(boss, "DIAMOND");
+					//ItemStack head = getHead("5cf625ba-8f8e-4069-bcfe-af5fbb35a3f4","§b§lDrowned God's Head");//"LeftShark"
+					ItemStack head = getSkull("http://textures.minecraft.net/texture/2d7a509789933b2640775f003a71dfb4f5d97aa23d804223029d295274deead1");
+					ItemStack hand = new ItemStack(Material.TRIDENT);
+			        EntityEquipment ee = ((LivingEntity) boss).getEquipment();
+			        ee.setItemInMainHandDropChance(0.0F);
+			        ee.setHelmet(head);
+			        ee.setItemInMainHand(hand);
+			        //((LivingEntity) boss).addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE,999*999,2));
+				}else if(bossType.equals("PharaohGod")) {
+					equipMob(boss, "GOLDEN");
+					//ItemStack head = getHead("73917135-da9d-4fd1-b032-158a7d1d03d1","§6§lPharaoh God's Head");//"Sam1_6"
+					ItemStack head = getSkull("http://textures.minecraft.net/texture/51182cf65d180ecf08fab2311abed0cfcee960e6df5a3ba528f7ea47cc41f0a2");
+					ItemStack hand = new ItemStack(Material.BLAZE_ROD);
+					hand.addUnsafeEnchantment(Enchantment.KNOCKBACK, 5);
+					hand.addUnsafeEnchantment(Enchantment.DAMAGE_ALL, 10);
+			        EntityEquipment ee = ((LivingEntity) boss).getEquipment();
+			        ee.setItemInMainHandDropChance(0.0F);
+			        ee.setHelmet(head);
+			        ee.setItemInMainHand(hand);
+			        ((LivingEntity) boss).addPotionEffect(new PotionEffect(PotionEffectType.SLOW,999*999,1));
+			        ((LivingEntity) boss).addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE,999*999,2));
+				}else if(bossType.equals("AetherGod")) {
+					//System.out.println("Aether God 1");
+					equipMob(boss, "DIAMOND");
+					//ItemStack head = getHead("853c80ef-3c37-49fd-aa49-938b674adae6","§lAether God's Head");//"jeb_"
+					ItemStack head = getSkull("http://textures.minecraft.net/texture/6545210b810f3d2db27c87f443a5fb812bb85d14d1922d08f50a2ebb1b248788");
+					ItemStack hand = new ItemStack(Material.BOW);
+					hand.addUnsafeEnchantment(Enchantment.ARROW_DAMAGE, 10);
+					hand.addUnsafeEnchantment(Enchantment.ARROW_KNOCKBACK, 3);
+					hand.addUnsafeEnchantment(Enchantment.ARROW_FIRE, 3);
+			        EntityEquipment ee = ((LivingEntity) boss).getEquipment();
+			        ee.setItemInMainHandDropChance(0.0F);
+			        ee.setHelmet(head);
+			        ee.setItemInMainHand(hand);
+			        ((LivingEntity) boss).addPotionEffect(new PotionEffect(PotionEffectType.GLOWING,999*999,1));
+			        levitate((LivingEntity) boss, true);
+			        target(boss, 0.01);
+				}else if(bossType.equals("Demon")) {
+			        ItemStack chest = new ItemStack(Material.LEATHER_CHESTPLATE, 1);
+			        ItemStack pants = new ItemStack(Material.LEATHER_LEGGINGS, 1);
+			        ItemStack boots = new ItemStack(Material.LEATHER_BOOTS, 1);
+			        for(ItemStack s : Arrays.asList(chest,pants,boots))
+			        	dye(s,Color.MAROON);
+					ItemStack head = getSkull("http://textures.minecraft.net/texture/e00cd37a4ebcbb28cb85d75bbde7b7aad5a0f42bf4842f8da77dffdea18c1356");
+					ItemStack hand = new ItemStack(Material.IRON_HOE);
+					hand.addUnsafeEnchantment(Enchantment.DAMAGE_ALL, 10);
+					hand.addUnsafeEnchantment(Enchantment.KNOCKBACK, 3);
+					hand.addUnsafeEnchantment(Enchantment.FIRE_ASPECT, 10);
+			        EntityEquipment ee = ((LivingEntity) boss).getEquipment();
+			        ee.setItemInMainHandDropChance(0.0F);
+			        ee.setHelmetDropChance(0.0F);
+			        ee.setHelmet(head);
+			        ee.setChestplate(chest);
+			        ee.setLeggings(pants);
+			        ee.setBoots(boots);
+			        ee.setItemInMainHand(hand);
+			        ((LivingEntity) boss).addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE,999*999,1));
+			        ((LivingEntity) boss).addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE,999*999,5));
+				}else if(bossType.equals("Devil")) {
+					((PigZombie)boss).setAngry(true);
+					((PigZombie)boss).setAnger(999*999);
+					equipMob(boss, "DIAMOND");
+					ItemStack head = getSkull("http://textures.minecraft.net/texture/9da39269ef45f825ec61bb4f8aa09bd3cf07996fb6fac338a6e91d6699ae425");
+					ItemStack hand = new ItemStack(Material.ENCHANTED_BOOK);
+					hand.addUnsafeEnchantment(Enchantment.DAMAGE_ALL, 999);
+			        EntityEquipment ee = ((LivingEntity) boss).getEquipment();
+			        ee.setItemInMainHandDropChance(0.0F);
+			        ee.setHelmet(head);
+			        ee.setItemInMainHand(hand);
+			        levitate((LivingEntity) boss, true);
+			        target(boss, 0.05);
+				}else if(bossType.equals("Death")) {
+			        ItemStack chest = new ItemStack(Material.LEATHER_CHESTPLATE, 1);
+			        ItemStack pants = new ItemStack(Material.LEATHER_LEGGINGS, 1);
+			        ItemStack boots = new ItemStack(Material.LEATHER_BOOTS, 1);
+			        for(ItemStack s : Arrays.asList(chest,pants,boots))
+			        	dye(s,Color.BLACK);
+					ItemStack head = getSkull("http://textures.minecraft.net/texture/69e2f33eb180f0434916dc5d2bb326a6ea22fc9bbf988bc31a241fd4278023");
+					ItemStack hand = new ItemStack(Material.IRON_HOE);
+					hand.addUnsafeEnchantment(Enchantment.DAMAGE_ALL, 999);
+			        EntityEquipment ee = ((LivingEntity) boss).getEquipment();
+			        ee.setItemInMainHandDropChance(0.0F);
+			        ee.setHelmet(head);
+			        ee.setItemInMainHand(hand);
+			        ee.setChestplate(chest);
+			        ee.setLeggings(pants);
+			        //ee.setBoots(boots);
+			        levitate((LivingEntity) boss, true);
+			        target(boss, 0.2);
+				}
+				//Mount
+				if(getConfig().getString("bosses."+bossType+".mount") != null) {
+					LivingEntity mount = (LivingEntity) boss.getWorld().spawnEntity(boss.getLocation(), EntityType.valueOf(getConfig().getString("bosses."+bossType+".mount").toUpperCase()));
+					mount.addPassenger(boss);
+					int h = getConfig().getInt("bosses."+bossType+".health");
+					mount.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(h);
+					mount.setHealth(h);
+					mount.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE,999*999,10));
+					if(mount.getType().equals(EntityType.BAT)) {
+						mount.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY,999*999,1));
+						mount.setInvulnerable(true);
+						if(bossType.equals("AetherGod"))
+							mount.addPotionEffect(new PotionEffect(PotionEffectType.SLOW,999*999,2));
+					}
+					//mount.setPersistent(true);
+				}
+				//Stop Despawn
+				//boss.setPersistent(true);
+				//Save Boss 
+				saveFile.set("bosses."+boss.getUniqueId().toString(), bossType);
+				save();
+				makeBoss(boss, bossType);
+			}catch(Exception x) {
+				this.getLogger().log(Level.SEVERE, "Failed to spawn Boss: " + bossType);
+				x.printStackTrace();
 			}
-			//Stop Despawn
-			//boss.setPersistent(true);
-			//Save Boss 
-			saveFile.set("bosses."+boss.getUniqueId().toString(), bossType);
-			save();
-			makeBoss(boss, bossType);
 		}
 		
 		private void levitate(final LivingEntity e, boolean up) {
@@ -3343,7 +3357,9 @@ public class BossLand extends JavaPlugin implements Listener{
 
 	                            String levelString = this.getConfig().getString("bosses."+bossType+".loot." + loot + ".enchantments." + j + ".level");
 	                            int level = getIntFromString(levelString);
-	                            if (Enchantment.getByKey(NamespacedKey.minecraft(enchantment.toLowerCase())) != null) {
+	                            NamespacedKey k = NamespacedKey.minecraft(enchantment.toLowerCase());
+	                            if (Enchantment.getByKey(k) != null) {
+	                            //if (Enchantment.getByName(enchantment) != null) {
 	                                if (level < 1) {
 	                                    level = 1;
 	                                }
@@ -3594,20 +3610,20 @@ public class BossLand extends JavaPlugin implements Listener{
 			}catch (Exception localException) {}
 		  }
 		
-		public ItemStack getHead(String owner, String name) {
-			//Test for UUID
-			if(UUID.fromString(owner) == null) {
-				this.getLogger().log(Level.SEVERE, "Invalid skin found: " + owner + " please notify plugin author!");
-				owner = "3506994a-bc90-427d-bdda-be06e992aed9";
-			}
-			//Get Skin
-			ItemStack stack = new ItemStack(Material.PLAYER_HEAD);
-            SkullMeta sm = (SkullMeta) stack.getItemMeta();
-            sm.setOwningPlayer(Bukkit.getOfflinePlayer(UUID.fromString(owner)));
-            sm.setDisplayName(prosessLootName(name, stack));
-            stack.setItemMeta(sm);
-            return stack;
-		}
+//		public ItemStack getHead(String owner, String name) {
+//			//Test for UUID
+//			if(UUID.fromString(owner) == null) {
+//				this.getLogger().log(Level.SEVERE, "Invalid skin found: " + owner + " please notify plugin author!");
+//				owner = "3506994a-bc90-427d-bdda-be06e992aed9";
+//			}
+//			//Get Skin
+//			ItemStack stack = new ItemStack(Material.PLAYER_HEAD);
+//            SkullMeta sm = (SkullMeta) stack.getItemMeta();
+//            sm.setOwningPlayer(Bukkit.getOfflinePlayer(UUID.fromString(owner)));
+//            sm.setDisplayName(prosessLootName(name, stack));
+//            stack.setItemMeta(sm);
+//            return stack;
+//		}
 		
 	    public ItemStack getIllagerItem(){
 	    	ItemStack s = getItem(Material.BELL, getLang("items.bell"), 1, getLangList("items.belllore"));
