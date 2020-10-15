@@ -1,7 +1,7 @@
 name: BossLand
 main: io.hotmail.com.jacob_vejvoda.BossLand.BossLand
-version: 0.5
-api-version: 1.13
+version: 0.6
+api-version: 1.16
 author: Eliminator
 softdepend: [WorldGuard]
 

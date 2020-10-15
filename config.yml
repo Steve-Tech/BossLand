@@ -84,7 +84,7 @@ bosses:
             level: 10
             chance: 100
           3:
-            enchantment: mendings
+            enchantment: MENDING
             level: 5-15
             chance: 50
           4:
@@ -176,7 +176,7 @@ bosses:
         amount: 1
         name: "&7&lBunny Pants"
         lore1: "&8Dropped by the Killer Bunny"
-        colour: "191, 191, 191"
+        colour: "191,191,191"
         enchantments: 
           2:
             enchantment: unbreaking

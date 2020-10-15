@@ -138,6 +138,7 @@ public class BossLand extends JavaPlugin implements Listener{
 		ArrayList<UUID> noList = new ArrayList<UUID>();
 		ArrayList<UUID> deathList = new ArrayList<UUID>();
 		ArrayList<UUID> canEnterDeath = new ArrayList<UUID>();
+		ArrayList<UUID> hadDeathNote = new ArrayList<UUID>();
 		
 	    @Override
 	    public void onEnable(){
@@ -414,7 +415,10 @@ public class BossLand extends JavaPlugin implements Listener{
 		
 		@EventHandler(priority=EventPriority.HIGH)
 		public void onPlayerRespawn(PlayerRespawnEvent e) {
+			//System.out.println("onPlayerRespawn");
 			final Player p = e.getPlayer();
+			//System.out.println("canEnterDeath = " + canEnterDeath.contains(p.getUniqueId()));
+			//System.out.println("hasDeathNote = " + hasDeathNote(p));
 			if(canEnterDeath.contains(p.getUniqueId()) && hasDeathNote(p)) {
 				Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable(){
 					public void run(){
@@ -461,6 +465,8 @@ public class BossLand extends JavaPlugin implements Listener{
 					if(p.getHealth() - e.getFinalDamage() <= 0) {
 						//Died
 						this.getLogger().log(Level.INFO, p.getName() + " should have died.");
+						//System.out.println("canEnterDeath = " + canEnterDeath.contains(p.getUniqueId()));
+						//System.out.println("hasDeathNote = " + hasDeathNote(p));
 						if(canEnterDeath.contains(p.getUniqueId()) && hasDeathNote(p)) {
 							enterDeath(p);
 						}
@@ -771,7 +777,8 @@ public class BossLand extends JavaPlugin implements Listener{
 					    			for(int i = 0; i < 2; i++) {
 					    				Location tmp = loc.clone();
 					    				tmp.setY(tmp.getY()-i);
-					    				tmp.getBlock().setType(Material.AIR);
+					    				if(!tmp.getBlock().getType().equals(Material.BEDROCK))
+					    					tmp.getBlock().setType(Material.AIR);
 					    			}
 					    			loc.getWorld().playSound(loc, Sound.BLOCK_STONE_BREAK, 1, 1);
 					    			displayParticle(Particle.SMOKE_LARGE.toString(), loc, 0.3, 0, 3);
@@ -796,10 +803,11 @@ public class BossLand extends JavaPlugin implements Listener{
 									for(int j = 0; j < 12; j++) {
 										Location tmp = i.clone();
 										tmp.setY(tmp.getY()-j);
-										if(j < 11) {
-											tmp.getBlock().setType(Material.AIR);
-										}else
-											tmp.getBlock().setType(Material.LAVA);
+										if(!tmp.getBlock().getType().equals(Material.BEDROCK))
+											if(j < 11) {
+												tmp.getBlock().setType(Material.AIR);
+											}else
+												tmp.getBlock().setType(Material.LAVA);
 									}
 								}
 							}
@@ -856,7 +864,8 @@ public class BossLand extends JavaPlugin implements Listener{
 						Location l2 = dmgr.getLocation(); l2.setY(l2.getY()-2);
 						Location l3 = dmgr.getLocation(); l3.setY(l3.getY()-3);
 						for(Location l : Arrays.asList(l1,l2,l3))
-							l.getBlock().setType(Material.AIR);
+							if(!l.getBlock().getType().equals(Material.BEDROCK))
+								l.getBlock().setType(Material.AIR);
 						Location l4 = dmgr.getLocation(); l4.setY(l4.getY()+1);
 						Location l5 = dmgr.getLocation(); l5.setY(l5.getY()+2);
 						Location l6 = dmgr.getLocation(); l6.setY(l6.getY()+3);
@@ -995,7 +1004,7 @@ public class BossLand extends JavaPlugin implements Listener{
 						Location l1 = dmgr.getLocation(); l1.setX(l1.getX()+1); l1.setY(l1.getY()+1); l1.setZ(l1.getZ()+1);
 						Location l2 = dmgr.getLocation(); l2.setX(l2.getX()-1); l2.setY(l2.getY()-25); l2.setZ(l2.getZ()-1);
 						for(Block b : getArea(l1,l2,false)) 
-							if(!b.getType().equals(Material.LAVA)) {
+							if((!b.getType().equals(Material.LAVA)) && (!b.getType().equals(Material.BEDROCK))) {
 								b.setType(Material.AIR);
 							}
 					}
@@ -1060,10 +1069,11 @@ public class BossLand extends JavaPlugin implements Listener{
 						int depth = 50;
 						Location l1 = dmgr.getLocation(); l1.setX(l1.getX()+radious); l1.setY(l1.getY()+radious); l1.setZ(l1.getZ()+radious);
 						Location l2 = dmgr.getLocation(); l2.setX(l2.getX()-radious); l2.setY(l2.getY()-depth); l2.setZ(l2.getZ()-radious);
-						for(Block b : getArea(l1,l2,false)) {
-							oldBlocks.put(b, b.getType());
-							b.setType(Material.AIR);
-						}
+						for(Block b : getArea(l1,l2,false)) 
+							if(!b.getType().equals(Material.BEDROCK)){
+								oldBlocks.put(b, b.getType());
+								b.setType(Material.AIR);
+							}
 						//Restore Blocks
 						final HashMap<Block,Material> fOldBlocks = (HashMap<Block, Material>) oldBlocks.clone();
 						Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable(){
@@ -1827,6 +1837,7 @@ public class BossLand extends JavaPlugin implements Listener{
 	        return head;
 	    }
 		
+		@SuppressWarnings("deprecation")
 		private void spawnMinions(LivingEntity ent, String bossType, int distance, boolean mount) {
 			//Get Type
 			EntityType mt;
@@ -1857,7 +1868,7 @@ public class BossLand extends JavaPlugin implements Listener{
 				Location l3 = ent.getLocation(); l3.setZ(l3.getZ()-distance);
 				for(Location l : Arrays.asList(l1,l2,l3)) {
 					Entity minion = ent.getWorld().spawnEntity(l, mt);
-					System.out.println("Spawn Minnion: "+ minion.getType());
+					//System.out.println("Spawn Minnion: "+ minion.getType());
 					//Type Edits
 					if((minion instanceof Slime) && bossType.equals("KingSlime")) {
 						((Slime)minion).setSize(2);
@@ -1984,18 +1995,24 @@ public class BossLand extends JavaPlugin implements Listener{
 		}
 		
 		private boolean hasDeathNote(Player p) {
-			for(ItemStack s : p.getInventory())
-				if(s != null)
-					try {
-						if(s.getItemMeta().getDisplayName().equals(getBossItemName("Death",1))) {
-							if(s.getAmount() > 1) {
-								s.setAmount(s.getAmount()-1);
-							}else
-								p.getInventory().remove(s);
-							return true;
-						}
-					}catch(Exception x) {}
-			
+			try {
+				if(hadDeathNote.contains(p.getUniqueId())) {
+					hadDeathNote.remove(p.getUniqueId());
+					return true;
+				}
+				for(ItemStack s : p.getInventory())
+					if(s != null)
+						try {
+							//System.out.println(s.getItemMeta().getDisplayName() + " == " + getDeathItem().getItemMeta().getDisplayName());
+							if(s.getItemMeta().getDisplayName().equals(getDeathItem().getItemMeta().getDisplayName())) {
+								if(s.getAmount() > 1) {
+									s.setAmount(s.getAmount()-1);
+								}else
+									p.getInventory().remove(s);
+								return true;
+							}
+						}catch(Exception x) {}
+			}catch(Exception x) {}
 			return false;
 		}
 		
@@ -2138,7 +2155,8 @@ public class BossLand extends JavaPlugin implements Listener{
 					//Ghast Spawn
 					//l.setY(l.getY()+1);
 					if(l.getWorld().getEnvironment().equals(Environment.NETHER) && checkBlockRecipe(l,"REDSTONE_WIRE:REDSTONE_WIRE:REDSTONE_WIRE","REDSTONE_WIRE:MAGMA_BLOCK:REDSTONE_WIRE","REDSTONE_WIRE:REDSTONE_WIRE:REDSTONE_WIRE",false)) {
-						l.getBlock().setType(Material.AIR);
+						if(!l.getBlock().getType().equals(Material.BEDROCK))
+							l.getBlock().setType(Material.AIR);
 						boom(l,5,true);
 						e.setCancelled(true);
 						takeItem(p,16);
@@ -2160,7 +2178,8 @@ public class BossLand extends JavaPlugin implements Listener{
 							//boom(l,2,false);
 							//Location la = l.clone();
 							//la.setY(la.getY()-1);
-							l.getBlock().setType(Material.AIR);
+							if(!l.getBlock().getType().equals(Material.BEDROCK))
+								l.getBlock().setType(Material.AIR);
 							l.getWorld().strikeLightning(l);
 							final Location bs = l.clone();
 							Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
@@ -2275,6 +2294,7 @@ public class BossLand extends JavaPlugin implements Listener{
 					 if(rand(1,100) <= getConfig().getInt("deathNoteConsumeChance")) {
 						 p.getInventory().setItemInMainHand(null);
 						 p.sendMessage(getLang("noteConsume"));
+						 hadDeathNote.add(p.getUniqueId());
 					 }
 					 p.sendMessage(getLang("deathPass"));
 				 }else
@@ -2588,7 +2608,7 @@ public class BossLand extends JavaPlugin implements Listener{
 //			//Item Death
 //			Entity ent = e.getEntity();
 //			if(ent.getType().equals(EntityType.DROPPED_ITEM)) {
-//				System.out.println("C: 2");
+//				//System.out.println("C: 2");
 //				ItemStack s = ((Item)ent).getItemStack();
 //				final Player p = itemDropMap.get(((Item)ent));
 //				if(s.getType().equals(Material.GOLD_INGOT) && s.getAmount() >= 16) {
@@ -2737,7 +2757,8 @@ public class BossLand extends JavaPlugin implements Listener{
 						//System.out.println("Recipe Correct");
 						if(remove) 
 							for(Location bl : Arrays.asList(l1,l2,l3,l4,l5,l6,l7,l8,l9))
-								bl.getBlock().setType(Material.AIR);
+								if(!bl.getBlock().getType().equals(Material.BEDROCK))
+									bl.getBlock().setType(Material.AIR);
 						return true;
 					}
 				}
@@ -2841,9 +2862,9 @@ public class BossLand extends JavaPlugin implements Listener{
 				//Log Spawn
 				this.getLogger().log(Level.INFO, "Spawn Boss: " + bossType);
 				String entType =  getConfig().getString("bosses."+bossType+".entity");
-	//			System.out.println("entType: " + entType);
-	//			System.out.println("entType2: " + EntityType.valueOf(entType));
-	//			System.out.println("entType3: " + EntityType.valueOf(entType));
+	//			//System.out.println("entType: " + entType);
+	//			//System.out.println("entType2: " + EntityType.valueOf(entType));
+	//			//System.out.println("entType3: " + EntityType.valueOf(entType));
 				Entity boss = l.getWorld().spawnEntity(l, EntityType.valueOf(entType.toUpperCase()));
 				//Slime
 				if(boss instanceof Slime) {
