@@ -65,6 +65,7 @@ import org.bukkit.entity.WitherSkull;
 import org.bukkit.entity.Zombie;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -100,6 +101,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
@@ -173,6 +175,10 @@ public class BossLand extends JavaPlugin implements Listener{
 			addRecipes();
 	    	timer();
 	    }
+
+	    public void onDisable(){
+            HandlerList.unregisterAll((Plugin) this);
+        }
 	    
 	    private void reloadLang() {
 	        if (this.langYML == null) {
@@ -3718,8 +3724,9 @@ public class BossLand extends JavaPlugin implements Listener{
 	    
 	    private void addDeathNote() {
 	    	//God Fruit
+			NamespacedKey key = new NamespacedKey(this, "death_note");
+			if (Bukkit.getRecipe(key) != null) return;
 	    	ItemStack item = getDeathItem();
-	    	NamespacedKey key = new NamespacedKey(this, "death_note");
 	    	ShapedRecipe sr = new ShapedRecipe(key, item);
 			sr.shape("SSS", "SAS", "SSS");
 			sr.setIngredient('S', Material.NETHER_STAR);
@@ -3729,8 +3736,9 @@ public class BossLand extends JavaPlugin implements Listener{
 	    
 	    private void addDevilFruit() {
 	    	//God Fruit
+			NamespacedKey key = new NamespacedKey(this, "devil_fruit");
+			if (Bukkit.getRecipe(key) != null) return;
 	    	ItemStack item = getDevilItem();
-	    	NamespacedKey key = new NamespacedKey(this, "devil_fruit");
 	    	ShapedRecipe sr = new ShapedRecipe(key, item);
 			sr.shape("ASA", "SGS", "ASA");
 			sr.setIngredient('S', Material.FIRE_CORAL);
@@ -3740,8 +3748,9 @@ public class BossLand extends JavaPlugin implements Listener{
 	    
 	    private void addGodFruit() {
 	    	//God Fruit
+			NamespacedKey key = new NamespacedKey(this, "god_fruit");
+			if (Bukkit.getRecipe(key) != null) return;
 	    	ItemStack item = getGodItem();
-	    	NamespacedKey key = new NamespacedKey(this, "god_fruit");
 	    	ShapedRecipe sr = new ShapedRecipe(key, item);
 			sr.shape("GGG", "GFG", "ABC");
 			sr.setIngredient('G', Material.GOLD_BLOCK);
@@ -3754,8 +3763,9 @@ public class BossLand extends JavaPlugin implements Listener{
 	    
 	    private void addIllagerBell() {
 	    	//Illager Bell
+			NamespacedKey key = new NamespacedKey(this, "illager_bell");
+			if (Bukkit.getRecipe(key) != null) return;
 	    	ItemStack bell = getIllagerItem();
-	    	NamespacedKey key = new NamespacedKey(this, "illager_bell");
 	    	ShapedRecipe sr = new ShapedRecipe(key, bell);
 			sr.shape("GGG", "ABC", "GGG");
 			sr.setIngredient('G', Material.GOLD_INGOT);
@@ -3767,8 +3777,9 @@ public class BossLand extends JavaPlugin implements Listener{
 	    
 	    private void addWizardBook() {
 	    	//Illager Bell
+			NamespacedKey key = new NamespacedKey(this, "wizard_book");
+			if (Bukkit.getRecipe(key) != null) return;
 	    	ItemStack item = getWizardItem();
-	    	NamespacedKey key = new NamespacedKey(this, "wizard_book");
 	    	ShapedRecipe sr = new ShapedRecipe(key, item);
 			sr.shape("LLL", "APB", "PPP");
 			sr.setIngredient('L', Material.LEATHER);
@@ -3780,8 +3791,9 @@ public class BossLand extends JavaPlugin implements Listener{
 	    
 	    private void addGiantPotion() {
 	    	//Giant Potion
+			NamespacedKey key = new NamespacedKey(this, "giant_potion");
+			if (Bukkit.getRecipe(key) != null) return;
 	    	ItemStack item = getGiantIem();
-	    	NamespacedKey key = new NamespacedKey(this, "giant_potion");
 	    	ShapedRecipe sr = new ShapedRecipe(key, item);
 			sr.shape("GGG", "ABC", "GWG");
 			sr.setIngredient('G', Material.GLASS);
@@ -3794,8 +3806,9 @@ public class BossLand extends JavaPlugin implements Listener{
 	    
 	    private void addDragonEgg() {
 	    	//Giant Potion
+			NamespacedKey key = new NamespacedKey(this, "dragon_egg");
+			if (Bukkit.getRecipe(key) != null) return;
 	    	ItemStack item = getGiantIem();
-	    	NamespacedKey key = new NamespacedKey(this, "dragon_egg");
 	    	ShapedRecipe sr = new ShapedRecipe(key, item);
 			sr.shape("OOO", "OAO", "OBO");
 			sr.setIngredient('O', Material.OBSIDIAN);
