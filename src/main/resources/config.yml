@@ -551,8 +551,8 @@ bosses:
             level: 8-15
   "Giant":
     entity: GIANT
-    minion: Zombie
-    minion2: Zombie
+    minion: ZOMBIE
+    minion2: ZOMBIE
     minion2Mount: ZOMBIE_HORSE
     minion3: Skeleton
     minion3Mount: SKELETONE_HORSE
