@@ -152,11 +152,11 @@ public class BossLand extends JavaPlugin implements Listener {
         }
         //Register Lang
         if (!langYML.exists()) {
-            this.getLogger().log(Level.INFO, "No lang.yml found, generating...");
+            getLogger().log(Level.INFO, "No lang.yml found, generating...");
             //Generate Lang
-            this.saveResource("lang.yml", false);
-            //new File(this.getDataFolder(), "lang.yml").renameTo(new File(this.getDataFolder(), "lang.yml"));
-            this.getLogger().log(Level.INFO, Bukkit.getVersion() + " Lang successfully generated!");
+            saveResource("lang.yml", false);
+            //new File(getDataFolder(), "lang.yml").renameTo(new File(getDataFolder(), "lang.yml"));
+            getLogger().log(Level.INFO, Bukkit.getVersion() + " Lang successfully generated!");
             reloadLang();
         }
         addRecipes();
@@ -168,13 +168,13 @@ public class BossLand extends JavaPlugin implements Listener {
     }
 
     private void reloadLang() {
-        if (this.langYML == null) {
-            this.langYML = new File(getDataFolder(), "lang.yml");
+        if (langYML == null) {
+            langYML = new File(getDataFolder(), "lang.yml");
         }
-        this.langFile = YamlConfiguration.loadConfiguration(this.langYML);
+        langFile = YamlConfiguration.loadConfiguration(langYML);
 
         YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(langYML);
-        this.langFile.setDefaults(defConfig);
+        langFile.setDefaults(defConfig);
     }
 
     private String getBossItemName(String b, int l) {
@@ -183,7 +183,7 @@ public class BossLand extends JavaPlugin implements Listener {
 
     private String getLang(String s) {
         if (langFile.getString(s) == null) {
-            this.getLogger().log(Level.SEVERE, "Error with Lang file!");
+            getLogger().log(Level.SEVERE, "Error with Lang file!");
             System.out.print("Looking for path: " + s);
             System.out.print("Found: " + langFile.getString(s));
             langFile.set(s, "Missing!");
@@ -200,7 +200,7 @@ public class BossLand extends JavaPlugin implements Listener {
     private ArrayList<String> getLangList(String s) {
         ArrayList<String> list = (ArrayList<String>) langFile.getList(s);
         if (list == null || list.isEmpty()) {
-            this.getLogger().log(Level.SEVERE, "Error with Lang file!");
+            getLogger().log(Level.SEVERE, "Error with Lang file!");
             System.out.print("Looking for list path: " + s);
             System.out.print("Found: " + langFile.getString(s));
         }
@@ -313,7 +313,7 @@ public class BossLand extends JavaPlugin implements Listener {
 
     private void save() {
         try {
-            this.saveFile.save(this.saveYML);
+            saveFile.save(saveYML);
         } catch (IOException ignored) {
         }
     }
@@ -395,7 +395,7 @@ public class BossLand extends JavaPlugin implements Listener {
     }
 
     private void enterDeath(final Player p) {
-        this.getLogger().log(Level.INFO, "Enter Death");
+        getLogger().log(Level.INFO, "Enter Death");
         if (p.getWorld().getEnvironment().equals(Environment.NORMAL)) {
             World end = getServer().getWorld(p.getWorld().getName() + "_the_end");
             p.teleport(end.getSpawnLocation());
@@ -445,7 +445,7 @@ public class BossLand extends JavaPlugin implements Listener {
                         e.setCancelled(true);
                         //Died
                         //Check for Death Item
-                        this.getLogger().log(Level.INFO, p.getName() + " should have died.");
+                        getLogger().log(Level.INFO, p.getName() + " should have died.");
                     }
                 }
             } catch (Exception ignored) {
@@ -453,7 +453,7 @@ public class BossLand extends JavaPlugin implements Listener {
             if ((!e.isCancelled()) && (p.getInventory().getItemInOffHand().getType().equals(Material.TOTEM_OF_UNDYING) || p.getInventory().getItemInMainHand().getType().equals(Material.TOTEM_OF_UNDYING))) {
                 if (p.getHealth() - e.getFinalDamage() <= 0) {
                     //Died
-                    this.getLogger().log(Level.INFO, p.getName() + " should have died.");
+                    getLogger().log(Level.INFO, p.getName() + " should have died.");
                     //System.out.println("canEnterDeath = " + canEnterDeath.contains(p.getUniqueId()));
                     //System.out.println("hasDeathNote = " + hasDeathNote(p));
                     if (canEnterDeath.contains(p.getUniqueId()) && hasDeathNote(p)) {
@@ -1153,7 +1153,7 @@ public class BossLand extends JavaPlugin implements Listener {
                 if ((!diedList.contains(p.getUniqueId())) && p.getInventory().getItemInOffHand().getItemMeta().getDisplayName().equals("§e§lThe Cursed Skull")) {
                     //System.out.println("D2: " + p.getHealth() + " : " +  e.getFinalDamage());
                     if (checkDeath(p, e.getFinalDamage())) {
-                        this.getLogger().log(Level.INFO, p.getName() + " should have died.");
+                        getLogger().log(Level.INFO, p.getName() + " should have died.");
                         e.setCancelled(true);
                     }
                 }
@@ -1553,7 +1553,7 @@ public class BossLand extends JavaPlugin implements Listener {
             Location l4 = sl.clone();
             l4.setX(l4.getX() + distance);
             l4.setZ(l4.getZ() - distance);
-            this.getLogger().log(Level.INFO, "Spawn Minions: " + minType);
+            getLogger().log(Level.INFO, "Spawn Minions: " + minType);
             for (Location l : Arrays.asList(l1, l2, l3, l4)) {
                 LivingEntity minion = (LivingEntity) ent.getWorld().spawnEntity(l, minType);
                 switch (bossType) {
@@ -2002,7 +2002,7 @@ public class BossLand extends JavaPlugin implements Listener {
             ItemStack s = getLoot(e.getEntity().getKiller(), bossType);
             c.getInventory().addItem(s);
 
-            this.getLogger().log(Level.INFO, "Boss " + bossType + " has died!");
+            getLogger().log(Level.INFO, "Boss " + bossType + " has died!");
             //ent.getWorld().dropItemNaturally(ent.getLocation(),s);
             //ParticleEffects_1_9.sendToLocation(ParticleEffects_1_9.CLOUD, ent.getLocation(), 0, 0, 0, 1, 50);
             displayParticle(getConfig().getString("bosses." + bossType + ".deathParticle"), ent.getLocation());
@@ -2182,11 +2182,11 @@ public class BossLand extends JavaPlugin implements Listener {
                     Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, () -> spawnBoss(p, bs, "GhastLord"), 40);
                 }
             } else if (p.getInventory().getItemInMainHand().getType().equals(Material.GOLDEN_CARROT) && p.getInventory().getItemInMainHand().getAmount() >= 16) {
-                //this.getLogger().log(Level.WARNING, "Gold Consumed!");
+                //getLogger().log(Level.WARNING, "Gold Consumed!");
                 //l.setY(l.getY()+1);
                 if (l.getWorld().getBiome((int) l.getX(), (int) l.getY(), (int) l.getZ()).toString().contains("DESERT"))
                     if (l.getWorld().getEnvironment().equals(Environment.NORMAL) && checkBlockRecipe(l, "CARROTS:CARROTS:CARROTS", "CARROTS:MAGMA_BLOCK:CARROTS", "CARROTS:CARROTS:CARROTS", false)) {
-                        //this.getLogger().log(Level.WARNING, "Correct condition found for Killer Bunny!");
+                        //getLogger().log(Level.WARNING, "Correct condition found for Killer Bunny!");
                         e.setCancelled(true);
                         takeItem(p, 16);
                         //boom(l,2,false);
@@ -2619,12 +2619,12 @@ public class BossLand extends JavaPlugin implements Listener {
 //						}, 40);
 //					}
 //				}else if(s.getType().equals(Material.GOLDEN_CARROT) && s.getAmount() >= 16) {
-//					this.getLogger().log(Level.WARNING, "Gold Carrors Consumed!");
+//					getLogger().log(Level.WARNING, "Gold Carrors Consumed!");
 //					Location l = ent.getLocation();
 //					l.setY(l.getY()+1);
 //					if(l.getWorld().getBiome((int)l.getX(), (int)l.getY(), (int)l.getZ()).toString().contains("DESERT"))
 //						if(l.getWorld().getEnvironment().equals(Environment.NORMAL) && checkBlockRecipe(l,"CARROTS:CARROTS:CARROTS","CARROTS:AIR:CARROTS","CARROTS:CARROTS:CARROTS",false)) {
-//							this.getLogger().log(Level.WARNING, "Correct condition found for Killer Bunny!");
+//							getLogger().log(Level.WARNING, "Correct condition found for Killer Bunny!");
 //							//boom(l,2,false);
 //							Location la = l.clone();
 //							la.setY(la.getY()-1);
@@ -2869,7 +2869,7 @@ public class BossLand extends JavaPlugin implements Listener {
                 return;
             }
             //Check World Guard
-            if (this.getServer().getPluginManager().getPlugin("WorldGuard") != null)
+            if (getServer().getPluginManager().getPlugin("WorldGuard") != null)
                 try {
                     if (!new WorldGuardMethods().queryBuild(p, l)) {
                         for (Entity e : getNearbyEntities(l, 24, new ArrayList<>(Collections.singletonList(EntityType.PLAYER))))
@@ -2885,7 +2885,7 @@ public class BossLand extends JavaPlugin implements Listener {
                 return;
             }
             //Log Spawn
-            this.getLogger().log(Level.INFO, "Spawn Boss: " + bossType);
+            getLogger().log(Level.INFO, "Spawn Boss: " + bossType);
             String entType = getConfig().getString("bosses." + bossType + ".entity");
             //			//System.out.println("entType: " + entType);
             //			//System.out.println("entType2: " + EntityType.valueOf(entType));
@@ -3023,7 +3023,7 @@ public class BossLand extends JavaPlugin implements Listener {
             save();
             makeBoss(boss, bossType);
         } catch (Exception x) {
-            this.getLogger().log(Level.SEVERE, "Failed to spawn Boss: " + bossType);
+            getLogger().log(Level.SEVERE, "Failed to spawn Boss: " + bossType);
             x.printStackTrace();
         }
     }
@@ -3222,9 +3222,9 @@ public class BossLand extends JavaPlugin implements Listener {
     public ItemStack getItemOld(String bossType, String loot) {
         //System.out.println("Get Loot: " + loot);
         try {
-            String setItem = this.getConfig().getString("bosses." + bossType + ".loot." + loot + ".item");
+            String setItem = getConfig().getString("bosses." + bossType + ".loot." + loot + ".item");
 
-            String setAmountString = this.getConfig().getString("bosses." + bossType + ".loot." + loot + ".amount");
+            String setAmountString = getConfig().getString("bosses." + bossType + ".loot." + loot + ".amount");
             int setAmount;
             if (setAmountString != null) {
                 setAmount = getIntFromString(setAmountString);
@@ -3283,8 +3283,8 @@ public class BossLand extends JavaPlugin implements Listener {
             //System.out.println("8");
             ItemMeta meta = stack.getItemMeta();
             //Durability
-            if (this.getConfig().getString("bosses." + bossType + ".loot." + loot + ".durability") != null) {
-                String durabilityString = this.getConfig().getString("bosses." + bossType + ".loot." + loot + ".durability");
+            if (getConfig().getString("bosses." + bossType + ".loot." + loot + ".durability") != null) {
+                String durabilityString = getConfig().getString("bosses." + bossType + ".loot." + loot + ".durability");
                 int durability = getIntFromString(durabilityString);
                 ((org.bukkit.inventory.meta.Damageable) meta).setDamage(durability);
                 //stack.setDurability((short) durability);
@@ -3301,8 +3301,8 @@ public class BossLand extends JavaPlugin implements Listener {
             }
             stack.setItemMeta(meta);
             //Colour
-            if (this.getConfig().getString("bosses." + bossType + ".loot." + loot + ".colour") != null && stack.getType().toString().toLowerCase().contains("leather")) {
-                String c = this.getConfig().getString("bosses." + bossType + ".loot." + loot + ".colour");
+            if (getConfig().getString("bosses." + bossType + ".loot." + loot + ".colour") != null && stack.getType().toString().toLowerCase().contains("leather")) {
+                String c = getConfig().getString("bosses." + bossType + ".loot." + loot + ".colour");
                 String[] split = c.split(",");
                 Color colour = Color.fromRGB(Integer.parseInt(split[0]), Integer.parseInt(split[1]), Integer.parseInt(split[2]));
                 dye(stack, colour);
@@ -3310,19 +3310,19 @@ public class BossLand extends JavaPlugin implements Listener {
             //Book
             if ((stack.getType().equals(Material.WRITTEN_BOOK)) || (stack.getType().equals(Material.WRITABLE_BOOK))) {
                 BookMeta bMeta = (BookMeta) stack.getItemMeta();
-                if (this.getConfig().getString("bosses." + bossType + ".loot." + loot + ".author") != null) {
-                    String author = this.getConfig().getString("bosses." + bossType + ".loot." + loot + ".author");
+                if (getConfig().getString("bosses." + bossType + ".loot." + loot + ".author") != null) {
+                    String author = getConfig().getString("bosses." + bossType + ".loot." + loot + ".author");
                     author = ChatColor.translateAlternateColorCodes('&', author);
                     bMeta.setAuthor(author);
                 }
-                if (this.getConfig().getString("bosses." + bossType + ".loot." + loot + ".title") != null) {
-                    String title = this.getConfig().getString("bosses." + bossType + ".loot." + loot + ".title");
+                if (getConfig().getString("bosses." + bossType + ".loot." + loot + ".title") != null) {
+                    String title = getConfig().getString("bosses." + bossType + ".loot." + loot + ".title");
                     title = ChatColor.translateAlternateColorCodes('&', title);
                     bMeta.setTitle(title);
                 }
-                if (this.getConfig().getString("bosses." + bossType + ".loot." + loot + ".pages") != null) {
-                    for (String i : this.getConfig().getConfigurationSection("bosses." + bossType + ".loot." + loot + ".pages").getKeys(false)) {
-                        String page = this.getConfig().getString("bosses." + bossType + ".loot." + loot + ".pages." + i);
+                if (getConfig().getString("bosses." + bossType + ".loot." + loot + ".pages") != null) {
+                    for (String i : getConfig().getConfigurationSection("bosses." + bossType + ".loot." + loot + ".pages").getKeys(false)) {
+                        String page = getConfig().getString("bosses." + bossType + ".loot." + loot + ".pages." + i);
                         page = ChatColor.translateAlternateColorCodes('&', page);
                         bMeta.addPage(page);
                     }
@@ -3369,16 +3369,16 @@ public class BossLand extends JavaPlugin implements Listener {
                 }
             int enchAmount = 0;
             for (int e = 0; e <= 10; e++) {
-                if (this.getConfig().getString("bosses." + bossType + ".loot." + loot + ".enchantments." + e) != null) {
+                if (getConfig().getString("bosses." + bossType + ".loot." + loot + ".enchantments." + e) != null) {
                     enchAmount++;
                 }
             }
             if (enchAmount > 0) {
                 int enMin = enchAmount;
                 int enMax = enchAmount;
-                if ((this.getConfig().getString("bosses." + bossType + ".loot." + loot + ".minEnchantments") != null) && (this.getConfig().getString("bosses." + bossType + ".loot." + loot + ".maxEnchantments") != null)) {
-                    enMin = this.getConfig().getInt("bosses." + bossType + ".loot." + loot + ".minEnchantments");
-                    enMax = this.getConfig().getInt("bosses." + bossType + ".loot." + loot + ".maxEnchantments");
+                if ((getConfig().getString("bosses." + bossType + ".loot." + loot + ".minEnchantments") != null) && (getConfig().getString("bosses." + bossType + ".loot." + loot + ".maxEnchantments") != null)) {
+                    enMin = getConfig().getInt("bosses." + bossType + ".loot." + loot + ".minEnchantments");
+                    enMax = getConfig().getInt("bosses." + bossType + ".loot." + loot + ".maxEnchantments");
                 }
                 int enchNeeded = new Random().nextInt(enMax + 1 - enMin) + enMin;
                 if (enchNeeded > enMax) {
@@ -3389,16 +3389,16 @@ public class BossLand extends JavaPlugin implements Listener {
                 int j = 0;
                 int chance;
                 do {
-                    if (this.getConfig().getString("bosses." + bossType + ".loot." + loot + ".enchantments." + j) != null) {
+                    if (getConfig().getString("bosses." + bossType + ".loot." + loot + ".enchantments." + j) != null) {
                         int enChance = 1;
-                        if (this.getConfig().getString("bosses." + bossType + ".loot." + loot + ".enchantments." + j + ".chance") != null) {
-                            enChance = this.getConfig().getInt("bosses." + bossType + ".loot." + loot + ".enchantments." + j + ".chance");
+                        if (getConfig().getString("bosses." + bossType + ".loot." + loot + ".enchantments." + j + ".chance") != null) {
+                            enChance = getConfig().getInt("bosses." + bossType + ".loot." + loot + ".enchantments." + j + ".chance");
                         }
                         chance = new Random().nextInt(enChance - 1 + 1) + 1;
                         if (chance == 1) {
-                            String enchantment = this.getConfig().getString("bosses." + bossType + ".loot." + loot + ".enchantments." + j + ".enchantment");
+                            String enchantment = getConfig().getString("bosses." + bossType + ".loot." + loot + ".enchantments." + j + ".enchantment");
 
-                            String levelString = this.getConfig().getString("bosses." + bossType + ".loot." + loot + ".enchantments." + j + ".level");
+                            String levelString = getConfig().getString("bosses." + bossType + ".loot." + loot + ".enchantments." + j + ".level");
                             int level = getIntFromString(levelString);
                             NamespacedKey k = NamespacedKey.minecraft(enchantment.toLowerCase());
                             if (Enchantment.getByKey(k) != null) {
@@ -3448,7 +3448,7 @@ public class BossLand extends JavaPlugin implements Listener {
             }
             return stack;
         } catch (Exception e) {
-            this.getLogger().log(Level.SEVERE, e.getMessage(), true);
+            getLogger().log(Level.SEVERE, e.getMessage(), true);
             e.printStackTrace();
         }
         return null;
@@ -3660,7 +3660,7 @@ public class BossLand extends JavaPlugin implements Listener {
 //		public ItemStack getHead(String owner, String name) {
 //			//Test for UUID
 //			if(UUID.fromString(owner) == null) {
-//				this.getLogger().log(Level.SEVERE, "Invalid skin found: " + owner + " please notify plugin author!");
+//				getLogger().log(Level.SEVERE, "Invalid skin found: " + owner + " please notify plugin author!");
 //				owner = "3506994a-bc90-427d-bdda-be06e992aed9";
 //			}
 //			//Get Skin
@@ -3960,7 +3960,7 @@ public class BossLand extends JavaPlugin implements Listener {
                                 while (getConfig().getString("bosses." + bossType + ".loot." + id) != null) {
                                     id = id + 1;
                                     if (id > 999) {
-                                        this.getLogger().log(Level.SEVERE, "Add loot count for " + bossType + " exceded max!");
+                                        getLogger().log(Level.SEVERE, "Add loot count for " + bossType + " exceded max!");
                                         return true;
                                     }
                                 }
@@ -4016,7 +4016,7 @@ public class BossLand extends JavaPlugin implements Listener {
         }
 
 //			private  WorldGuardPlugin getWorldGuard(){
-//				Plugin plugin = BossLand.this.getServer().getPluginManager().getPlugin("WorldGuard");
+//				Plugin plugin = BossLand.getServer().getPluginManager().getPlugin("WorldGuard");
 //				if ((plugin == null) || (!(plugin instanceof WorldGuardPlugin))) {
 //					return null;
 //				}
