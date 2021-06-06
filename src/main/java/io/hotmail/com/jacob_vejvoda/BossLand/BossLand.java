@@ -1449,39 +1449,43 @@ public class BossLand extends JavaPlugin implements Listener {
             }
         }, t * 20L);
     }
+    
+    private EntityType getConfigEntity(String config) {
+        return EntityType.valueOf(getConfig().getString(config).toUpperCase());
+    }
 
     private void spawnGodMinions(LivingEntity ent, Location sl, String bossType, int distance) {
         //System.out.println("1: " + getConfig().getString("bosses."+bossType+".minion"));
-        //System.out.println("2: " + EntityType.valueOf(getConfig().getString("bosses."+bossType+".minion")));
-        EntityType minType = EntityType.valueOf(getConfig().getString("bosses." + bossType + ".minion"));
+        //System.out.println("2: " + getConfigEntity("bosses."+bossType+".minion"));
+        EntityType minType = getConfigEntity("bosses." + bossType + ".minion");
         EntityType mountType = null;
         int phase = 1;
         double maxHealth = ent.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
         if (ent.getHealth() <= (maxHealth / 4)) {
             //Phase 4
             if (getConfig().getString("bosses." + bossType + ".minion4") != null)
-                minType = EntityType.valueOf(getConfig().getString("bosses." + bossType + ".minion4"));
+                minType = getConfigEntity("bosses." + bossType + ".minion4");
             if (getConfig().getString("bosses." + bossType + ".minion4Mount") != null)
-                mountType = EntityType.valueOf(getConfig().getString("bosses." + bossType + ".minion4Mount"));
+                mountType = getConfigEntity("bosses." + bossType + ".minion4Mount");
             phase = 4;
         } else if (ent.getHealth() <= ((maxHealth / 4) * 2)) {
             //Phase 3
             if (getConfig().getString("bosses." + bossType + ".minion3") != null)
-                minType = EntityType.valueOf(getConfig().getString("bosses." + bossType + ".minion3"));
+                minType = getConfigEntity("bosses." + bossType + ".minion3");
             if (getConfig().getString("bosses." + bossType + ".minion3Mount") != null)
-                mountType = EntityType.valueOf(getConfig().getString("bosses." + bossType + ".minion3Mount"));
+                mountType = getConfigEntity("bosses." + bossType + ".minion3Mount");
             phase = 3;
         } else if (ent.getHealth() <= ((maxHealth / 4) * 3)) {
             //Phase 2
             if (getConfig().getString("bosses." + bossType + ".minion2") != null)
-                minType = EntityType.valueOf(getConfig().getString("bosses." + bossType + ".minion2"));
+                minType = getConfigEntity("bosses." + bossType + ".minion2");
             if (getConfig().getString("bosses." + bossType + ".minion2Mount") != null)
-                mountType = EntityType.valueOf(getConfig().getString("bosses." + bossType + ".minion2Mount"));
+                mountType = getConfigEntity("bosses." + bossType + ".minion2Mount");
             phase = 2;
         } else {
             //Phase 1
             if (getConfig().getString("bosses." + bossType + ".minionMount") != null)
-                mountType = EntityType.valueOf(getConfig().getString("bosses." + bossType + ".minionMount"));
+                mountType = getConfigEntity("bosses." + bossType + ".minionMount");
         }
         //Get Amount
         int count = 0;
@@ -1831,17 +1835,17 @@ public class BossLand extends JavaPlugin implements Listener {
         EntityType mountType = null;
         double maxHealth = ent.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
         if (getConfig().getString("bosses." + bossType + ".minion3") != null && (ent.getHealth() <= ((maxHealth / 3)))) {
-            mt = EntityType.valueOf(getConfig().getString("bosses." + bossType + ".minion3"));
+            mt = getConfigEntity("bosses." + bossType + ".minion3");
             if (getConfig().getString("bosses." + bossType + ".minion3Mount") != null)
-                mountType = EntityType.valueOf(getConfig().getString("bosses." + bossType + ".minion3Mount"));
+                mountType = getConfigEntity("bosses." + bossType + ".minion3Mount");
         } else if (getConfig().getString("bosses." + bossType + ".minion2") != null && (ent.getHealth() <= ((maxHealth / 3) * 2))) {
-            mt = EntityType.valueOf(getConfig().getString("bosses." + bossType + ".minion2"));
+            mt = getConfigEntity("bosses." + bossType + ".minion2");
             if (getConfig().getString("bosses." + bossType + ".minion2Mount") != null)
-                mountType = EntityType.valueOf(getConfig().getString("bosses." + bossType + ".minion2Mount"));
+                mountType = getConfigEntity("bosses." + bossType + ".minion2Mount");
         } else {
-            mt = EntityType.valueOf(getConfig().getString("bosses." + bossType + ".minion"));
+            mt = getConfigEntity("bosses." + bossType + ".minion");
             if (getConfig().getString("bosses." + bossType + ".minionMount") != null)
-                mountType = EntityType.valueOf(getConfig().getString("bosses." + bossType + ".minionMount"));
+                mountType = getConfigEntity("bosses." + bossType + ".minionMount");
         }
         //Get Amount
         int count = 0;
@@ -2944,7 +2948,7 @@ public class BossLand extends JavaPlugin implements Listener {
             }
             //Mount
             if (getConfig().getString("bosses." + bossType + ".mount") != null) {
-                LivingEntity mount = (LivingEntity) boss.getWorld().spawnEntity(boss.getLocation(), EntityType.valueOf(getConfig().getString("bosses." + bossType + ".mount").toUpperCase()));
+                LivingEntity mount = (LivingEntity) boss.getWorld().spawnEntity(boss.getLocation(), getConfigEntity("bosses." + bossType + ".mount"));
                 mount.addPassenger(boss);
                 int h = getConfig().getInt("bosses." + bossType + ".health");
                 mount.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(h);
