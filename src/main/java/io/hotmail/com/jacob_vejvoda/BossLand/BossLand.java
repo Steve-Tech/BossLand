@@ -156,7 +156,7 @@ public class BossLand extends JavaPlugin implements Listener {
             //Generate Lang
             saveResource("lang.yml", false);
             //new File(getDataFolder(), "lang.yml").renameTo(new File(getDataFolder(), "lang.yml"));
-            getLogger().log(Level.INFO, Bukkit.getVersion() + " Lang successfully generated!");
+            getLogger().log(Level.INFO, getServer().getVersion() + " Lang successfully generated!");
             reloadLang();
         }
         addRecipes();
@@ -226,7 +226,7 @@ public class BossLand extends JavaPlugin implements Listener {
                 if ((e instanceof LivingEntity))
                     e.setFireTicks(0);
             }
-            for (Player p : Bukkit.getServer().getOnlinePlayers())
+            for (Player p : getServer().getOnlinePlayers())
                 if (!p.isDead()) {
                     //Potion Effects
                     try {
@@ -304,7 +304,7 @@ public class BossLand extends JavaPlugin implements Listener {
             x.printStackTrace();
         }
         //Tick
-        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, this::timer, 20);
+        getServer().getScheduler().scheduleSyncDelayedTask(this, this::timer, 20);
     }
 
     private void repairItem(ItemStack s) {
@@ -404,7 +404,7 @@ public class BossLand extends JavaPlugin implements Listener {
             p.sendMessage("§5§lPrepare to die!");
             final Location l = new Location(end, 0, end.getHighestBlockYAt(0, 0) + 3, 0);
             p.getWorld().createExplosion(l, 4);
-            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, () -> spawnBoss(p, l, "Death"), 10);
+            getServer().getScheduler().scheduleSyncDelayedTask(this, () -> spawnBoss(p, l, "Death"), 10);
         }
     }
 
@@ -415,7 +415,7 @@ public class BossLand extends JavaPlugin implements Listener {
         //System.out.println("canEnterDeath = " + canEnterDeath.contains(p.getUniqueId()));
         //System.out.println("hasDeathNote = " + hasDeathNote(p));
         if (canEnterDeath.contains(p.getUniqueId()) && hasDeathNote(p)) {
-            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, () -> enterDeath(p), 5);
+            getServer().getScheduler().scheduleSyncDelayedTask(this, () -> enterDeath(p), 5);
         }
     }
 
@@ -432,7 +432,7 @@ public class BossLand extends JavaPlugin implements Listener {
                     v.setY(p.getFallDistance() / 14.0);
                     //System.out.println("FD: " + p.getFallDistance());
                     final Vector vel = v.clone();
-                    Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
+                    getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
                         //p.setFallDistance(0);
                         p.setVelocity(vel);
                         p.getWorld().playSound(p.getLocation(), Sound.BLOCK_SLIME_BLOCK_HIT, 1, 1);
@@ -543,7 +543,7 @@ public class BossLand extends JavaPlugin implements Listener {
                             //Phase 2
                             int balls = getConfig().getInt("bosses." + bossType + ".amountSpecial2");
                             for (int i = 0; i < balls; i++)
-                                Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
+                                getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
                                     Fireball f = ent.launchProjectile(Fireball.class);
 //											  Location l = ent.getLocation();
 //											  l.setY(l.getY()-2);
@@ -638,7 +638,7 @@ public class BossLand extends JavaPlugin implements Listener {
                         //Other Effects
                         int balls = getConfig().getInt("bosses." + bossType + ".amountSpecial2");
                         for (int i = 0; i < balls; i++)
-                            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
+                            getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
                                 WitherSkull f = ent.launchProjectile(WitherSkull.class);
                                 moveToward(f, dmgr.getLocation(), 0.6);
                                 boomTimer(f, 5);
@@ -749,7 +749,7 @@ public class BossLand extends JavaPlugin implements Listener {
                         l10.setX(l10.getX() - 1);
                         l10.setZ(l10.getZ() - 1);
                         for (Location bl : Arrays.asList(l1, l2, l3, l4, l5, l6, l7, l8, l9, l10))
-                            ent.getWorld().spawnFallingBlock(bl, Bukkit.createBlockData(Material.COBBLESTONE));
+                            ent.getWorld().spawnFallingBlock(bl, getServer().createBlockData(Material.COBBLESTONE));
                     }
                     break;
                 case "Giant":
@@ -760,7 +760,7 @@ public class BossLand extends JavaPlugin implements Listener {
                     }
                     if ((rand(1, 100) <= c) && (dmgr instanceof Player) && (ent.getHealth() <= ((maxHealth / 3) * 2))) {
                         //Phase 2
-                        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, () -> dmgr.damage(getConfig().getInt("bosses." + bossType + ".special2Damage"), ent), 25);
+                        getServer().getScheduler().scheduleSyncDelayedTask(this, () -> dmgr.damage(getConfig().getInt("bosses." + bossType + ".special2Damage"), ent), 25);
                         //Vector direction = dmgr.getLocation().toVector().subtract(ent.getLocation().toVector()).normalize();
                         //Shoot Beam
                         Location point1 = ent.getLocation();
@@ -777,7 +777,7 @@ public class BossLand extends JavaPlugin implements Listener {
                         for (; length < distance; p1.add(vector)) {
                             //world.spawnParticle(Particle.CAMPFIRE_COSY_SMOKE, p1.getX(), p1.getY(), p1.getZ(), 1);
                             final Location loc = new Location(world, p1.getX(), p1.getY(), p1.getZ());
-                            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
+                            getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
                                 for (int i = 0; i < 2; i++) {
                                     Location tmp = loc.clone();
                                     tmp.setY(tmp.getY() - i);
@@ -796,7 +796,7 @@ public class BossLand extends JavaPlugin implements Listener {
                         dmgr.getWorld().playSound(dmgr.getLocation(), Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 1, 1);
                         displayParticle(Particle.CLOUD.toString(), dmgr.getEyeLocation(), 0, 1, 10);
                         final Location bl = dmgr.getLocation();
-                        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
+                        getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
                             Location l1 = bl.clone();
                             l1.setX(l1.getX() + 1);
                             Location l2 = bl.clone();
@@ -837,7 +837,7 @@ public class BossLand extends JavaPlugin implements Listener {
                         //Other Effects
                         int balls = getConfig().getInt("bosses." + bossType + ".amountSpecial3");
                         for (int i = 0; i < balls; i++)
-                            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
+                            getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
                                 Projectile f = ent.launchProjectile(Trident.class);
                                 lightningList.add(f);
                                 moveToward(f, dmgr, 0.7);
@@ -881,7 +881,7 @@ public class BossLand extends JavaPlugin implements Listener {
                         Location l6 = dmgr.getLocation();
                         l6.setY(l6.getY() + 3);
                         for (Location l : Arrays.asList(l1, l2, l3))
-                            l.getWorld().spawnFallingBlock(l, Bukkit.createBlockData(Material.SAND));
+                            l.getWorld().spawnFallingBlock(l, getServer().createBlockData(Material.SAND));
                     }
                     break;
                 case "AetherGod":
@@ -894,7 +894,7 @@ public class BossLand extends JavaPlugin implements Listener {
                         //Phase 1
                         int balls = getConfig().getInt("bosses." + bossType + ".amountSpecial");
                         for (int i = 0; i < balls; i++)
-                            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
+                            getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
                                 Location l = ent.getEyeLocation();
                                 l.setY(l.getY() + 1);
                                 //Projectile f = (Projectile) ent.getWorld().spawnEntity(l, fbt);
@@ -924,7 +924,7 @@ public class BossLand extends JavaPlugin implements Listener {
                         //Phase 4
                         int strikes = getConfig().getInt("bosses." + bossType + ".amountSpecial4");
                         for (int i = 0; i < strikes; i++)
-                            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, () -> ent.getWorld().strikeLightning(dmgr.getLocation()), 10L * i);
+                            getServer().getScheduler().scheduleSyncDelayedTask(this, () -> ent.getWorld().strikeLightning(dmgr.getLocation()), 10L * i);
                     }
                     break;
                 case "Demon":
@@ -937,7 +937,7 @@ public class BossLand extends JavaPlugin implements Listener {
                         //Phase 1
                         int balls = getConfig().getInt("bosses." + bossType + ".amountSpecial");
                         for (int i = 0; i < balls; i++)
-                            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
+                            getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
                                 Location l = ent.getEyeLocation();
                                 l.setY(l.getY() + 1);
                                 //Projectile f = (Projectile) ent.getWorld().spawnEntity(l, fbt);
@@ -1040,7 +1040,7 @@ public class BossLand extends JavaPlugin implements Listener {
                         //Phase 1 attack 1
                         int balls = getConfig().getInt("bosses." + bossType + ".amountSpecial");
                         for (int i = 0; i < balls; i++)
-                            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
+                            getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
                                 DragonFireball f = ent.launchProjectile(DragonFireball.class);
                                 moveToward(f, dmgr.getLocation(), 0.7);
                                 boomTimer(f, 6);
@@ -1096,7 +1096,7 @@ public class BossLand extends JavaPlugin implements Listener {
                             }
                         //Restore Blocks
                         final HashMap<Block, Material> fOldBlocks = (HashMap<Block, Material>) oldBlocks.clone();
-                        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
+                        getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
                             for (Map.Entry<Block, Material> i : fOldBlocks.entrySet()) {
                                 i.getKey().setType(i.getValue());
                             }
@@ -1119,7 +1119,7 @@ public class BossLand extends JavaPlugin implements Listener {
                             l2.setZ((l2.getZ() + dis) * mult);
                             ent.teleport(l2);
                         }
-                        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
+                        getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
                             ent.getWorld().playSound(ent.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1, 1);
                             ent.teleport(l);
                         }, 15 * 20);
@@ -1202,7 +1202,7 @@ public class BossLand extends JavaPlugin implements Listener {
                 enterDeath(p);
             }
             //Put to Normal Mode
-            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
+            getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
                 try {
                     p.setGameMode(gm);
                 } catch (Exception ignored) {
@@ -1210,7 +1210,7 @@ public class BossLand extends JavaPlugin implements Listener {
             }, 30 * 20);
             //Reset Death Time
             final UUID id = p.getUniqueId();
-            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
+            getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
                 try {
                     diedList.remove(id);
                 } catch (Exception ignored) {
@@ -1231,7 +1231,7 @@ public class BossLand extends JavaPlugin implements Listener {
                 } else
                     doFireBalls(ent, (LivingEntity) x, bossType);
             }
-        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
+        getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
             try {
                 autoBalls(ent, bossType);
             } catch (Exception ignored) {
@@ -1274,7 +1274,7 @@ public class BossLand extends JavaPlugin implements Listener {
         //final EntityType fbt = bt;
         final Class fc = c;
         for (int i = 0; i < balls; i++)
-            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
+            getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
                 Location l = ent.getEyeLocation();
                 l.setY(l.getY() + 1);
                 //Projectile f = (Projectile) ent.getWorld().spawnEntity(l, fbt);
@@ -1387,7 +1387,7 @@ public class BossLand extends JavaPlugin implements Listener {
         }
         //Finish Loop
         final LivingEntity to3 = to2;
-        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
+        getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
             try {
                 tornadoEffect(e, to3, dmg, type);
             } catch (Exception ignored) {
@@ -1414,7 +1414,7 @@ public class BossLand extends JavaPlugin implements Listener {
                 ent.setFireTicks(60 * 60);
                 return;
             }
-        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
+        getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
             try {
                 suicideTimer(e, boomSize);
             } catch (Exception ignored) {
@@ -1436,7 +1436,7 @@ public class BossLand extends JavaPlugin implements Listener {
         final int nt = time - 1;
         if (nt <= 0)
             return;
-        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
+        getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
             try {
                 moveTowardTemp(e, to, speed, nt);
             } catch (Exception ignored) {
@@ -1454,7 +1454,7 @@ public class BossLand extends JavaPlugin implements Listener {
             loc = ((LivingEntity) to).getEyeLocation();
         Vector direction = loc.toVector().subtract(e.getLocation().toVector()).normalize();
         e.setVelocity(direction.multiply(speed));
-        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
+        getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
             try {
                 moveToward(e, to, speed);
             } catch (Exception ignored) {
@@ -1468,7 +1468,7 @@ public class BossLand extends JavaPlugin implements Listener {
         }
         Vector direction = to.getLocation().toVector().subtract(e.getLocation().toVector()).normalize();
         e.setVelocity(direction.multiply(speed));
-        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
+        getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
             try {
                 moveToward(e, to, speed);
             } catch (Exception ignored) {
@@ -1483,7 +1483,7 @@ public class BossLand extends JavaPlugin implements Listener {
             return;
         Vector direction = to.toVector().subtract(e.getLocation().toVector()).normalize();
         e.setVelocity(direction.multiply(speed));
-        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
+        getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
             try {
                 moveToward(e, to, speed);
             } catch (Exception ignored) {
@@ -1492,7 +1492,7 @@ public class BossLand extends JavaPlugin implements Listener {
     }
 
     private void boomTimer(final Entity p, int t) {
-        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
+        getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
             try {
                 if (!p.isDead()) {
                     p.remove();
@@ -2107,7 +2107,7 @@ public class BossLand extends JavaPlugin implements Listener {
                     l.setY(l.getY() + 2);
                     final Location bs = l.clone();
                     takeItem(p, 1);
-                    Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, () -> spawnBoss(p, bs, "KingSlime"), 40);
+                    getServer().getScheduler().scheduleSyncDelayedTask(this, () -> spawnBoss(p, bs, "KingSlime"), 40);
                 }
             } else if (p.getInventory().getItemInMainHand().getType().equals(Material.MAGMA_CREAM) && l.getWorld().getEnvironment().equals(Environment.NETHER)) {
                 if (checkBlockRecipe(l, "FIRE:FIRE:FIRE", "FIRE:WITHER_SKELETON_SKULL:FIRE", "FIRE:FIRE:FIRE", true)) {
@@ -2115,7 +2115,7 @@ public class BossLand extends JavaPlugin implements Listener {
                     l.getWorld().createExplosion(l, 2, true);
                     final Location bs = l.clone();
                     takeItem(p, 1);
-                    Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, () -> spawnBoss(p, bs, "WitherSkeletonKing"), 20);
+                    getServer().getScheduler().scheduleSyncDelayedTask(this, () -> spawnBoss(p, bs, "WitherSkeletonKing"), 20);
                 }
             } else if (p.getInventory().getItemInMainHand().getType().equals(Material.CAKE) && l.getWorld().getEnvironment().equals(Environment.NORMAL) && (l.getWorld().getBiome((int) l.getX(), (int) l.getY(), (int) l.getZ()).toString().contains("BAMBOO"))) {
                 if (checkBlockRecipe(l, "MOSSY_COBBLESTONE:MOSSY_COBBLESTONE:MOSSY_COBBLESTONE", "MOSSY_COBBLESTONE:CHISELED_STONE_BRICKS:MOSSY_COBBLESTONE", "MOSSY_COBBLESTONE:MOSSY_COBBLESTONE:MOSSY_COBBLESTONE", true)) {
@@ -2124,7 +2124,7 @@ public class BossLand extends JavaPlugin implements Listener {
                     l.getWorld().createExplosion(l, 2, false);
                     final Location bs = l.clone();
                     takeItem(p, 1);
-                    Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, () -> spawnBoss(p, bs, "PapaPanda"), 20);
+                    getServer().getScheduler().scheduleSyncDelayedTask(this, () -> spawnBoss(p, bs, "PapaPanda"), 20);
                 }
             } else if (p.getInventory().getItemInMainHand().getType().equals(Material.BRAIN_CORAL) && l.getWorld().getEnvironment().equals(Environment.NORMAL) && (l.getWorld().getBiome((int) l.getX(), (int) l.getY(), (int) l.getZ()).toString().contains("PLAINS"))) {
                 if (checkBlockRecipe(l, "SOUL_SAND:SOUL_SAND:SOUL_SAND", "SOUL_SAND:EMERALD_BLOCK:SOUL_SAND", "SOUL_SAND:SOUL_SAND:SOUL_SAND", true)) {
@@ -2132,7 +2132,7 @@ public class BossLand extends JavaPlugin implements Listener {
                     l.getWorld().createExplosion(l, 2, false);
                     final Location bs = l.clone();
                     takeItem(p, 1);
-                    Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, () -> spawnBoss(p, bs, "ZombieKing"), 20);
+                    getServer().getScheduler().scheduleSyncDelayedTask(this, () -> spawnBoss(p, bs, "ZombieKing"), 20);
                 }
             } else if (p.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals("§5§lBook of Spells") && l.getWorld().getEnvironment().equals(Environment.NORMAL) && (l.getWorld().getBiome((int) l.getX(), (int) l.getY(), (int) l.getZ()).toString().contains("SNOWY"))) {
                 if (checkBlockRecipe(l, "REDSTONE_TORCH:REDSTONE_WIRE:REDSTONE_TORCH", "REDSTONE_WIRE:CAMPFIRE:REDSTONE_WIRE", "REDSTONE_TORCH:REDSTONE_WIRE:REDSTONE_TORCH", true)) {
@@ -2140,7 +2140,7 @@ public class BossLand extends JavaPlugin implements Listener {
                     lightningShow(l, 2);
                     takeItem(p, 1);
                     final Location bs = l.clone();
-                    Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, () -> spawnBoss(p, bs, "EvilWizard"), 20);
+                    getServer().getScheduler().scheduleSyncDelayedTask(this, () -> spawnBoss(p, bs, "EvilWizard"), 20);
                 }
             } else if (p.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals("§6§lBell of Doom") && l.getWorld().getEnvironment().equals(Environment.NORMAL) && (l.getWorld().getBiome((int) l.getX(), (int) l.getY(), (int) l.getZ()).toString().contains("SAVANNA"))) {
                 if (checkBlockRecipe(l, "REDSTONE_TORCH:REDSTONE_WIRE:REDSTONE_TORCH", "REDSTONE_WIRE:CAMPFIRE:REDSTONE_WIRE", "REDSTONE_TORCH:REDSTONE_WIRE:REDSTONE_TORCH", true)) {
@@ -2148,7 +2148,7 @@ public class BossLand extends JavaPlugin implements Listener {
                     lightningShow(l, 3);
                     takeItem(p, 1);
                     final Location bs = l.clone();
-                    Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, () -> spawnBoss(p, bs, "IllagerKing"), 20);
+                    getServer().getScheduler().scheduleSyncDelayedTask(this, () -> spawnBoss(p, bs, "IllagerKing"), 20);
                 }
             } else if (p.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals("§2§lPotion of Giant Growth") && l.getWorld().getEnvironment().equals(Environment.NORMAL) && (l.getWorld().getBiome((int) l.getX(), (int) l.getY(), (int) l.getZ()).toString().contains("PLAINS"))) {
                 if (checkBlockRecipe(l, "REDSTONE_TORCH:REDSTONE_WIRE:REDSTONE_TORCH", "REDSTONE_WIRE:CAMPFIRE:REDSTONE_WIRE", "REDSTONE_TORCH:REDSTONE_WIRE:REDSTONE_TORCH", true)) {
@@ -2157,7 +2157,7 @@ public class BossLand extends JavaPlugin implements Listener {
                     lightningShow(l, 5);
                     takeItem(p, 1);
                     final Location bs = l.clone();
-                    Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, () -> spawnBoss(p, bs, "Giant"), 20);
+                    getServer().getScheduler().scheduleSyncDelayedTask(this, () -> spawnBoss(p, bs, "Giant"), 20);
                 }
             } else if (p.getInventory().getItemInMainHand().getType().equals(Material.NETHER_STAR)) {
                 if (checkBlockRecipe(l, "REDSTONE_TORCH:REDSTONE_WIRE:REDSTONE_TORCH", "REDSTONE_WIRE:CAMPFIRE:REDSTONE_WIRE", "REDSTONE_TORCH:REDSTONE_WIRE:REDSTONE_TORCH", true)) {
@@ -2167,7 +2167,7 @@ public class BossLand extends JavaPlugin implements Listener {
                         p.getWorld().createExplosion(e.getClickedBlock().getLocation(), 4);
                         final Location bs = l.clone();
                         p.sendMessage("§c§lFool, who dares summon me!");
-                        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, () -> spawnBoss(p, bs, "Demon"), 10);
+                        getServer().getScheduler().scheduleSyncDelayedTask(this, () -> spawnBoss(p, bs, "Demon"), 10);
                     } else
                         p.sendMessage(getLang("noPower"));
                 }
@@ -2181,7 +2181,7 @@ public class BossLand extends JavaPlugin implements Listener {
                     e.setCancelled(true);
                     takeItem(p, 16);
                     final Location bs = l.clone();
-                    Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, () -> spawnBoss(p, bs, "GhastLord"), 40);
+                    getServer().getScheduler().scheduleSyncDelayedTask(this, () -> spawnBoss(p, bs, "GhastLord"), 40);
                 }
             } else if (p.getInventory().getItemInMainHand().getType().equals(Material.GOLDEN_CARROT) && p.getInventory().getItemInMainHand().getAmount() >= 16) {
                 //getLogger().log(Level.WARNING, "Gold Consumed!");
@@ -2198,7 +2198,7 @@ public class BossLand extends JavaPlugin implements Listener {
                             l.getBlock().setType(Material.AIR);
                         l.getWorld().strikeLightning(l);
                         final Location bs = l.clone();
-                        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, () -> spawnBoss(p, bs, "KillerBunny"), 40);
+                        getServer().getScheduler().scheduleSyncDelayedTask(this, () -> spawnBoss(p, bs, "KillerBunny"), 40);
                     }
             }
             //System.out.println("Is Shard: " + isShard(p.getInventory().getItemInMainHand()));
@@ -2243,7 +2243,7 @@ public class BossLand extends JavaPlugin implements Listener {
                     p.sendMessage(getLang("noBed"));
             } else if (p.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals(getBossItemName("DrownedGod", 1))) {
                 if ((!p.getLocation().getBlock().getType().equals(Material.WATER)) && (!p.getWorld().hasStorm())) {
-                    getServer().dispatchCommand(Bukkit.getConsoleSender(), "weather rain");
+                    getServer().dispatchCommand(getServer().getConsoleSender(), "weather rain");
                     cool(p.getUniqueId());
                 }
             } else if (p.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals(getBossItemName("PharaohGod", 1))) {
@@ -2299,7 +2299,7 @@ public class BossLand extends JavaPlugin implements Listener {
                     canEnterDeath.add(p.getUniqueId());
                 }
                 //Kill
-                Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, () -> vic.damage(999 * 999), 5L);
+                getServer().getScheduler().scheduleSyncDelayedTask(this, () -> vic.damage(999 * 999), 5L);
                 //Consume Chance
                 if (rand(1, 100) <= getConfig().getInt("deathNoteConsumeChance")) {
                     p.getInventory().setItemInMainHand(null);
@@ -2495,7 +2495,7 @@ public class BossLand extends JavaPlugin implements Listener {
         Location to = owner.getLocation().add(owner.getLocation().getDirection().normalize().multiply(5));
         Vector direction = to.toVector().subtract(e.getLocation().toVector()).normalize();
         e.setVelocity(direction.multiply(speed));
-        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
+        getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
             try {
                 moveControl(e, owner, speed);
             } catch (Exception ignored) {
@@ -2536,7 +2536,7 @@ public class BossLand extends JavaPlugin implements Listener {
         if (!coolList.contains(id)) {
             coolList.add(id);
             //System.out.println("Cool Add");
-            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, () -> coolList.remove(id), (3 * 20));
+            getServer().getScheduler().scheduleSyncDelayedTask(this, () -> coolList.remove(id), (3 * 20));
         }
     }
 
@@ -2561,20 +2561,20 @@ public class BossLand extends JavaPlugin implements Listener {
                     takeItem(p, 1);
                     boom(l, 3, false);
                     p.sendMessage(getLang("drownSpawn"));
-                    Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, () -> spawnBoss(p, l, "DrownedGod"), 40);
+                    getServer().getScheduler().scheduleSyncDelayedTask(this, () -> spawnBoss(p, l, "DrownedGod"), 40);
                 } else if (l.getWorld().getEnvironment().equals(Environment.NORMAL) && l.getBlockY() >= getConfig().getInt("skyLevel")) {
                     takeItem(p, 1);
                     //boom(l,3,false);
                     lightningShow(l, 3);
                     l.setY(l.getY() + 5);
                     p.sendMessage(getLang("aetherSpawn"));
-                    Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, () -> spawnBoss(p, l, "AetherGod"), 40);
+                    getServer().getScheduler().scheduleSyncDelayedTask(this, () -> spawnBoss(p, l, "AetherGod"), 40);
                 } else if (l.getWorld().getBiome((int) l.getX(), (int) l.getY(), (int) l.getZ()).toString().contains("DESERT")) {
                     takeItem(p, 1);
                     //boom(l,2,false);
                     lightningShow(l, 4);
                     p.sendMessage(getLang("pharaohSpawn"));
-                    Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, () -> spawnBoss(p, l, "PharaohGod"), 40);
+                    getServer().getScheduler().scheduleSyncDelayedTask(this, () -> spawnBoss(p, l, "PharaohGod"), 40);
                 } else
                     p.sendMessage(getLang("failSpawn"));
             } else if (p.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals(getLang("items.abhorrentfruit"))) {
@@ -2586,7 +2586,7 @@ public class BossLand extends JavaPlugin implements Listener {
                     takeItem(p, 1);
                     boom(l, 8, false);
                     p.sendMessage(getLang("devilSpawn"));
-                    Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, () -> spawnBoss(p, l, "Devil"), 40);
+                    getServer().getScheduler().scheduleSyncDelayedTask(this, () -> spawnBoss(p, l, "Devil"), 40);
                 } else
                     p.sendMessage(getLang("hellSpawn"));
             }
@@ -2614,7 +2614,7 @@ public class BossLand extends JavaPlugin implements Listener {
 //					if(l.getWorld().getEnvironment().equals(Environment.NETHER) && checkBlockRecipe(l,"REDSTONE_WIRE:REDSTONE_WIRE:REDSTONE_WIRE","REDSTONE_WIRE:AIR:REDSTONE_WIRE","REDSTONE_WIRE:REDSTONE_WIRE:REDSTONE_WIRE",false)) {
 //						boom(l,5,true);
 //						final Location bs = l.clone();
-//						Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
+//						getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
 //							public void run() {
 //								spawnBoss(p,bs,"GhastLord");
 //							}
@@ -2633,7 +2633,7 @@ public class BossLand extends JavaPlugin implements Listener {
 //							la.getBlock().setType(Material.OBSIDIAN);
 //							la.getWorld().strikeLightning(la);
 //							final Location bs = l.clone();
-//							Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
+//							getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
 //								public void run() {
 //									spawnBoss(p,bs,"KillerBunny");
 //								}
@@ -2657,7 +2657,7 @@ public class BossLand extends JavaPlugin implements Listener {
         //Boom 1
         l.getWorld().createExplosion(l, size, fire);
         //Boom 2
-        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
+        getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
             Location l5 = l.clone();
             l5.setX(l5.getX() + 3);
             Location l6 = l.clone();
@@ -2678,7 +2678,7 @@ public class BossLand extends JavaPlugin implements Listener {
             l.getWorld().createExplosion(l10, size, fire);
         }, 10);
         //Boom 3
-        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
+        getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
             Location l1 = l.clone();
             l1.setX(l1.getX() + 6);
             l1.setZ(l1.getZ() + 6);
@@ -2702,7 +2702,7 @@ public class BossLand extends JavaPlugin implements Listener {
         //Boom 1
         l.getWorld().strikeLightningEffect(l);
         //Boom 2
-        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
+        getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
             Location l5 = l.clone();
             l5.setX(l5.getX() + 3);
             Location l6 = l.clone();
@@ -2723,7 +2723,7 @@ public class BossLand extends JavaPlugin implements Listener {
             l.getWorld().strikeLightningEffect(l10);
         }, 10);
         //Boom 3
-        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
+        getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
             Location l1 = l.clone();
             l1.setX(l1.getX() + 6);
             l1.setZ(l1.getZ() + 6);
@@ -2824,7 +2824,7 @@ public class BossLand extends JavaPlugin implements Listener {
         }
         Location loc = e.getLocation();
         displayParticle(effect, loc);
-        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, () -> makeTrail(e, effect), 1L);
+        getServer().getScheduler().scheduleSyncDelayedTask(this, () -> makeTrail(e, effect), 1L);
     }
 
     private void removeBar(Player p) {
@@ -3057,7 +3057,7 @@ public class BossLand extends JavaPlugin implements Listener {
             targetMap.put(e, p);
         //Loop
         final boolean nup = !up;
-        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, () -> levitate(e, nup), (20 * 2));
+        getServer().getScheduler().scheduleSyncDelayedTask(this, () -> levitate(e, nup), (20 * 2));
     }
 
     public void target(final Entity e, final double speed) {
@@ -3072,7 +3072,7 @@ public class BossLand extends JavaPlugin implements Listener {
             }
         } catch (Exception ignored) {
         }
-        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
+        getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
             try {
                 target(e, speed);
             } catch (Exception ignored) {
@@ -3102,7 +3102,7 @@ public class BossLand extends JavaPlugin implements Listener {
 
     public void makeBoss(Entity ent, String bossType) {
         String title = ChatColor.translateAlternateColorCodes('&', getConfig().getString("bosses." + bossType + ".name"));
-        BossBar bar = Bukkit.createBossBar(title, BarColor.valueOf(getConfig().getString("bosses." + bossType + ".barColor")), BarStyle.valueOf(getConfig().getString("bosses." + bossType + ".barStyle")), BarFlag.CREATE_FOG);
+        BossBar bar = getServer().createBossBar(title, BarColor.valueOf(getConfig().getString("bosses." + bossType + ".barColor")), BarStyle.valueOf(getConfig().getString("bosses." + bossType + ".barStyle")), BarFlag.CREATE_FOG);
         bar.setVisible(true);
         bossMap.put(ent, bar);
         int maxHP = getConfig().getInt("bosses." + bossType + ".health");
@@ -3357,7 +3357,7 @@ public class BossLand extends JavaPlugin implements Listener {
                 String owner = getConfig().getString("bosses." + bossType + ".loot." + loot + ".owner");
                 if (owner != null) {
                     SkullMeta sm = (SkullMeta) stack.getItemMeta();
-                    sm.setOwningPlayer(Bukkit.getOfflinePlayer(UUID.fromString(owner)));
+                    sm.setOwningPlayer(getServer().getOfflinePlayer(UUID.fromString(owner)));
                     stack.setItemMeta(sm);
                 }
             }
@@ -3668,7 +3668,7 @@ public class BossLand extends JavaPlugin implements Listener {
 //			//Get Skin
 //			ItemStack stack = new ItemStack(Material.PLAYER_HEAD);
 //            SkullMeta sm = (SkullMeta) stack.getItemMeta();
-//            sm.setOwningPlayer(Bukkit.getOfflinePlayer(UUID.fromString(owner)));
+//            sm.setOwningPlayer(getServer().getOfflinePlayer(UUID.fromString(owner)));
 //            sm.setDisplayName(prosessLootName(name, stack));
 //            stack.setItemMeta(sm);
 //            return stack;
@@ -3747,31 +3747,31 @@ public class BossLand extends JavaPlugin implements Listener {
     private void addDeathNote() {
         //God Fruit
         NamespacedKey key = new NamespacedKey(this, "death_note");
-        if (Bukkit.getRecipe(key) != null) return;
+        if (getServer().getRecipe(key) != null) return;
         ItemStack item = getDeathItem();
         ShapedRecipe sr = new ShapedRecipe(key, item);
         sr.shape("SSS", "SAS", "SSS");
         sr.setIngredient('S', Material.NETHER_STAR);
         sr.setIngredient('A', Material.ENCHANTED_BOOK);
-        Bukkit.addRecipe(sr);
+        getServer().addRecipe(sr);
     }
 
     private void addDevilFruit() {
         //God Fruit
         NamespacedKey key = new NamespacedKey(this, "devil_fruit");
-        if (Bukkit.getRecipe(key) != null) return;
+        if (getServer().getRecipe(key) != null) return;
         ItemStack item = getDevilItem();
         ShapedRecipe sr = new ShapedRecipe(key, item);
         sr.shape("ASA", "SGS", "ASA");
         sr.setIngredient('S', Material.FIRE_CORAL);
         sr.setIngredient('G', Material.ENCHANTED_GOLDEN_APPLE);
-        Bukkit.addRecipe(sr);
+        getServer().addRecipe(sr);
     }
 
     private void addGodFruit() {
         //God Fruit
         NamespacedKey key = new NamespacedKey(this, "god_fruit");
-        if (Bukkit.getRecipe(key) != null) return;
+        if (getServer().getRecipe(key) != null) return;
         ItemStack item = getGodItem();
         ShapedRecipe sr = new ShapedRecipe(key, item);
         sr.shape("GGG", "GFG", "ABC");
@@ -3780,13 +3780,13 @@ public class BossLand extends JavaPlugin implements Listener {
         sr.setIngredient('A', Material.EMERALD);
         sr.setIngredient('B', Material.YELLOW_DYE);
         sr.setIngredient('C', Material.LAPIS_LAZULI);
-        Bukkit.addRecipe(sr);
+        getServer().addRecipe(sr);
     }
 
     private void addIllagerBell() {
         //Illager Bell
         NamespacedKey key = new NamespacedKey(this, "illager_bell");
-        if (Bukkit.getRecipe(key) != null) return;
+        if (getServer().getRecipe(key) != null) return;
         ItemStack bell = getIllagerItem();
         ShapedRecipe sr = new ShapedRecipe(key, bell);
         sr.shape("GGG", "ABC", "GGG");
@@ -3794,13 +3794,13 @@ public class BossLand extends JavaPlugin implements Listener {
         sr.setIngredient('A', Material.QUARTZ);
         sr.setIngredient('B', Material.GREEN_DYE);
         sr.setIngredient('C', Material.CLAY_BALL);
-        Bukkit.addRecipe(sr);
+        getServer().addRecipe(sr);
     }
 
     private void addWizardBook() {
         //Illager Bell
         NamespacedKey key = new NamespacedKey(this, "wizard_book");
-        if (Bukkit.getRecipe(key) != null) return;
+        if (getServer().getRecipe(key) != null) return;
         ItemStack item = getWizardItem();
         ShapedRecipe sr = new ShapedRecipe(key, item);
         sr.shape("LLL", "APB", "PPP");
@@ -3808,13 +3808,13 @@ public class BossLand extends JavaPlugin implements Listener {
         sr.setIngredient('P', Material.PAPER);
         sr.setIngredient('A', Material.COAL);
         sr.setIngredient('B', Material.RED_DYE);
-        Bukkit.addRecipe(sr);
+        getServer().addRecipe(sr);
     }
 
     private void addGiantPotion() {
         //Giant Potion
         NamespacedKey key = new NamespacedKey(this, "giant_potion");
-        if (Bukkit.getRecipe(key) != null) return;
+        if (getServer().getRecipe(key) != null) return;
         ItemStack item = getGiantIem();
         ShapedRecipe sr = new ShapedRecipe(key, item);
         sr.shape("GGG", "ABC", "GWG");
@@ -3823,20 +3823,20 @@ public class BossLand extends JavaPlugin implements Listener {
         sr.setIngredient('A', Material.GREEN_DYE);
         sr.setIngredient('B', Material.RED_DYE);
         sr.setIngredient('C', Material.BROWN_DYE);
-        Bukkit.addRecipe(sr);
+        getServer().addRecipe(sr);
     }
 
     private void addDragonEgg() {
         //Giant Potion
         NamespacedKey key = new NamespacedKey(this, "dragon_egg");
-        if (Bukkit.getRecipe(key) != null) return;
+        if (getServer().getRecipe(key) != null) return;
         ItemStack item = getGiantIem();
         ShapedRecipe sr = new ShapedRecipe(key, item);
         sr.shape("OOO", "OAO", "OBO");
         sr.setIngredient('O', Material.OBSIDIAN);
         sr.setIngredient('A', Material.QUARTZ);
         sr.setIngredient('B', Material.COAL);
-        Bukkit.addRecipe(sr);
+        getServer().addRecipe(sr);
     }
 
     private static List<Chunk> getNearbyChunks(Location l, int range) {
@@ -3994,14 +3994,14 @@ public class BossLand extends JavaPlugin implements Listener {
                 }
             } catch (Exception ignored) {
             }
-            sender.sendMessage("§6--- Boss Land v" + Bukkit.getServer().getPluginManager().getPlugin("BossLand").getDescription().getVersion() + " ---");
-            sender.sendMessage("§e/bl spawn <boss> <- Spawns a Boss");
-            sender.sendMessage("§e/bl cspawn <boss> <x> <y> <z> <world>");
-            sender.sendMessage("§e/bl loot <boss>   <- Drops a Bosses' death loot");
-            sender.sendMessage("§e/bl setLoot <boss> <id> <- Set loot for boss");
-            sender.sendMessage("§e/bl addLoot <boss>     <- Add loot for boss");
-            sender.sendMessage("§e/bl killBosses <world>  <- Remove bosses");
-            sender.sendMessage("§e/bl reload         <- Re-loads the config");
+            sender.sendMessage(ChatColor.GOLD + "--- Boss Land v" + getDescription().getVersion() + " ---");
+            sender.sendMessage(ChatColor.YELLOW + "/bl spawn <boss> <- Spawns a Boss");
+            sender.sendMessage(ChatColor.YELLOW + "/bl cspawn <boss> <x> <y> <z> <world>");
+            sender.sendMessage(ChatColor.YELLOW + "/bl loot <boss>   <- Drops a Bosses' death loot");
+            sender.sendMessage(ChatColor.YELLOW + "/bl setLoot <boss> <id> <- Set loot for boss");
+            sender.sendMessage(ChatColor.YELLOW + "/bl addLoot <boss>     <- Add loot for boss");
+            sender.sendMessage(ChatColor.YELLOW + "/bl killBosses <world>  <- Remove bosses");
+            sender.sendMessage(ChatColor.YELLOW + "/bl reload         <- Re-loads the config");
         }
         return true;
     }
