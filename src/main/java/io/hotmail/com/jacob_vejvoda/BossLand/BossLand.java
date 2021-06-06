@@ -1,24 +1,17 @@
 package io.hotmail.com.jacob_vejvoda.BossLand;
 
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.util.*;
-import java.util.logging.Level;
-
+import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.properties.Property;
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldguard.LocalPlayer;
+import com.sk89q.worldguard.WorldGuard;
+import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+import com.sk89q.worldguard.protection.flags.Flags;
+import com.sk89q.worldguard.protection.regions.RegionContainer;
+import com.sk89q.worldguard.protection.regions.RegionQuery;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.Validate;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Chunk;
-import org.bukkit.Color;
-import org.bukkit.DyeColor;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
-import org.bukkit.Particle;
-import org.bukkit.Sound;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.World.Environment;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Banner;
@@ -33,68 +26,26 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.apache.commons.codec.binary.Base64;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Damageable;
-import org.bukkit.entity.DragonFireball;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Fireball;
-import org.bukkit.entity.LargeFireball;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Panda;
+import org.bukkit.entity.*;
 import org.bukkit.entity.Panda.Gene;
-import org.bukkit.entity.PigZombie;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
-import org.bukkit.entity.Rabbit;
 import org.bukkit.entity.Rabbit.Type;
-import org.bukkit.entity.ShulkerBullet;
-import org.bukkit.entity.Slime;
-import org.bukkit.entity.TNTPrimed;
-import org.bukkit.entity.ThrownPotion;
-import org.bukkit.entity.Trident;
-import org.bukkit.entity.WitherSkull;
-import org.bukkit.entity.Zombie;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.entity.EntityCombustEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
-import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.entity.EntityTargetEvent;
-import org.bukkit.event.entity.ProjectileHitEvent;
-import org.bukkit.event.entity.ProjectileLaunchEvent;
-import org.bukkit.event.entity.SlimeSplitEvent;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerItemConsumeEvent;
-import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.event.world.ChunkLoadEvent;
-import org.bukkit.inventory.CraftingInventory;
-import org.bukkit.inventory.EntityEquipment;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.ShapedRecipe;
-import org.bukkit.inventory.meta.BannerMeta;
-import org.bukkit.inventory.meta.BlockStateMeta;
-import org.bukkit.inventory.meta.BookMeta;
-import org.bukkit.inventory.meta.EnchantmentStorageMeta;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.LeatherArmorMeta;
-import org.bukkit.inventory.meta.PotionMeta;
-import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.inventory.*;
+import org.bukkit.inventory.meta.*;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionData;
@@ -104,15 +55,11 @@ import org.bukkit.potion.PotionType;
 import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
 
-import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.properties.Property;
-import com.sk89q.worldedit.bukkit.BukkitAdapter;
-import com.sk89q.worldguard.LocalPlayer;
-import com.sk89q.worldguard.WorldGuard;
-import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
-import com.sk89q.worldguard.protection.flags.Flags;
-import com.sk89q.worldguard.protection.regions.RegionContainer;
-import com.sk89q.worldguard.protection.regions.RegionQuery;
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.util.*;
+import java.util.logging.Level;
 
 
 public class BossLand extends JavaPlugin implements Listener {
@@ -389,7 +336,7 @@ public class BossLand extends JavaPlugin implements Listener {
                     if ((!b.getType().equals(Material.BEDROCK)) &&
                             (getServer().getPluginManager().getPlugin("WorldGuard") != null && new WorldGuardMethods().queryBuild(p, bl)) &&
                             (cb == null || (canBreak && cb.contains(b.getType())) || (!canBreak && !cb.contains(b.getType()))))
-                            b.breakNaturally();
+                        b.breakNaturally();
                 }
             }
         }
@@ -2359,27 +2306,27 @@ public class BossLand extends JavaPlugin implements Listener {
             String n = e.getCurrentItem().getItemMeta().getDisplayName();
             if (name.contains(getLang("items.knowledgebook"))) {
                 if (n.equals(ChatColor.YELLOW + "Enchant")) {
-                        e.setCancelled(true);
-                        noList.add(p.getUniqueId());
-                        p.closeInventory();
-                        ItemStack s = e.getView().getItem(4);
-                        noList.remove(p.getUniqueId());
-                        if (s != null) {
-                            openEnchantGUI(p, s);
-                        } else
-                            p.sendMessage(getLang("noItem"));
-                    } else if (n.equals(ChatColor.RED + "DisEnchant")) {
-                        e.setCancelled(true);
-                        noList.add(p.getUniqueId());
-                        p.closeInventory();
-                        ItemStack s = e.getView().getItem(4);
-                        noList.remove(p.getUniqueId());
-                        if (s != null) {
-                            openDisEnchantGUI(p, s);
-                        } else
-                            p.sendMessage(getLang("noItem"));
-                    } else if (n.equals(ChatColor.BOLD + "")) {
-                        e.setCancelled(true);
+                    e.setCancelled(true);
+                    noList.add(p.getUniqueId());
+                    p.closeInventory();
+                    ItemStack s = e.getView().getItem(4);
+                    noList.remove(p.getUniqueId());
+                    if (s != null) {
+                        openEnchantGUI(p, s);
+                    } else
+                        p.sendMessage(getLang("noItem"));
+                } else if (n.equals(ChatColor.RED + "DisEnchant")) {
+                    e.setCancelled(true);
+                    noList.add(p.getUniqueId());
+                    p.closeInventory();
+                    ItemStack s = e.getView().getItem(4);
+                    noList.remove(p.getUniqueId());
+                    if (s != null) {
+                        openDisEnchantGUI(p, s);
+                    } else
+                        p.sendMessage(getLang("noItem"));
+                } else if (n.equals(ChatColor.BOLD + "")) {
+                    e.setCancelled(true);
                 }
             } else if (name.contains(ChatColor.BLACK + "" + ChatColor.BOLD + "Add Enchantments") || name.contains(ChatColor.BLACK + "" + ChatColor.BOLD + "Remove Enchantments")) {
                 if (n.equals(ChatColor.YELLOW + "Add Echantment")) {
@@ -2901,8 +2848,7 @@ public class BossLand extends JavaPlugin implements Listener {
                 equipMob(boss, "DIAMOND");
             }/*else if(bossType.equals("IllagerKing")) {
 
-             }*/
-            else if (bossType.equals("PapaPanda")) {
+             }*/ else if (bossType.equals("PapaPanda")) {
                 ((Panda) boss).setMainGene(Gene.AGGRESSIVE);
             } else if (bossType.equals("DrownedGod")) {
                 equipMob(boss, "DIAMOND");
