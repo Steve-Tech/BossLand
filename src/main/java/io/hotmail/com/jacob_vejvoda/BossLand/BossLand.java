@@ -210,7 +210,7 @@ public class BossLand extends JavaPlugin implements Listener {
         return list2;
     }
 
-    @SuppressWarnings({"unchecked"})
+    @SuppressWarnings("unchecked")
     public void timer() {
         try {
             HashMap<Entity, BossBar> tmp = (HashMap<Entity, BossBar>) bossMap.clone();
@@ -401,7 +401,7 @@ public class BossLand extends JavaPlugin implements Listener {
         if (p.getWorld().getEnvironment().equals(Environment.NORMAL)) {
             World end = getServer().getWorld(p.getWorld().getName() + "_the_end");
             p.teleport(end.getSpawnLocation());
-            p.sendMessage("§5§lPrepare to die!");
+            p.sendMessage(ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "Prepare to die!");
             final Location l = new Location(end, 0, end.getHighestBlockYAt(0, 0) + 3, 0);
             p.getWorld().createExplosion(l, 4);
             getServer().getScheduler().scheduleSyncDelayedTask(this, () -> spawnBoss(p, l, "Death"), 10);
@@ -1141,7 +1141,7 @@ public class BossLand extends JavaPlugin implements Listener {
         if ((e.getDamager() instanceof Player) && (!(e.getEntity() instanceof Player))) {
             Player p = (Player) e.getDamager();
             try {
-                if (p.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals("§5§lScythe of Death") && (bossType == null || (!bossType.equals("Death")))) {
+                if (p.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals(ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "Scythe of Death") && (bossType == null || (!bossType.equals("Death")))) {
                     e.setDamage(999 * 999);
                 }
             } catch (NullPointerException ignored) {
@@ -1152,7 +1152,7 @@ public class BossLand extends JavaPlugin implements Listener {
             try {
                 final Player p = (Player) e.getEntity();
                 //System.out.println("D1");
-                if ((!diedList.contains(p.getUniqueId())) && p.getInventory().getItemInOffHand().getItemMeta().getDisplayName().equals("§e§lThe Cursed Skull")) {
+                if ((!diedList.contains(p.getUniqueId())) && p.getInventory().getItemInOffHand().getItemMeta().getDisplayName().equals(ChatColor.YELLOW + "" + ChatColor.BOLD + "The Cursed Skull")) {
                     //System.out.println("D2: " + p.getHealth() + " : " +  e.getFinalDamage());
                     if (checkDeath(p, e.getFinalDamage())) {
                         getLogger().log(Level.INFO, p.getName() + " should have died.");
@@ -2087,7 +2087,7 @@ public class BossLand extends JavaPlugin implements Listener {
             } else if (e.getItemInHand().getItemMeta().getDisplayName().equals(getLang("items.deathnote"))) {
                 e.setCancelled(true);
             }
-//				if(p.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals("§e§lThe Cursed Skull") || p.getInventory().getItemInOffHand().getItemMeta().getDisplayName().equals("§e§lThe Cursed Skull")) {
+//				if(p.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals(ChatColor.YELLOW + "" + ChatColor.BOLD + "The Cursed Skull") || p.getInventory().getItemInOffHand().getItemMeta().getDisplayName().equals(ChatColor.YELLOW + "" + ChatColor.BOLD + "The Cursed Skull")) {
 //					e.setCancelled(true);
 //				}
         } catch (NullPointerException ignored) {
@@ -2134,7 +2134,7 @@ public class BossLand extends JavaPlugin implements Listener {
                     takeItem(p, 1);
                     getServer().getScheduler().scheduleSyncDelayedTask(this, () -> spawnBoss(p, bs, "ZombieKing"), 20);
                 }
-            } else if (p.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals("§5§lBook of Spells") && l.getWorld().getEnvironment().equals(Environment.NORMAL) && (l.getWorld().getBiome((int) l.getX(), (int) l.getY(), (int) l.getZ()).toString().contains("SNOWY"))) {
+            } else if (p.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals(ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "Book of Spells") && l.getWorld().getEnvironment().equals(Environment.NORMAL) && (l.getWorld().getBiome((int) l.getX(), (int) l.getY(), (int) l.getZ()).toString().contains("SNOWY"))) {
                 if (checkBlockRecipe(l, "REDSTONE_TORCH:REDSTONE_WIRE:REDSTONE_TORCH", "REDSTONE_WIRE:CAMPFIRE:REDSTONE_WIRE", "REDSTONE_TORCH:REDSTONE_WIRE:REDSTONE_TORCH", true)) {
                     e.setCancelled(true);
                     lightningShow(l, 2);
@@ -2142,7 +2142,7 @@ public class BossLand extends JavaPlugin implements Listener {
                     final Location bs = l.clone();
                     getServer().getScheduler().scheduleSyncDelayedTask(this, () -> spawnBoss(p, bs, "EvilWizard"), 20);
                 }
-            } else if (p.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals("§6§lBell of Doom") && l.getWorld().getEnvironment().equals(Environment.NORMAL) && (l.getWorld().getBiome((int) l.getX(), (int) l.getY(), (int) l.getZ()).toString().contains("SAVANNA"))) {
+            } else if (p.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals(ChatColor.GOLD + "" + ChatColor.BOLD + "Bell of Doom") && l.getWorld().getEnvironment().equals(Environment.NORMAL) && (l.getWorld().getBiome((int) l.getX(), (int) l.getY(), (int) l.getZ()).toString().contains("SAVANNA"))) {
                 if (checkBlockRecipe(l, "REDSTONE_TORCH:REDSTONE_WIRE:REDSTONE_TORCH", "REDSTONE_WIRE:CAMPFIRE:REDSTONE_WIRE", "REDSTONE_TORCH:REDSTONE_WIRE:REDSTONE_TORCH", true)) {
                     e.setCancelled(true);
                     lightningShow(l, 3);
@@ -2150,7 +2150,7 @@ public class BossLand extends JavaPlugin implements Listener {
                     final Location bs = l.clone();
                     getServer().getScheduler().scheduleSyncDelayedTask(this, () -> spawnBoss(p, bs, "IllagerKing"), 20);
                 }
-            } else if (p.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals("§2§lPotion of Giant Growth") && l.getWorld().getEnvironment().equals(Environment.NORMAL) && (l.getWorld().getBiome((int) l.getX(), (int) l.getY(), (int) l.getZ()).toString().contains("PLAINS"))) {
+            } else if (p.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals(ChatColor.DARK_GREEN + "" + ChatColor.BOLD + "Potion of Giant Growth") && l.getWorld().getEnvironment().equals(Environment.NORMAL) && (l.getWorld().getBiome((int) l.getX(), (int) l.getY(), (int) l.getZ()).toString().contains("PLAINS"))) {
                 if (checkBlockRecipe(l, "REDSTONE_TORCH:REDSTONE_WIRE:REDSTONE_TORCH", "REDSTONE_WIRE:CAMPFIRE:REDSTONE_WIRE", "REDSTONE_TORCH:REDSTONE_WIRE:REDSTONE_TORCH", true)) {
                     e.setCancelled(true);
                     //boom(l,5,false);
@@ -2166,7 +2166,7 @@ public class BossLand extends JavaPlugin implements Listener {
                         takeItem(p, 1);
                         p.getWorld().createExplosion(e.getClickedBlock().getLocation(), 4);
                         final Location bs = l.clone();
-                        p.sendMessage("§c§lFool, who dares summon me!");
+                        p.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "Fool, who dares summon me!");
                         getServer().getScheduler().scheduleSyncDelayedTask(this, () -> spawnBoss(p, bs, "Demon"), 10);
                     } else
                         p.sendMessage(getLang("noPower"));
@@ -2266,7 +2266,7 @@ public class BossLand extends JavaPlugin implements Listener {
                     ItemStack s = p.getInventory().getItemInMainHand().clone();
                     ItemMeta m = s.getItemMeta();
                     List<String> lore = m.getLore();
-                    lore.set(0, "§8Mode: " + nMode);
+                    lore.set(0, ChatColor.DARK_GRAY + "Mode: " + nMode);
                     m.setLore(lore);
                     s.setItemMeta(m);
                     p.getInventory().setItemInMainHand(s);
@@ -2314,40 +2314,40 @@ public class BossLand extends JavaPlugin implements Listener {
 
     private void openKnowledgBook(Player p) {
         Inventory inv = getServer().createInventory(p, 9, getLang("items.knowledgebook"));
-        inv.setItem(2, getItem(Material.ENCHANTED_BOOK, "§eEnchant", 1, null));
-        inv.setItem(6, getItem(Material.BOOK, "§cDisEnchant", 1, null));
+        inv.setItem(2, getItem(Material.ENCHANTED_BOOK, ChatColor.YELLOW + "Enchant", 1, null));
+        inv.setItem(6, getItem(Material.BOOK, ChatColor.RED + "DisEnchant", 1, null));
         for (int i : Arrays.asList(0, 1, 3, 5, 7, 8))
-            inv.setItem(i, getItem(Material.GRAY_STAINED_GLASS_PANE, "§l", 1, null));
+            inv.setItem(i, getItem(Material.GRAY_STAINED_GLASS_PANE, ChatColor.BOLD + "", 1, null));
         p.openInventory(inv);
     }
 
     private void openEnchantGUI(Player p, ItemStack s) {
-        Inventory inv = getServer().createInventory(p, 54, "§0§lAdd Enchantments");
+        Inventory inv = getServer().createInventory(p, 54, ChatColor.BLACK + "" + ChatColor.BOLD + "Add Enchantments");
         for (int i : Arrays.asList(0, 1, 2, 3, 4, 5, 6, 7, 8))
-            inv.setItem(i, getItem(Material.GRAY_STAINED_GLASS_PANE, "§l", 1, null));
+            inv.setItem(i, getItem(Material.GRAY_STAINED_GLASS_PANE, ChatColor.BOLD + "", 1, null));
         inv.setItem(4, s);
         for (Enchantment c : Enchantment.values())
             if (c != null && c.getKey() != null && !c.equals(Enchantment.MENDING)) {
-                ItemStack b = (getItem(Material.ENCHANTED_BOOK, "§eAdd Echantment", 1, null));
+                ItemStack b = (getItem(Material.ENCHANTED_BOOK, ChatColor.YELLOW + "Add Echantment", 1, null));
                 b.addUnsafeEnchantment(c, 1);
                 inv.addItem(b);
             }
-        inv.setItem(49, getItem(Material.EXPERIENCE_BOTTLE, "§eLevel: 1", 1, null));
-        inv.setItem(53, getItem(Material.BARRIER, "§cDone", 1, null));
+        inv.setItem(49, getItem(Material.EXPERIENCE_BOTTLE, ChatColor.YELLOW + "Level: 1", 1, null));
+        inv.setItem(53, getItem(Material.BARRIER, ChatColor.RED + "Done", 1, null));
         p.openInventory(inv);
     }
 
     private void openDisEnchantGUI(Player p, ItemStack s) {
-        Inventory inv = getServer().createInventory(p, 54, "§0§lRemove Enchantments");
+        Inventory inv = getServer().createInventory(p, 54, ChatColor.BLACK + "" + ChatColor.BOLD + "Remove Enchantments");
         for (int i : Arrays.asList(0, 1, 2, 3, 4, 5, 6, 7, 8))
-            inv.setItem(i, getItem(Material.GRAY_STAINED_GLASS_PANE, "§l", 1, null));
+            inv.setItem(i, getItem(Material.GRAY_STAINED_GLASS_PANE, ChatColor.BOLD + "", 1, null));
         inv.setItem(4, s);
         for (Map.Entry<Enchantment, Integer> hm : s.getEnchantments().entrySet()) {
-            ItemStack b = (getItem(Material.ENCHANTED_BOOK, "§eRemove Echantment", 1, null));
+            ItemStack b = (getItem(Material.ENCHANTED_BOOK, ChatColor.YELLOW + "Remove Echantment", 1, null));
             b.addUnsafeEnchantment(hm.getKey(), hm.getValue());
             inv.addItem(b);
         }
-        inv.setItem(53, getItem(Material.BARRIER, "§cDone", 1, null));
+        inv.setItem(53, getItem(Material.BARRIER, ChatColor.RED + "Done", 1, null));
         p.openInventory(inv);
     }
 
@@ -2358,8 +2358,7 @@ public class BossLand extends JavaPlugin implements Listener {
         try {
             String n = e.getCurrentItem().getItemMeta().getDisplayName();
             if (name.contains(getLang("items.knowledgebook"))) {
-                switch (n) {
-                    case "§eEnchant": {
+                if (n.equals(ChatColor.YELLOW + "Enchant")) {
                         e.setCancelled(true);
                         noList.add(p.getUniqueId());
                         p.closeInventory();
@@ -2369,9 +2368,7 @@ public class BossLand extends JavaPlugin implements Listener {
                             openEnchantGUI(p, s);
                         } else
                             p.sendMessage(getLang("noItem"));
-                        break;
-                    }
-                    case "§cDisEnchant": {
+                    } else if (n.equals(ChatColor.RED + "DisEnchant")) {
                         e.setCancelled(true);
                         noList.add(p.getUniqueId());
                         p.closeInventory();
@@ -2381,14 +2378,11 @@ public class BossLand extends JavaPlugin implements Listener {
                             openDisEnchantGUI(p, s);
                         } else
                             p.sendMessage(getLang("noItem"));
-                        break;
-                    }
-                    case "§l":
+                    } else if (n.equals(ChatColor.BOLD + "")) {
                         e.setCancelled(true);
-                        break;
                 }
-            } else if (name.contains("§0§lAdd Enchantments") || name.contains("§0§lRemove Enchantments")) {
-                if (n.equals("§eAdd Echantment")) {
+            } else if (name.contains(ChatColor.BLACK + "" + ChatColor.BOLD + "Add Enchantments") || name.contains(ChatColor.BLACK + "" + ChatColor.BOLD + "Remove Enchantments")) {
+                if (n.equals(ChatColor.YELLOW + "Add Echantment")) {
                     e.setCancelled(true);
                     int lvl = Integer.parseInt(e.getView().getItem(49).getItemMeta().getDisplayName().split(": ")[1]);
                     int need = 3 + (lvl);
@@ -2402,7 +2396,7 @@ public class BossLand extends JavaPlugin implements Listener {
                         p.sendMessage(getLang("needXP").replace("<xp>", need + ""));
                         p.closeInventory();
                     }
-                } else if (n.equals("§eRemove Echantment")) {
+                } else if (n.equals(ChatColor.YELLOW + "Remove Echantment")) {
                     e.setCancelled(true);
                     //e.getCurrentItem()
                     p.getWorld().playSound(p.getLocation(), Sound.BLOCK_GRINDSTONE_USE, 1, 1);
@@ -2413,17 +2407,17 @@ public class BossLand extends JavaPlugin implements Listener {
                     p.closeInventory();
                     openDisEnchantGUI(p, s);
                     noList.remove(p.getUniqueId());
-                } else if (n.contains("§eLevel: ")) {
+                } else if (n.contains(ChatColor.YELLOW + "Level: ")) {
                     e.setCancelled(true);
                     //ItemStack s = e.getView().getItem(49);
                     int i = Integer.parseInt(e.getView().getItem(49).getItemMeta().getDisplayName().split(": ")[1]) + 1;
                     if (i > 10)
                         i = 1;
                     e.getView().setItem(49, getItem(Material.EXPERIENCE_BOTTLE, "§eLevel: " + i, 1, null));
-                } else if (n.equals("§cDone")) {
+                } else if (n.equals(ChatColor.RED + "Done")) {
                     e.setCancelled(true);
                     p.closeInventory();
-                } else if (n.equals("§l")) {
+                } else if (n.equals(ChatColor.BOLD + "")) {
                     e.setCancelled(true);
                 }
             }
@@ -2436,7 +2430,7 @@ public class BossLand extends JavaPlugin implements Listener {
         String name = e.getView().getTitle();
         Player p = (Player) e.getPlayer();
         try {
-            if (name.contains(getLang("items.knowledgebook")) || name.contains("§0§lAdd Enchantments") || name.contains("§0§lRemove Enchantments")) {
+            if (name.contains(getLang("items.knowledgebook")) || name.contains(ChatColor.BLACK + "" + ChatColor.BOLD + "Add Enchantments") || name.contains(ChatColor.BLACK + "" + ChatColor.BOLD + "Remove Enchantments")) {
                 if (!noList.contains(p.getUniqueId())) {
                     ItemStack s = e.getView().getItem(4);
                     p.getInventory().addItem(s);
@@ -3220,7 +3214,7 @@ public class BossLand extends JavaPlugin implements Listener {
         saveConfig();
     }
 
-    @SuppressWarnings({"unchecked"})
+    @SuppressWarnings("unchecked")
     public ItemStack getItemOld(String bossType, String loot) {
         //System.out.println("Get Loot: " + loot);
         try {
@@ -3909,14 +3903,14 @@ public class BossLand extends JavaPlugin implements Listener {
                 if (args[0].equals("reload")) {
                     reloadConfig();
                     reloadLang();
-                    sender.sendMessage("§eBossLand: Reloaded config!");
+                    sender.sendMessage(ChatColor.YELLOW + "BossLand: Reloaded config!");
                     return true;
                 } else if (args[0].equals("spawn") && args.length == 2) {
                     if (sender instanceof Player) {
                         Player p = (Player) sender;
                         if (getConfig().getString("bosses." + args[1]) != null) {
                             spawnBoss(p, p.getLocation(), args[1]);
-                            sender.sendMessage("§eBossLand: Spawned a " + args[1] + " boss!");
+                            sender.sendMessage(ChatColor.YELLOW + "BossLand: Spawned a " + args[1] + " boss!");
                         } else
                             bossError(sender);
                     }
@@ -3925,12 +3919,12 @@ public class BossLand extends JavaPlugin implements Listener {
                     if (getConfig().getString("bosses." + args[1]) != null) {
                         World w = getServer().getWorld(args[5]);
                         if (w == null) {
-                            sender.sendMessage("§cWorld not found!");
+                            sender.sendMessage(ChatColor.RED + "World not found!");
                             return true;
                         }
                         Location l = new Location(w, Integer.parseInt(args[2]), Integer.parseInt(args[3]), Integer.parseInt(args[4]));
                         spawnBoss(null, l, args[1]);
-                        sender.sendMessage("§eBossLand: Spawned a " + args[1] + " boss at the coords!");
+                        sender.sendMessage(ChatColor.YELLOW + "BossLand: Spawned a " + args[1] + " boss at the coords!");
                     } else
                         bossError(sender);
                     return true;
@@ -3944,9 +3938,9 @@ public class BossLand extends JavaPlugin implements Listener {
                             ItemStack s = getLoot(p, bossType);
                             if (s != null && (!s.getType().equals(Material.AIR))) {
                                 p.getInventory().addItem(s);
-                                sender.sendMessage("§eBossLand: Dropped " + bossType + " boss loot!");
+                                sender.sendMessage(ChatColor.YELLOW + "BossLand: Dropped " + bossType + " boss loot!");
                             } else
-                                sender.sendMessage("§eBossLand: Loot Error!");
+                                sender.sendMessage(ChatColor.YELLOW + "BossLand: Loot Error!");
                         } else
                             bossError(sender);
                     }
@@ -3971,9 +3965,9 @@ public class BossLand extends JavaPlugin implements Listener {
                             ItemStack s = p.getInventory().getItemInMainHand();
                             if (s != null && (!s.getType().equals(Material.AIR))) {
                                 setItem(s, "bosses." + bossType + ".loot." + id, getConfig());
-                                sender.sendMessage("§eBossLand: Loot at " + id + " for boss " + bossType + " set!");
+                                sender.sendMessage(ChatColor.YELLOW + "BossLand: Loot at " + id + " for boss " + bossType + " set!");
                             } else
-                                sender.sendMessage("§eBossLand: No item is in your hand!");
+                                sender.sendMessage(ChatColor.YELLOW + "BossLand: No item is in your hand!");
                         } else
                             bossError(sender);
                     }
@@ -3981,7 +3975,7 @@ public class BossLand extends JavaPlugin implements Listener {
                 } else if (args[0].equals("killBosses") && args.length == 2) {
                     World w = getServer().getWorld(args[1]);
                     if (w == null) {
-                        sender.sendMessage("§cWorld not found!");
+                        sender.sendMessage(ChatColor.RED + "World not found!");
                         return true;
                     }
                     HashMap<Entity, BossBar> pm = (HashMap<Entity, BossBar>) bossMap.clone();
@@ -3989,7 +3983,7 @@ public class BossLand extends JavaPlugin implements Listener {
                         if (i.getKey().getLocation().getWorld().equals(w)) {
                             ((LivingEntity) i.getKey()).damage(999 * 999);
                         }
-                    sender.sendMessage("§eBossLand: Removed all bosses from the world.");
+                    sender.sendMessage(ChatColor.YELLOW + "BossLand: Removed all bosses from the world.");
                     return true;
                 }
             } catch (NullPointerException ignored) {
@@ -4007,8 +4001,8 @@ public class BossLand extends JavaPlugin implements Listener {
     }
 
     private void bossError(CommandSender sender) {
-        sender.sendMessage("§cInvalid Boss Type!");
-        sender.sendMessage("§eValid Bosses are: ");
+        sender.sendMessage(ChatColor.RED + "Invalid Boss Type!");
+        sender.sendMessage(ChatColor.YELLOW + "Valid Bosses are: ");
         for (String b : getConfig().getConfigurationSection("bosses").getKeys(false))
             sender.sendMessage(b);
     }
