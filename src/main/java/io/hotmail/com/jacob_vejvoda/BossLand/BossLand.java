@@ -384,9 +384,11 @@ public class BossLand extends JavaPlugin implements Listener {
             for (double y = l.getY() - s / 2; y <= l.getY() + s / 2; y += 1.0D) {
                 for (double z = l.getZ() - s / 2; z <= l.getZ() + s / 2; z += 1.0D) {
                     //Break Block
-                    Block b = new Location(l.getWorld(), x, y, z).getBlock();
-                    if (!b.getType().equals(Material.BEDROCK))
-                        if (cb == null || (canBreak && cb.contains(b.getType())) || (!canBreak && !cb.contains(b.getType())))
+                    Location bl = new Location(l.getWorld(), x, y, z);
+                    Block b = bl.getBlock();
+                    if ((!b.getType().equals(Material.BEDROCK)) &&
+                            (getServer().getPluginManager().getPlugin("WorldGuard") != null && new WorldGuardMethods().queryBuild(p, bl)) &&
+                            (cb == null || (canBreak && cb.contains(b.getType())) || (!canBreak && !cb.contains(b.getType()))))
                             b.breakNaturally();
                 }
             }
