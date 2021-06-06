@@ -245,7 +245,7 @@ public class BossLand extends JavaPlugin implements Listener {
                             p.addPotionEffect(new PotionEffect(PotionEffectType.ABSORPTION, 20 * 10, 1));
                             repairItem(p.getInventory().getLeggings());
                         }
-                    } catch (Exception ignored) {
+                    } catch (NullPointerException ignored) {
                     }
                     try {
                         if (p.getInventory().getChestplate().getItemMeta().getDisplayName().equals(getBossItemName("AetherGod", 0))) {
@@ -257,7 +257,7 @@ public class BossLand extends JavaPlugin implements Listener {
                             p.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 20 * 5, 1));
                             repairItem(p.getInventory().getChestplate());
                         }
-                    } catch (Exception ignored) {
+                    } catch (NullPointerException ignored) {
                     }
                     try {
                         if (p.getInventory().getBoots().getItemMeta().getDisplayName().equals(getBossItemName("PharaohGod", 2))) {
@@ -269,7 +269,7 @@ public class BossLand extends JavaPlugin implements Listener {
                             p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 20 * 5, 2));
                             repairItem(p.getInventory().getBoots());
                         }
-                    } catch (Exception ignored) {
+                    } catch (NullPointerException ignored) {
                     }
                     try {
                         if (p.getInventory().getHelmet().getItemMeta().getDisplayName().equals(getBossItemName("DrownedGod", 2))) {
@@ -281,7 +281,7 @@ public class BossLand extends JavaPlugin implements Listener {
                             p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 20 * 15, 0));
                             repairItem(p.getInventory().getHelmet());
                         }
-                    } catch (Exception ignored) {
+                    } catch (NullPointerException ignored) {
                     }
                     //Bar Add
                     double dis = getConfig().getInt("bossRange");
@@ -300,7 +300,7 @@ public class BossLand extends JavaPlugin implements Listener {
                     } else
                         removeBar(p);
                 }
-        } catch (Exception x) {
+        } catch (NullPointerException x) {
             x.printStackTrace();
         }
         //Tick
@@ -325,7 +325,7 @@ public class BossLand extends JavaPlugin implements Listener {
 //				if(p.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals("§lStaff of Control")) {
 //
 //				}
-//			}catch(Exception x) {}
+//			}catch(NullPointerException x) {}
 //		}
 
     @EventHandler(priority = EventPriority.HIGH)
@@ -361,7 +361,7 @@ public class BossLand extends JavaPlugin implements Listener {
                     lightningList.add(e.getEntity());
                 }
             }
-        } catch (Exception ignored) {
+        } catch (NullPointerException ignored) {
         }
     }
 
@@ -375,7 +375,7 @@ public class BossLand extends JavaPlugin implements Listener {
             } else if (p.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals(getBossItemName("Giant", 2))) {
                 dig(p, e.getBlock().getLocation(), 2, list, true);
             }
-        } catch (Exception ignored) {
+        } catch (NullPointerException ignored) {
         }
     }
 
@@ -438,7 +438,7 @@ public class BossLand extends JavaPlugin implements Listener {
                         p.getWorld().playSound(p.getLocation(), Sound.BLOCK_SLIME_BLOCK_HIT, 1, 1);
                     }, 2);
                 }
-            } catch (Exception ignored) {
+            } catch (NullPointerException ignored) {
             }
             try {
                 if ((!e.isCancelled()) && (!diedList.contains(p.getUniqueId())) && p.getInventory().getItemInOffHand().getItemMeta().getDisplayName().equals(getBossItemName("PharaohGod", 0))) {
@@ -450,7 +450,7 @@ public class BossLand extends JavaPlugin implements Listener {
                         getLogger().log(Level.INFO, p.getName() + " should have died.");
                     }
                 }
-            } catch (Exception ignored) {
+            } catch (NullPointerException ignored) {
             }
             if ((!e.isCancelled()) && (p.getInventory().getItemInOffHand().getType().equals(Material.TOTEM_OF_UNDYING) || p.getInventory().getItemInMainHand().getType().equals(Material.TOTEM_OF_UNDYING))) {
                 if (p.getHealth() - e.getFinalDamage() <= 0) {
@@ -478,7 +478,7 @@ public class BossLand extends JavaPlugin implements Listener {
                         e.setCancelled(true);
                 }
             }
-        } catch (Exception ignored) {
+        } catch (NullPointerException ignored) {
         }
     }
 
@@ -497,7 +497,7 @@ public class BossLand extends JavaPlugin implements Listener {
                         e.setCancelled(true);
                         return;
                     }
-                } catch (Exception ignored) {
+                } catch (NullPointerException ignored) {
                 }
             //Potions
             int pc = getConfig().getInt("bosses." + bossType + ".potionChance");
@@ -592,7 +592,7 @@ public class BossLand extends JavaPlugin implements Listener {
                                 ent.getWorld().dropItem(ent.getLocation(), p.getInventory().getBoots());
                                 p.getInventory().setBoots(null);
                             }
-                        } catch (Exception ignored) {
+                        } catch (NullPointerException ignored) {
                         }
                     }
                     break;
@@ -1144,7 +1144,7 @@ public class BossLand extends JavaPlugin implements Listener {
                 if (p.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals("§5§lScythe of Death") && (bossType == null || (!bossType.equals("Death")))) {
                     e.setDamage(999 * 999);
                 }
-            } catch (Exception ignored) {
+            } catch (NullPointerException ignored) {
             }
         }
         //Death Stop
@@ -1159,7 +1159,7 @@ public class BossLand extends JavaPlugin implements Listener {
                         e.setCancelled(true);
                     }
                 }
-            } catch (Exception ignored) {
+            } catch (NullPointerException ignored) {
             }
         }
     }
@@ -1205,7 +1205,7 @@ public class BossLand extends JavaPlugin implements Listener {
             getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
                 try {
                     p.setGameMode(gm);
-                } catch (Exception ignored) {
+                } catch (NullPointerException ignored) {
                 }
             }, 30 * 20);
             //Reset Death Time
@@ -1213,7 +1213,7 @@ public class BossLand extends JavaPlugin implements Listener {
             getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
                 try {
                     diedList.remove(id);
-                } catch (Exception ignored) {
+                } catch (NullPointerException ignored) {
                 }
             }, 900 * 20);
             return true;
@@ -1234,7 +1234,7 @@ public class BossLand extends JavaPlugin implements Listener {
         getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
             try {
                 autoBalls(ent, bossType);
-            } catch (Exception ignored) {
+            } catch (NullPointerException ignored) {
             }
         }, 10 * 20);
     }
@@ -1390,7 +1390,7 @@ public class BossLand extends JavaPlugin implements Listener {
         getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
             try {
                 tornadoEffect(e, to3, dmg, type);
-            } catch (Exception ignored) {
+            } catch (NullPointerException ignored) {
             }
         }, 5L);
     }
@@ -1417,7 +1417,7 @@ public class BossLand extends JavaPlugin implements Listener {
         getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
             try {
                 suicideTimer(e, boomSize);
-            } catch (Exception ignored) {
+            } catch (NullPointerException ignored) {
             }
         }, 5);
     }
@@ -1439,7 +1439,7 @@ public class BossLand extends JavaPlugin implements Listener {
         getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
             try {
                 moveTowardTemp(e, to, speed, nt);
-            } catch (Exception ignored) {
+            } catch (NullPointerException ignored) {
             }
         }, 1L);
     }
@@ -1457,7 +1457,7 @@ public class BossLand extends JavaPlugin implements Listener {
         getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
             try {
                 moveToward(e, to, speed);
-            } catch (Exception ignored) {
+            } catch (NullPointerException ignored) {
             }
         }, 1L);
     }
@@ -1471,7 +1471,7 @@ public class BossLand extends JavaPlugin implements Listener {
         getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
             try {
                 moveToward(e, to, speed);
-            } catch (Exception ignored) {
+            } catch (NullPointerException ignored) {
             }
         }, 1L);
     }
@@ -1486,7 +1486,7 @@ public class BossLand extends JavaPlugin implements Listener {
         getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
             try {
                 moveToward(e, to, speed);
-            } catch (Exception ignored) {
+            } catch (NullPointerException ignored) {
             }
         }, 1L);
     }
@@ -1498,7 +1498,7 @@ public class BossLand extends JavaPlugin implements Listener {
                     p.remove();
                     p.getWorld().createExplosion(p.getLocation(), 2, false);
                 }
-            } catch (Exception ignored) {
+            } catch (NullPointerException ignored) {
             }
         }, t * 20L);
     }
@@ -2038,7 +2038,7 @@ public class BossLand extends JavaPlugin implements Listener {
                         String[] sp = s.getItemMeta().getLore().get(0).split(": ");
                         return sp[1].trim();
                     }
-                } catch (Exception ignored) {
+                } catch (NullPointerException ignored) {
                 }
         return null;
     }
@@ -2060,9 +2060,9 @@ public class BossLand extends JavaPlugin implements Listener {
                                 p.getInventory().remove(s);
                             return true;
                         }
-                    } catch (Exception ignored) {
+                    } catch (NullPointerException ignored) {
                     }
-        } catch (Exception ignored) {
+        } catch (NullPointerException ignored) {
         }
         return false;
     }
@@ -2090,7 +2090,7 @@ public class BossLand extends JavaPlugin implements Listener {
 //				if(p.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals("§e§lThe Cursed Skull") || p.getInventory().getItemInOffHand().getItemMeta().getDisplayName().equals("§e§lThe Cursed Skull")) {
 //					e.setCancelled(true);
 //				}
-        } catch (Exception ignored) {
+        } catch (NullPointerException ignored) {
         }
     }
 
@@ -2202,7 +2202,7 @@ public class BossLand extends JavaPlugin implements Listener {
                     }
             }
             //System.out.println("Is Shard: " + isShard(p.getInventory().getItemInMainHand()));
-        } catch (Exception ignored) {
+        } catch (NullPointerException ignored) {
         }
         try {
             //Cool Check
@@ -2282,7 +2282,7 @@ public class BossLand extends JavaPlugin implements Listener {
                 deathList.add(p.getUniqueId());
                 cool(p.getUniqueId());
             }
-        } catch (Exception ignored) {
+        } catch (NullPointerException ignored) {
         }
     }
 
@@ -2427,7 +2427,7 @@ public class BossLand extends JavaPlugin implements Listener {
                     e.setCancelled(true);
                 }
             }
-        } catch (Exception ignored) {
+        } catch (NullPointerException ignored) {
         }
     }
 
@@ -2442,7 +2442,7 @@ public class BossLand extends JavaPlugin implements Listener {
                     p.getInventory().addItem(s);
                 }
             }
-        } catch (Exception ignored) {
+        } catch (NullPointerException ignored) {
         }
     }
 
@@ -2460,7 +2460,7 @@ public class BossLand extends JavaPlugin implements Listener {
             }
             //Boss Item
             controlCheck(p);
-        } catch (Exception ignored) {
+        } catch (NullPointerException ignored) {
         }
     }
 
@@ -2498,7 +2498,7 @@ public class BossLand extends JavaPlugin implements Listener {
         getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
             try {
                 moveControl(e, owner, speed);
-            } catch (Exception ignored) {
+            } catch (NullPointerException ignored) {
             }
         }, 1L);
     }
@@ -2544,7 +2544,7 @@ public class BossLand extends JavaPlugin implements Listener {
 //			try {
 //				if((s.getItemMeta().getDisplayName().contains("§l")) && (s.getItemMeta().getDisplayName().contains("Boss Shard")))
 //					return true;
-//			}catch(Exception x) {}
+//			}catch(NullPointerException x) {}
 //			return false;
 //		}
 
@@ -2590,7 +2590,7 @@ public class BossLand extends JavaPlugin implements Listener {
                 } else
                     p.sendMessage(getLang("hellSpawn"));
             }
-        } catch (Exception x) {/*x.printStackTrace();*/}
+        } catch (NullPointerException x) {/*x.printStackTrace();*/}
     }
 
     @EventHandler(priority = EventPriority.HIGH)
@@ -2813,7 +2813,7 @@ public class BossLand extends JavaPlugin implements Listener {
                 if (ne instanceof LivingEntity)
                     return (LivingEntity) ne;
             }
-        } catch (Exception ignored) {
+        } catch (NullPointerException ignored) {
         }
         return null;
     }
@@ -2858,7 +2858,7 @@ public class BossLand extends JavaPlugin implements Listener {
             float maxHealth = (float) ((LivingEntity) e).getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
             float setHealth = (health * 100.0f) / maxHealth;
             bar.setProgress(setHealth / 100.0f);
-        } catch (Exception ignored) {
+        } catch (NullPointerException ignored) {
         }
     }
 
@@ -2878,7 +2878,7 @@ public class BossLand extends JavaPlugin implements Listener {
                             e.sendMessage(getLang("failSpawnWG"));
                         return;
                     }
-                } catch (Exception ignored) {
+                } catch (NullPointerException ignored) {
                 }
             //Check Boss Limit
             if (bossMap.size() >= getConfig().getInt("bossLimit")) {
@@ -3024,7 +3024,7 @@ public class BossLand extends JavaPlugin implements Listener {
             saveFile.set("bosses." + boss.getUniqueId().toString(), bossType);
             save();
             makeBoss(boss, bossType);
-        } catch (Exception x) {
+        } catch (NullPointerException x) {
             getLogger().log(Level.SEVERE, "Failed to spawn Boss: " + bossType);
             x.printStackTrace();
         }
@@ -3070,12 +3070,12 @@ public class BossLand extends JavaPlugin implements Listener {
                 Vector direction = to.toVector().subtract(e.getLocation().toVector()).normalize();
                 e.setVelocity(direction.multiply(speed));
             }
-        } catch (Exception ignored) {
+        } catch (NullPointerException ignored) {
         }
         getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
             try {
                 target(e, speed);
-            } catch (Exception ignored) {
+            } catch (NullPointerException ignored) {
             }
         }, 1L);
     }
@@ -3161,7 +3161,7 @@ public class BossLand extends JavaPlugin implements Listener {
                     }
                 }
             }
-        } catch (Exception ex) {
+        } catch (NullPointerException ex) {
             //System.out.println("V: " + getServer().getVersion());
             ex.printStackTrace();
         }
@@ -3449,7 +3449,7 @@ public class BossLand extends JavaPlugin implements Listener {
                 }
             }
             return stack;
-        } catch (Exception e) {
+        } catch (NullPointerException e) {
             getLogger().log(Level.SEVERE, e.getMessage(), true);
             e.printStackTrace();
         }
@@ -3578,7 +3578,7 @@ public class BossLand extends JavaPlugin implements Listener {
             LeatherArmorMeta meta = (LeatherArmorMeta) item.getItemMeta();
             meta.setColor(color);
             item.setItemMeta(meta);
-        } catch (Exception ignored) {
+        } catch (NullPointerException ignored) {
         }
     }
 
@@ -3590,7 +3590,7 @@ public class BossLand extends JavaPlugin implements Listener {
                 int minSetAmount = Integer.parseInt(split[0]);
                 int maxSetAmount = Integer.parseInt(split[1]);
                 setAmount = new Random().nextInt(maxSetAmount - minSetAmount + 1) + minSetAmount;
-            } catch (Exception e) {
+            } catch (NullPointerException e) {
                 System.out.println("getIntFromString: " + e);
             }
         } else {
@@ -3655,7 +3655,7 @@ public class BossLand extends JavaPlugin implements Listener {
                     ci.setResult(null);
                 }
             }
-        } catch (Exception ignored) {
+        } catch (NullPointerException ignored) {
         }
     }
 
@@ -3992,7 +3992,7 @@ public class BossLand extends JavaPlugin implements Listener {
                     sender.sendMessage("§eBossLand: Removed all bosses from the world.");
                     return true;
                 }
-            } catch (Exception ignored) {
+            } catch (NullPointerException ignored) {
             }
             sender.sendMessage(ChatColor.GOLD + "--- Boss Land v" + getDescription().getVersion() + " ---");
             sender.sendMessage(ChatColor.YELLOW + "/bl spawn <boss> <- Spawns a Boss");
@@ -4035,7 +4035,7 @@ public class BossLand extends JavaPlugin implements Listener {
 //						for(ProtectedRegion i : set.getRegions()) {
 //							build = queryBuild(p,l);
 //						}
-//				}catch (Exception x) {x.printStackTrace();}
+//				}catch (NullPointerException x) {x.printStackTrace();}
 //				return build;
 //			}
 
@@ -4072,7 +4072,7 @@ public class BossLand extends JavaPlugin implements Listener {
 //							return false;
 //						}
 //					}
-//				}catch (Exception localException) {}
+//				}catch (NullPointerException localException) {}
 //				return build;
 //			}
 
