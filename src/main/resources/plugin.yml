@@ -2,13 +2,16 @@ name: BossLand
 main: io.hotmail.com.jacob_vejvoda.BossLand.BossLand
 version: 0.6
 api-version: 1.16
-author: Eliminator
+authors: [Eliminator, Steve-Tech]
 softdepend: [WorldGuard]
-
 commands:
   bossland:
     aliases: [bl]
-    description: Base Boss Land command.
+    description: Base Boss Land command
     usage: /<command>
     permission: bl.cmds
     permission-message: You don't have <permission>
+permissions:
+  bl.cmds:
+    description: Base Boss Land permission
+    default: op
