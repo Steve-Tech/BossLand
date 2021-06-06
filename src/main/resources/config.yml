@@ -188,8 +188,8 @@ bosses:
             enchantment: mending
             level: 10
   "PapaPanda":
-    entity: Panda
-    minion: Panda
+    entity: PANDA
+    minion: PANDA
     dropedXP: 4000
     name: "§6§lPapa Panda"
     health: 1000
@@ -469,9 +469,9 @@ bosses:
             level: 1
   "IllagerKing":
     entity: EVOKER
-    minion: Pillager
-    minion2: Vex
-    minion3: Vindicator
+    minion: PILLAGER
+    minion2: VEX
+    minion3: VINDICATOR
     dropedXP: 10000
     name: "§6§lKing of the Illagers"
     health: 2000
@@ -604,8 +604,8 @@ bosses:
             enchantment: efficiency
             level: 5-10
   "DrownedGod":
-    entity: Drowned
-    minion: Drowned
+    entity: DROWNED
+    minion: DROWNED
     minion4Mount: Dolphin
     amountSpecial3: 3
     dropedXP: 20000
@@ -699,7 +699,7 @@ bosses:
             level: 15-25
   "PharaohGod":
     entity: WITHER_SKELETON
-    minion: Husk
+    minion: HUSK
     minion3: WITHER_SKELETON
     minion4: WITHER_SKELETON
     amountSpecial2: 3
@@ -770,7 +770,7 @@ bosses:
   "AetherGod":
     entity: SKELETON
     minion: VEX
-    minion2: Phantom
+    minion2: PHANTOM
     minion3: SKELETON
     minion4: SKELETON
     minion4Mount: Phantom
@@ -851,8 +851,8 @@ bosses:
             level: 15-25
   "Demon":
     entity: WITHER_SKELETON
-    minion: Husk
-    minion2: Husk
+    minion: HUSK
+    minion2: HUSK
     minion3: SKELETON
     minion4: SKELETON
     amountSpecial: 3
@@ -971,7 +971,7 @@ bosses:
   "Death":
     entity: WITHER_SKELETON
     minion: VEX
-    minion2: Shulker
+    minion2: SHULKER
     minion3: ZOMBIE
     minion4: ZOMBIE
     amountSpecial: 3
