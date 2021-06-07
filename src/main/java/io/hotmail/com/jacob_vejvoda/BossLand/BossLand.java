@@ -3849,23 +3849,48 @@ public class BossLand extends JavaPlugin implements Listener {
     @SuppressWarnings("unchecked")
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if ((cmd.getName().equals("bossland")) || (cmd.getName().equals("bl"))) {
-            try {
+            if (args.length > 0) {
                 if (args[0].equals("reload")) {
                     reloadConfig();
                     reloadLang();
                     sender.sendMessage(ChatColor.YELLOW + "BossLand: Reloaded config!");
                     return true;
-                } else if (args[0].equals("spawn") && args.length == 2) {
-                    if (sender instanceof Player) {
-                        Player p = (Player) sender;
+                } else if (args[0].equals("spawn")) {
+                    if (args.length == 6) {
                         if (getConfig().getString("bosses." + args[1]) != null) {
-                            spawnBoss(p, p.getLocation(), args[1]);
-                            sender.sendMessage(ChatColor.YELLOW + "BossLand: Spawned a " + args[1] + " boss!");
+                            World w = getServer().getWorld(args[5]);
+                            if (w == null) {
+                                sender.sendMessage(ChatColor.RED + "World not found!");
+                                return true;
+                            }
+                            Location l = new Location(w, Integer.parseInt(args[2]), Integer.parseInt(args[3]), Integer.parseInt(args[4]));
+                            spawnBoss(null, l, args[1]);
+                            sender.sendMessage(ChatColor.YELLOW + "BossLand: Spawned a " + args[1] + " boss at the coords!");
                         } else
                             bossError(sender);
+                    } else if (sender instanceof Player) {
+                        Player p = (Player) sender;
+                        if (args.length == 2) {
+                            if (getConfig().getString("bosses." + args[1]) != null) {
+                                spawnBoss(p, p.getLocation(), args[1]);
+                                sender.sendMessage(ChatColor.YELLOW + "BossLand: Spawned a " + args[1] + " boss!");
+                            } else
+                                bossError(sender);
+                        }
+                        else if (args.length == 5) {
+                            if (getConfig().getString("bosses." + args[1]) != null) {
+                                World w = p.getWorld();
+                                Location l = new Location(w, Integer.parseInt(args[2]), Integer.parseInt(args[3]), Integer.parseInt(args[4]));
+                                spawnBoss(p, l, args[1]);
+                                sender.sendMessage(ChatColor.YELLOW + "BossLand: Spawned a " + args[1] + " boss at the coords!");
+                            } else
+                                bossError(sender);
+                        }
+                    } else {
+                        sender.sendMessage(ChatColor.RED + "This command can only be used by a player!");
                     }
                     return true;
-                } else if (args[0].equals("cspawn") && args.length == 6) {
+                } else if (args[0].equals("cspawn") && args.length == 6) { // For backwards compatibility
                     if (getConfig().getString("bosses." + args[1]) != null) {
                         World w = getServer().getWorld(args[5]);
                         if (w == null) {
@@ -3893,6 +3918,8 @@ public class BossLand extends JavaPlugin implements Listener {
                                 sender.sendMessage(ChatColor.YELLOW + "BossLand: Loot Error!");
                         } else
                             bossError(sender);
+                    } else {
+                        sender.sendMessage(ChatColor.RED + "This command can only be used by a player!");
                     }
                     return true;
                 } else if ((args[0].equalsIgnoreCase("setLoot") || args[0].equalsIgnoreCase("addLoot")) && args.length >= 2) {
@@ -3920,6 +3947,8 @@ public class BossLand extends JavaPlugin implements Listener {
                                 sender.sendMessage(ChatColor.YELLOW + "BossLand: No item is in your hand!");
                         } else
                             bossError(sender);
+                    } else {
+                        sender.sendMessage(ChatColor.RED + "This command can only be used by a player!");
                     }
                     return true;
                 } else if (args[0].equals("killBosses") && args.length == 2) {
@@ -3936,16 +3965,14 @@ public class BossLand extends JavaPlugin implements Listener {
                     sender.sendMessage(ChatColor.YELLOW + "BossLand: Removed all bosses from the world.");
                     return true;
                 }
-            } catch (NullPointerException ignored) {
             }
-            sender.sendMessage(ChatColor.GOLD + "--- Boss Land v" + getDescription().getVersion() + " ---");
-            sender.sendMessage(ChatColor.YELLOW + "/bl spawn <boss> <- Spawns a Boss");
-            sender.sendMessage(ChatColor.YELLOW + "/bl cspawn <boss> <x> <y> <z> <world>");
-            sender.sendMessage(ChatColor.YELLOW + "/bl loot <boss>   <- Drops a Bosses' death loot");
+            sender.sendMessage(ChatColor.GOLD + "--- Steve's Boss Land " + getDescription().getVersion() + " ---");
+            sender.sendMessage(ChatColor.YELLOW + "/bl spawn <boss> [x y z] [world] <- Spawns a Boss");
+            sender.sendMessage(ChatColor.YELLOW + "/bl loot <boss>         <- Drops a Bosses' death loot");
             sender.sendMessage(ChatColor.YELLOW + "/bl setLoot <boss> <id> <- Set loot for boss");
-            sender.sendMessage(ChatColor.YELLOW + "/bl addLoot <boss>     <- Add loot for boss");
+            sender.sendMessage(ChatColor.YELLOW + "/bl addLoot <boss>      <- Add loot for boss");
             sender.sendMessage(ChatColor.YELLOW + "/bl killBosses <world>  <- Remove bosses");
-            sender.sendMessage(ChatColor.YELLOW + "/bl reload         <- Re-loads the config");
+            sender.sendMessage(ChatColor.YELLOW + "/bl reload              <- Re-loads the config");
         }
         return true;
     }
