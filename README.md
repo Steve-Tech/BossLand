@@ -1,4 +1,6 @@
 # Steve's BossLand Fork
+[![Java CI with Maven](https://github.com/Steve-Tech/BossLand/actions/workflows/maven.yml/badge.svg)](https://github.com/Steve-Tech/BossLand/actions/workflows/maven.yml)
+
 Steve's Improved BossLand fork.
 
 Original Code: https://bitbucket.org/Eliminator/bossland/
