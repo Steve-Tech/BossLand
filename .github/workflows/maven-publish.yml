@@ -36,7 +36,7 @@ jobs:
       - name: Build with Maven
         env:
           SHORTSHA: ${{ steps.sha_short.outputs.sha_short }}
-        run: mvn -B package --file pom.xml -Djar.finalName=$SHORTSHA
+        run: mvn -B package --file pom.xml -Drevision=$SHORTSHA -Djar.finalName=$SHORTSHA
 
       - name: Create Release
         id: create_release

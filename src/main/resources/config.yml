@@ -1,3 +1,4 @@
+# Config File from Steve's BossLand ${project.version}
 bossRange: 35
 bossLimit: 99
 waterLevel: 40

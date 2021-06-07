@@ -1,6 +1,6 @@
 name: BossLand
 main: io.hotmail.com.jacob_vejvoda.BossLand.BossLand
-version: 0.6
+version: ${project.version}
 api-version: 1.16
 authors: [Eliminator, Steve-Tech]
 softdepend: [WorldGuard]
